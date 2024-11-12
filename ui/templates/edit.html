@@ -1,0 +1,16 @@
+{% extends "ui/menu_page.html" %}
+
+{% block menu_page_content %}
+<section class="container">
+    <header>
+        <h2>Add a pack</h2>
+    </header>
+    <body>
+        <form method="POST" action="{{url_for('edit')}}">
+            {{ site_form.csrf_token }}
+            {{ site_form.name.label }} 
+            <input type="submit" value="Go">
+        </form>
+    </body>
+</section>
+{% endblock %}

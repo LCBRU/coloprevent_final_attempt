@@ -1,0 +1,28 @@
+{% extends "ui/menu_page.html" %}
+
+{% block menu_page_content %}
+<section class="container">
+    <header>
+        <h2>Supplies ordered and distributed</h2>
+    </header>
+    <body>
+        <table>
+            <tr>
+              <th>Site</th>
+              <th>Pack</th>
+              <th>Date dispatched</th>
+            </tr>
+            {% for item in ordered_list %}
+            <tr>
+              <td>ordered_list.name</td>
+              <td><a href="{{url_for('delete', id=item.id)}}"></a></td>
+              <td><a href="{{url_for('edit', id=item.id)}}"></a></td>
+            </tr>
+
+          </table>
+
+
+    </body>
+
+</section>
+{% endblock %}
