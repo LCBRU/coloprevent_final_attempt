@@ -14,9 +14,9 @@ class Site(db.Model):
     
 class Packs(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    #site = Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    site: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     pack_id:Mapped[int] = mapped_column(primary_key=True)
-    expiry:Mapped[date]=mapped_column
+    expiry:Mapped[date]= mapped_column
    
     
 
