@@ -1,71 +1,65 @@
 from .. import blueprint
-from flask import render_template, request, url_for
+from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
 from wtforms import HiddenField, StringField
-from wtforms.validators import Length
+from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
+from coloprevent.model import Site
+from flask_wtf import FlaskForm
 
-
-
-class EditUserForm(FlashingForm):
-    id = HiddenField('id')
-    first_name = StringField('First Name', validators=[Length(max=50)])
-    last_name = StringField('Last Name', validators=[Length(max=50)])
-
-
-@blueprint.route("/")
+@blueprint.route('/', methods=['GET', 'POST'])
 def index():
-    search_form = SearchForm(formdata=request.args, search_placeholder='Search email addresses')
+    q_list = db.session.execute(db.select(Site).order_by(Site.id)).scalars()
+    ordered_list =[]
+    for queried in q_list:
+        ordered_list.append(queried)
+    return render_template('ui/summary.html', order_list = ordered_list)
+    
 
-    q = select(User)
-
-    if search_form.search.data:
-        q = q.filter(User.email.like(f'%{search_form.search.data}%'))
-
-    users = db.paginate(
-        select=q,
-        page=search_form.page.data,
-        per_page=5,
-        error_out=False,
-    )
-
-    return render_template(
-        "ui/index.html",
-        users=users,
-        search_form=search_form,
-    )
+class SiteForm(FlaskForm):
+    site_name = StringField('name', validators=[DataRequired()])
 
 
-@blueprint.route("/another")
-def another():
-    return render_template("ui/another.html")
-
-
-@blueprint.route("/dialog")
-def dialog():
-    return render_template("ui/dialog.html")
-
-
-@blueprint.route("/edit/<int:id>", methods=['GET', 'POST'])
-def edit(id):
-    user = db.get_or_404(User, id)
-
-    form = EditUserForm(obj=user)
-
-    if form.validate_on_submit():
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
-        db.session.add(user)
+@blueprint.route('/add', methods=['GET', 'POST'])
+def add():
+    site_form = SiteForm
+    if site_form.validate_on_submit():
+        site_added = Site(
+        name_of_site= site_form.site_name.data
+        )
+        db.session.add(site_added)
         db.session.commit()
-        return refresh_response()
+        return redirect(url_for('summary'))
+    
+    return render_template('ui/add.html')
 
-    return render_template(
-        "lbrc/form_modal.html",
-        title=f"Edit User {user.full_name}",
-        form=form,
-        url=url_for('ui.edit', id=id),
-    )
+@blueprint.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete(id):
+    delete_id = id
+    if id== delete_id:
+        query_del = db.session.execute(db.select(Site).where(Site.id == delete_id)).scalar()
+        db.session.delete(query_del)
+        db.session.commit()
+        return redirect("/summary")
+    return render_template('delete.html', id=id)
+
+def edit(id):
+    edit_id = id
+    if id== edit_id:
+        query_edit = db.session.execute(db.select(Site).where(Site.id == edit_id)).scalar()
+        prev_site_name = query_edit.site_name
+        ed_form=SiteForm(site_name=prev_site_name) 
+
+    
+    if ed_form.validate_on_submit():
+            query_edit.site_name= ed_form.site_name.data
+            db.session.add(query_edit)
+            db.session.commit()
+            return redirect("/summary")
+        
+
+    return render_template('edit.html', ed_form = ed_form, id=id)

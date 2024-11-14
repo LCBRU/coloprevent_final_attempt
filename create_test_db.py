@@ -25,5 +25,5 @@ alembic_cfg = Config("alembic.ini")
 command.stamp(alembic_cfg, "head")
 
 # TO DO: Create test data
-
+db.session.commit()
 db.session.close()

@@ -14,14 +14,13 @@ class Site(db.Model):
     
 class Packs(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    site: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    pack_id:Mapped[int] = mapped_column(primary_key=True)
+    pack_id:Mapped[int] = mapped_column(index=True) 
     expiry:Mapped[date]= mapped_column
    
     
 
 
-class Consumables(db.Model):
-    consumable_id:Mapped[int] = mapped_column(primary_key=True)
-    consumable_type:Mapped[str] =mapped_column
+# class Consumables(db.Model):
+#     id:Mapped[int] = mapped_column(primary_key=True)
+#     consumable_type:Mapped[str] =mapped_column
 
