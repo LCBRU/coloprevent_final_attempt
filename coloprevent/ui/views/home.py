@@ -26,7 +26,7 @@ class SiteForm(FlaskForm):
 
 @blueprint.route('/add', methods=['GET', 'POST'])
 def add():
-    site_form = SiteForm
+    site_form = SiteForm()
     if site_form.validate_on_submit():
         site_added = Site(
         name_of_site= site_form.site_name.data
