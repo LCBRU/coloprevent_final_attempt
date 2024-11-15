@@ -29,13 +29,13 @@ def add():
     site_form = SiteForm()
     if site_form.validate_on_submit():
         site_added = Site(
-        name_of_site= site_form.site_name.data
+        name= site_form.site_name.data
         )
         db.session.add(site_added)
         db.session.commit()
-        return redirect(url_for('summary'))
+        return redirect(url_for('ui.index'))
     
-    return render_template('ui/add.html')
+    return render_template('ui/add.html', site_form=site_form)
 
 @blueprint.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
@@ -44,9 +44,11 @@ def delete(id):
         query_del = db.session.execute(db.select(Site).where(Site.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
-        return redirect("/summary")
-    return render_template('delete.html', id=id)
+        return redirect("ui.summary")
+    return render_template('ui/delete.html', id=id)
 
+
+@blueprint.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
     edit_id = id
     if id== edit_id:
@@ -59,7 +61,7 @@ def edit(id):
             query_edit.site_name= ed_form.site_name.data
             db.session.add(query_edit)
             db.session.commit()
-            return redirect("/summary")
+            return redirect("ui.summary")
         
 
-    return render_template('edit.html', ed_form = ed_form, id=id)
+    return render_template('ui/edit.html', ed_form = ed_form, id=id)

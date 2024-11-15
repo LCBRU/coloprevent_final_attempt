@@ -10,11 +10,11 @@
             <tr>
               <th>Site</th>
             </tr>
-            {% for item in ordered_list %}
+            {% for item in order_list %}
             <tr>
-              <td>ordered_list.name</td>
-              <td><a href="{{url_for('delete', id=item.id)}}"></a></td>
-              <td><a href="{{url_for('edit', id=item.id)}}"></a></td>
+              <td>{{item.name}}</td>
+              <td><a href="{{url_for('ui.delete', id=item.id)}}">DELETE</a></td>
+              <td><a href="{{url_for('ui.edit', id=item.id)}}">EDIT</a></td>
             </tr>
             {% endfor %}
 
