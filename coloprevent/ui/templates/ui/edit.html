@@ -6,9 +6,9 @@
         <h2>Add a pack</h2>
     </header>
     <body>
-        <form method="POST" action="{{url_for('edit')}}">
-            {{ site_form.csrf_token }}
-            {{ site_form.name.label }} 
+        <form method="POST" action="{{url_for('ui.edit',id=id)}}">
+            {{ ed_form.csrf_token }}
+            {{ ed_form.site_name.label }}  {{ ed_form.site_name(size=20) }}
             <input type="submit" value="Go">
         </form>
     </body>

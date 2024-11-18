@@ -53,15 +53,15 @@ def edit(id):
     edit_id = id
     if id== edit_id:
         query_edit = db.session.execute(db.select(Site).where(Site.id == edit_id)).scalar()
-        prev_site_name = query_edit.site_name
+        prev_site_name = query_edit.name
         ed_form=SiteForm(site_name=prev_site_name) 
 
     
     if ed_form.validate_on_submit():
-            query_edit.site_name= ed_form.site_name.data
+            query_edit.name= ed_form.site_name.data
             db.session.add(query_edit)
             db.session.commit()
-            return redirect("ui.summary")
+            return redirect(url_for('ui.index'))
         
 
     return render_template('ui/edit.html', ed_form = ed_form, id=id)
