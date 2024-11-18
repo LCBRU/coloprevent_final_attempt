@@ -44,7 +44,7 @@ def delete(id):
         query_del = db.session.execute(db.select(Site).where(Site.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
-        return redirect("ui.summary")
+        return redirect(url_for('ui.index'))
     return render_template('ui/delete.html', id=id)
 
 
