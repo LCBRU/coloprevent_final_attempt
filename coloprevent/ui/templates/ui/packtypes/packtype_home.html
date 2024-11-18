@@ -1,0 +1,27 @@
+{% extends "ui/menu_page.html" %}
+
+{% block menu_page_content %}
+<section class="container">
+    <header>
+        <h2>Supplies ordered and distributed</h2>
+    </header>
+    <body>
+        <table>
+            <tr>
+              <th>Pack Types</th>
+            </tr>
+            {% for item in order_list %}
+            <tr>
+              <td>{{item.pack_name}}</td>
+              <td><a href="{{url_for('ui.packtypes.delete_pack', id=item.id)}}">DELETE</a></td>
+              <td><a href="{{url_for('ui.edit', id=item.id)}}">EDIT</a></td>
+            </tr>
+            {% endfor %}
+
+          </table>
+
+
+    </body>
+
+</section>
+{% endblock %}
