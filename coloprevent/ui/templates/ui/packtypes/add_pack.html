@@ -6,7 +6,7 @@
         <h2>Add a pack</h2>
     </header>
     <body>
-        <form method="POST" action="{{url_for('ui.packtypes.add_pack')}}">
+        <form method="POST" action="{{url_for('ui.add_pack')}}">
             {{ pack_form.csrf_token }}
             {{ pack_form.pack_name.label }} {{ pack_form.pack_name(size=20) }}
             <input type="submit" value="Go">

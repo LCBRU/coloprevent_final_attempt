@@ -28,12 +28,12 @@ class PackForm(FlaskForm):
 def add_pack():
     pack_form = PackForm()
     if pack_form.validate_on_submit():
-        pack_added = PackForm(
+        pack_added = PackTypes(
         name= pack_form.pack_name.data
         )
         db.session.add(pack_added)
         db.session.commit()
-        return redirect(url_for('ui.packtypes.index'))
+        return redirect(url_for('ui.packtypes.packtype_index'))
     
     return render_template('ui/packtypes/add_pack.html', pack_form=pack_form)
 
