@@ -13,8 +13,8 @@
             {% for item in order_list %}
             <tr>
               <td>{{item.name}}</td>
-              <td><a href="{{url_for('ui.packtypes.delete_pack', id=item.id)}}">DELETE</a></td>
-              <td><a href="{{url_for('ui.packtypes.edit', id=item.id)}}">EDIT</a></td>
+              <td><a href="{{url_for('ui.delete_pack', id=item.id)}}">DELETE</a></td>
+              <td><a href="{{url_for('ui.edit_pack', id=item.id)}}">EDIT</a></td>
             </tr>
             {% endfor %}
 
