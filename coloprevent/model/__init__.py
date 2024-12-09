@@ -39,4 +39,3 @@ class Packs(db.Model):
     pack_id:Mapped[int] = mapped_column(index=True) 
     expiry:Mapped[date]= mapped_column
    
-    
