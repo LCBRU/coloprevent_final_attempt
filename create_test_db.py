@@ -27,3 +27,4 @@ command.stamp(alembic_cfg, "head")
 # TO DO: Create test data
 db.session.commit()
 db.session.close()
+
