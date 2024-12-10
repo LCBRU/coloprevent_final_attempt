@@ -11,13 +11,13 @@ from lbrc_flask.response import refresh_response
 from coloprevent.model import PackTypes
 from flask_wtf import FlaskForm
 
-@blueprint.route('/packtype_home', methods=['GET', 'POST'])
-def packtype_index():
+@blueprint.route('/packs', methods=['GET', 'POST'])
+def packs():
     q_list = db.session.execute(db.select(PackTypes).order_by(PackTypes.id)).scalars()
     ordered_list =[]
     for queried in q_list:
         ordered_list.append(queried)
-    return render_template('ui/packtypes/packtype_home.html', order_list = ordered_list)
+    return render_template('ui/packs/packs_home.html', order_list = ordered_list)
 
 class PackForm(FlaskForm):
     pack_name = StringField('Pack name', validators=[DataRequired()])
@@ -33,9 +33,9 @@ def add_pack():
         )
         db.session.add(pack_added)
         db.session.commit()
-        return redirect(url_for('ui.packtype_index'))
+        return redirect(url_for('ui.packs'))
     
-    return render_template('ui/packtypes/add_pack.html', pack_form=pack_form)
+    return render_template('ui/packs/add_pack.html', pack_form=pack_form)
 
 @blueprint.route('/delete_pack/<int:id>', methods=['GET', 'POST'])
 def delete_pack(id):
@@ -44,8 +44,8 @@ def delete_pack(id):
         query_del = db.session.execute(db.select(PackTypes).where(PackTypes.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
-        return redirect(url_for('ui.packtype_index'))
-    return render_template('ui/packtypes/delete_pack.html', id=id)
+        return redirect(url_for('ui.packs'))
+    return render_template('ui/packs/delete_pack.html', id=id)
 
 @blueprint.route('/edit_pack/<int:id>', methods=['GET', 'POST'])
 def edit_pack(id):
@@ -60,7 +60,7 @@ def edit_pack(id):
             query_edit.name= ed_form.pack_name.data
             db.session.add(query_edit)
             db.session.commit()
-            return redirect(url_for('ui.packtype_index'))
+            return redirect(url_for('ui.packs'))
         
 
-    return render_template('ui/packtypes/edit_pack.html', ed_form = ed_form, id=id)
+    return render_template('ui/packs/edit_pack.html', ed_form = ed_form, id=id)

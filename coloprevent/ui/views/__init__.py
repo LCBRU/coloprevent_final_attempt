@@ -1,1 +1,1 @@
-__all__ = ["home", "packtypes_home"]
+__all__ = ["home", "packs", "pack_types"]
