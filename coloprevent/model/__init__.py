@@ -9,9 +9,9 @@ from datetime import date
 class Site(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    # back_up_contact:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    # site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    # site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    back_up_contact:Mapped[str] = mapped_column(String(100), unique=True)
+    site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
 
 class PackTypes(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
