@@ -7,12 +7,14 @@
     </header>
     <body>
         <form method="POST" action="{{url_for('ui.packtypes_home')}}">
-            
+
+
             {% for subfield in packtypes_form.pack_type_name %}
             <tr>
                 
-                <td>{{ subfield }}</td>
-                <td>{{ subfield.label }}</td>
+            <td>{{ subfield }}</td> 
+            <td>{{ subfield.label }}</td>
+                
                 
             </tr>
             {% endfor %}
