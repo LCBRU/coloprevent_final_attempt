@@ -4,7 +4,7 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, RadioField, widgets
+from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
@@ -12,7 +12,8 @@ from coloprevent.model import Site
 from flask_wtf import FlaskForm
 
 class PacktypeForm(FlaskForm):
-    pack_type_name = RadioField(u'Packtypes',choices=[('screening', 'Screening'), ('fit', 'FIT'), ('research', 'Research'), ('tissue_ffpe', 'Tissue/FFPE')])
+    pack_type_name = RadioField(u'Packtypes',choices=[('screening', 'Screening'), ('fit', 'FIT'), ('research', 'Research'), ('tissue_ffpe', 'Tissue/FFPE')], coerce= str)
+    submit = SubmitField()
 
 @blueprint.route('/packtypes', methods=['GET', 'POST'])
 def packtypes_home():
