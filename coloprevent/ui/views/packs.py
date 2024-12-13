@@ -8,12 +8,12 @@ from wtforms import HiddenField, StringField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import PackTypes
+from coloprevent.model import Packs
 from flask_wtf import FlaskForm
 
 @blueprint.route('/packs', methods=['GET', 'POST'])
 def packs():
-    q_list = db.session.execute(db.select(PackTypes).order_by(PackTypes.id)).scalars()
+    q_list = db.session.execute(db.select(Packs).order_by(Packs.id)).scalars()  #need to re configure this table 
     ordered_list =[]
     for queried in q_list:
         ordered_list.append(queried)
@@ -28,7 +28,7 @@ class PackForm(FlaskForm):
 def add_pack():
     pack_form = PackForm()
     if pack_form.validate_on_submit():
-        pack_added = PackTypes(
+        pack_added = Packs(
         name= pack_form.pack_name.data
         )
         db.session.add(pack_added)
@@ -41,7 +41,7 @@ def add_pack():
 def delete_pack(id):
     delete_id = id
     if id== delete_id:
-        query_del = db.session.execute(db.select(PackTypes).where(PackTypes.id == delete_id)).scalar()
+        query_del = db.session.execute(db.select(Packs).where(Packs.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
         return redirect(url_for('ui.packs'))
@@ -51,7 +51,7 @@ def delete_pack(id):
 def edit_pack(id):
     edit_id = id
     if id== edit_id:
-        query_edit = db.session.execute(db.select(PackTypes).where(PackTypes.id == edit_id)).scalar()
+        query_edit = db.session.execute(db.select(Packs).where(Packs.id == edit_id)).scalar()
         prev_pack_name = query_edit.name
         ed_form=PackForm(pack_name=prev_pack_name) 
 

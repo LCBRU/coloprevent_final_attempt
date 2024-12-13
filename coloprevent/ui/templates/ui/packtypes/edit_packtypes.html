@@ -1,0 +1,23 @@
+{% extends "ui/menu_page.html" %}
+
+
+{% block menu_page_content %}
+<section class="container">
+    <header>
+        <h2>Add a pack</h2>
+    </header>
+    <body>
+        <form method="POST" action="{{url_for('ui.edit_pack',id=id)}}">
+            {% for subfield in ed_form.pack_type_name %}
+            
+            <tr>               
+            <td>{{ subfield }}</td> 
+            <td>{{ subfield.label }}</td>                
+            </tr>
+
+            {% endfor %}
+            {{ed_form.submit}}
+        </form>
+    </body>
+</section>
+{% endblock %}

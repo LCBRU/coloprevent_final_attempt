@@ -3,22 +3,25 @@
 {% block menu_page_content %}
 <section class="container">
     <header>
-        <h2>Add a pack</h2>
+        <h2>Choose a packtype</h2>
     </header>
     <body>
-        <form method="POST" action="{{url_for('ui.packtypes_home')}}">
-
-
-            {% for subfield in packtypes_form.pack_type_name %}
-            
-            <tr>               
-            <td>{{ subfield }}</td> 
-            <td>{{ subfield.label }}</td>                
+        <table>
+            <tr>
+              <th>Packtypes/th>
             </tr>
-
+            {% for item in order_list %}
+            <tr>
+              <td>{{item.name}}</td>
+              <td><a href="{{url_for('ui.delete_packtypes', id=item.id)}}">DELETE</a></td>
+              <td><a href="{{url_for('ui.edit_packtypes', id=item.id)}}">EDIT</a></td>
+            </tr>
             {% endfor %}
-            {{packtypes_form.submit}}
-        </form>
+
+          </table>
+
+
     </body>
+
 </section>
 {% endblock %}
