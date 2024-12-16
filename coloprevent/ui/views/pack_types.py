@@ -12,17 +12,13 @@ from coloprevent.model import PackTypes
 from flask_wtf import FlaskForm
 
 class PacktypeForm(FlaskForm):
-    pack_type_name = RadioField(u'Packtypes',choices=[('screening', 'Screening'), ('fit', 'FIT'), ('research', 'Research'), ('tissue_ffpe', 'Tissue/FFPE')], coerce= str)
-    submit = SubmitField()
+    pack_type_name = RadioField(u'Packtypes',choices=[('screening', 'Screening'), ('fit', 'FIT'), ('research', 'Research'), ('tissue_ffpe', 'Tissue/FFPE')])
 
-@blueprint.route('/packtypes', methods=['GET', 'POST'])
+@blueprint.route('/packtypes_home', methods=['GET', 'POST'])
 def packtypes_home():
-     q_list = db.session.execute(db.select(PackTypes).order_by(PackTypes.id)).scalars()
-     ordered_list =[]
-     for queried in q_list:
-        ordered_list.append(queried)
+     q_list = list(db.session.execute(db.select(PackTypes).order_by(PackTypes.id)).scalars())
  
-     return render_template('ui/packtypes/packtypes_home.html')
+     return render_template('ui/packtypes/packtypes_home.html', ordered_list=q_list)
 
 @blueprint.route('/packtypes', methods=['GET', 'POST'])
 def add_packtypes():

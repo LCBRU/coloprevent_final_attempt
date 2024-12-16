@@ -8,9 +8,9 @@
     <body>
         <table>
             <tr>
-              <th>Packtypes/th>
+              <th>Packtypes</th>
             </tr>
-            {% for item in order_list %}
+            {% for item in ordered_list %}
             <tr>
               <td>{{item.name}}</td>
               <td><a href="{{url_for('ui.delete_packtypes', id=item.id)}}">DELETE</a></td>

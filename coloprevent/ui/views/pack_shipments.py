@@ -32,7 +32,7 @@ class ShipmentForm(FlaskForm):
     next_due = DateField(format='%Y-%m-%d')
     submit = SubmitField()
 
-@blueprint.route('/packtypes', methods=['GET', 'POST'])
+@blueprint.route('/add_shipments', methods=['GET', 'POST'])
 def add_shipments():
      shipment_form = ShipmentForm()
      if shipment_form.validate_on_submit():
@@ -41,9 +41,9 @@ def add_shipments():
         )
         db.session.add(pack_added)
         db.session.commit()
-        return redirect(url_for('ui.pack_shipments_home'))
+        return redirect(url_for('ui.shipment_home'))
 
-     return render_template('ui/packtypes/add_shipments.html',shipment_form=shipment_form)
+     return render_template('ui/pack_shipments/add_shipments.html',shipment_form=shipment_form)
 
 @blueprint.route('/delete_shipments/<int:id>', methods=['GET', 'POST'])
 def delete_shipments(id):
@@ -52,7 +52,7 @@ def delete_shipments(id):
         query_del = db.session.execute(db.select(PackShipments).where(PackShipments.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
-        return redirect(url_for('ui.pack_shipments_home'))
+        return redirect(url_for('ui.shipment_home'))
     return render_template('ui/pack_shipments/pack_shipments_home.html', id=id)
 
 
@@ -73,10 +73,15 @@ def edit_shipments(id):
 
     
     if ed_form.validate_on_submit():
-            query_edit.name= ed_form.pack_name.data
+            query_edit.pack_identity = ed_form.pack_identity .data
+            query_edit.pack_expiry= ed_form.pack_expiry
+            query_edit.addressee = ed_form.addressee
+            query_edit.date_posted = ed_form.date_posted
+            query_edit.date_received = ed_form.date_received
+            query_edit.next_due = ed_form.next_due
             db.session.add(query_edit)
             db.session.commit()
-            return redirect(url_for('ui.pack_shipments_home'))
+            return redirect(url_for('ui.shipment_home'))
         
 
     return render_template('ui/pack_shipments/edit_shipments.html', ed_form = ed_form, id=id)

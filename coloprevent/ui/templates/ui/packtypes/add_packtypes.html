@@ -1,24 +1,22 @@
 {% extends "ui/menu_page.html" %}
+{% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
+
 
 {% block menu_page_content %}
 <section class="container">
     <header>
-        <h2>Add a pack</h2>
+        <h2>Add a packypes</h2>
     </header>
     <body>
         <form method="POST" action="{{url_for('ui.add_packtypes')}}">
+            <fieldset>
+                {{render_form_fields(packtypes_form)}} 
+                {{render_button_bar(url_for('ui.packtypes_home'))}}
+            </fieldset>
 
 
-            {% for subfield in packtypes_form.pack_type_name %}
-            
-            <tr>               
-            <td>{{ subfield }}</td> 
-            <td>{{ subfield.label }}</td>                
-            </tr>
-
-            {% endfor %}
-            {{packtypes_form.submit}}
         </form>
+
     </body>
 </section>
 {% endblock %}
