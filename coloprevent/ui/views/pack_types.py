@@ -54,8 +54,8 @@ def edit_packtypes(id):
     edit_id = id
     if id== edit_id:
         query_edit = db.session.execute(db.select(PackTypes).where(PackTypes.id == edit_id)).scalar()
-        prev_pack_name = query_edit.pack_type_name
-        ed_form=PacktypeForm(pack_type_name=prev_pack_name) 
+        prev_packtype = query_edit.pack_type_name
+        ed_form=PacktypeForm(pack_type_name=prev_packtype) 
 
     
     if ed_form.validate_on_submit():

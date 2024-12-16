@@ -11,6 +11,18 @@ from lbrc_flask.response import refresh_response
 from coloprevent.model import PackShipments
 from flask_wtf import FlaskForm
 
+
+@blueprint.route('/shipments', methods=['GET', 'POST'])
+def shipment_home():
+     q_list = db.session.execute(db.select(PackShipments).order_by(PackShipments.id)).scalars()
+     ordered_list =[]
+     for queried in q_list:
+        ordered_list.append(queried)
+ 
+     return render_template('ui/pack_shipments/pack_shipments_home.html')
+
+
+
 class ShipmentForm(FlaskForm):
     pack_identity = StringField(label="Pack Id", validators=[DataRequired()])
     pack_expiry = DateField(format='%Y-%m-%d')
@@ -29,6 +41,42 @@ def add_shipments():
         )
         db.session.add(pack_added)
         db.session.commit()
-        return redirect(url_for('ui.packtypes_home'))
+        return redirect(url_for('ui.pack_shipments_home'))
 
-     return render_template('ui/packtypes/add_packtypes.html',shipment_form=shipment_form)
+     return render_template('ui/packtypes/add_shipments.html',shipment_form=shipment_form)
+
+@blueprint.route('/delete_shipments/<int:id>', methods=['GET', 'POST'])
+def delete_shipments(id):
+    delete_id = id
+    if id== delete_id:
+        query_del = db.session.execute(db.select(PackShipments).where(PackShipments.id == delete_id)).scalar()
+        db.session.delete(query_del)
+        db.session.commit()
+        return redirect(url_for('ui.pack_shipments_home'))
+    return render_template('ui/pack_shipments/pack_shipments_home.html', id=id)
+
+
+@blueprint.route('/edit_shipments/<int:id>', methods=['GET', 'POST'])
+def edit_shipments(id):
+    edit_id = id
+    if id== edit_id:
+        query_edit = db.session.execute(db.select(PackShipments).where(PackShipments.id == edit_id)).scalar()
+        prev_pack_identity = query_edit.pack_identity 
+        prev_pack_expiry = query_edit.pack_expiry
+        prev_addresse= query_edit.addressee
+        prev_date_posted =query_edit.date_posted 
+        prev_date_received =query_edit.date_recieved
+        prev_next_due= query_edit.next_due
+
+        ed_form=ShipmentForm(pack_identity=prev_pack_identity, pack_expiry=prev_pack_expiry, addressee=prev_addresse,date_posted=prev_date_posted
+                             ,date_received=prev_date_received, next_due=prev_next_due) 
+
+    
+    if ed_form.validate_on_submit():
+            query_edit.name= ed_form.pack_name.data
+            db.session.add(query_edit)
+            db.session.commit()
+            return redirect(url_for('ui.pack_shipments_home'))
+        
+
+    return render_template('ui/pack_shipments/edit_shipments.html', ed_form = ed_form, id=id)
