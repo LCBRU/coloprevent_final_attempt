@@ -4,7 +4,7 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField
+from wtforms import HiddenField, StringField, DateField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
@@ -20,7 +20,8 @@ def packs():
     return render_template('ui/packs/packs_home.html', order_list = ordered_list)
 
 class PackForm(FlaskForm):
-    pack_name = StringField('Pack name', validators=[DataRequired()])
+    pack_id = StringField('Pack name', validators=[DataRequired()])
+    pack_expiry = DateField(format='%Y-%m-%d')
 
 
 
@@ -29,7 +30,8 @@ def add_pack():
     pack_form = PackForm()
     if pack_form.validate_on_submit():
         pack_added = Packs(
-        name= pack_form.pack_name.data
+        pack_id= pack_form.pack_id.data,
+        pack_expiry = pack_form.pack_expiry.data,
         )
         db.session.add(pack_added)
         db.session.commit()

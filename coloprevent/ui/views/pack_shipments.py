@@ -19,7 +19,7 @@ def shipment_home():
      for queried in q_list:
         ordered_list.append(queried)
  
-     return render_template('ui/pack_shipments/pack_shipments_home.html')
+     return render_template('ui/pack_shipments/pack_shipments_home.html', ordered_list=ordered_list)
 
 
 

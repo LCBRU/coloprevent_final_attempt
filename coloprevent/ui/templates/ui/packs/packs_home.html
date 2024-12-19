@@ -12,7 +12,8 @@
             </tr>
             {% for item in order_list %}
             <tr>
-              <td>{{item.name}}</td>
+              <td>{{item.pack_id}}</td>
+              <td>{{item.pack_expiry}}</td>
               <td><a href="{{url_for('ui.delete_pack', id=item.id)}}">DELETE</a></td>
               <td><a href="{{url_for('ui.edit_pack', id=item.id)}}">EDIT</a></td>
             </tr>

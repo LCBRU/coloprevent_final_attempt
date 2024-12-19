@@ -8,7 +8,9 @@
     <body>
         <form method="POST" action="{{url_for('ui.add_pack')}}">
             {{ pack_form.csrf_token }}
-            {{ pack_form.pack_name.label }} {{ pack_form.pack_name(size=20) }}
+            {{ pack_form.pack_id.label }} {{ pack_form.pack_id(size=20) }}
+            {{ pack_form.pack_expiry.label }} {{ pack_form.pack_expiry(size=20) }}
+
             <input type="submit" value="Go">
         </form>
     </body>
