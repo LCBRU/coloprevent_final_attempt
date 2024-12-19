@@ -37,7 +37,13 @@ def add_shipments():
      shipment_form = ShipmentForm()
      if shipment_form.validate_on_submit():
         pack_added = PackShipments(
-        name= shipment_form.pack_type_name.data  #need to change and create the form 
+        pack_ids= shipment_form.pack_identity.data,
+        pack_expiry= shipment_form.pack_expiry.data,
+        addressee= shipment_form.addressee.data,
+        date_posted = shipment_form.date_posted.data,
+        date_received= shipment_form.date_posted.data,
+        next_due = shipment_form.next_due.data
+          #need to change and create the form 
         )
         db.session.add(pack_added)
         db.session.commit()

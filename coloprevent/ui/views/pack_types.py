@@ -20,7 +20,7 @@ def packtypes_home():
  
      return render_template('ui/packtypes/packtypes_home.html', ordered_list=q_list)
 
-@blueprint.route('/packtypes', methods=['GET', 'POST'])
+@blueprint.route('/add_packtypes', methods=['GET', 'POST'])
 def add_packtypes():
      packtypes_form = PacktypeForm()
      if packtypes_form.validate_on_submit():
