@@ -24,7 +24,7 @@ def shipment_home():
 
 
 class ShipmentForm(FlaskForm):
-    pack_identity = StringField(label="Pack Id", validators=[DataRequired()])
+    pack_identity = StringField(label="Pack identifier", validators=[DataRequired()])
     pack_expiry = DateField(format='%Y-%m-%d')
     addressee =StringField(label="Addressee", validators=[DataRequired()])
     date_posted = DateField(format='%Y-%m-%d')
