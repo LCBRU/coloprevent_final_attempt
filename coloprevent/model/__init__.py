@@ -12,7 +12,7 @@ class Site(db.Model):
     back_up_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
     site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    pack_shipments: Mapped[list["PackShipments"]]=relationship(back_populates='site') #adding backpopulates 
+
 
 class PackTypes(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
@@ -28,8 +28,7 @@ class PackShipments(db.Model):
     date_posted:Mapped[date] = mapped_column( nullable=False)
     date_recieved:Mapped[date] = mapped_column( nullable=False)
     next_due:Mapped[date] = mapped_column( nullable=False)
-    site_name = Mapped[str]=mapped_column(ForeignKey("Site.name")) #adding foreign key 
-    site:Mapped[list["Site"]]=relationship(back_populates='pack_shipments') #adding backpopulates 
+
 
     
 class Packs(db.Model):
