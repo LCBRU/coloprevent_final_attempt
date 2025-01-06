@@ -4,7 +4,7 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField
+from wtforms import HiddenField, StringField, TextAreaField, IntegerField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
@@ -22,6 +22,9 @@ def index():
 
 class SiteForm(FlaskForm):
     site_name = StringField('name', validators=[DataRequired()])
+    back_up_contact = TextAreaField('Enter back up contact',validators=[DataRequired()])
+    site_primary_contact = TextAreaField('Enter Primary contact',validators=[DataRequired()])
+    site_code = IntegerField('Site code',validators=[DataRequired()])
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
@@ -29,7 +32,10 @@ def add():
     site_form = SiteForm()
     if site_form.validate_on_submit():
         site_added = Site(
-        name= site_form.site_name.data
+        name= site_form.site_name.data,
+        back_up_contact = site_form.back_up_contact.data,
+        site_primary_contact= site_form.site_primary_contact.data,
+        site_code = site_form.site_code.data
         )
         db.session.add(site_added)
         db.session.commit()
