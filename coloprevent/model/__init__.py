@@ -12,7 +12,8 @@ class Site(db.Model):
     site_back_up_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
     site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="site_id") #adding back refernce to packshipments connection
+    pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="site_id") 
+    packs: Mapped[list['Packs']]= relationship(back_populates='site')
 
 
 class PackTypes(db.Model):
@@ -28,17 +29,19 @@ class Packs(db.Model):
     pack_quantity: Mapped[int] = mapped_column(nullable=False)
     pack_types: Mapped["PackTypes"] = relationship(back_populates="packs")
     pack_types_id:Mapped[int] = mapped_column(ForeignKey("packtypes.id"))
+    site: Mapped['Site']=relationship(back_populates='packs')
+    site_id: Mapped[int]= mapped_column(ForeignKey("site.id"))
     
 
 
 class PackShipments(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) #attempting to add site fk
+    site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) 
     addressee:Mapped[str] = mapped_column(String(100), nullable=False)
     date_posted:Mapped[date] = mapped_column( nullable=False)
     date_recieved:Mapped[date] = mapped_column( nullable=False)
     next_due:Mapped[date] = mapped_column( nullable=False)
-    site: Mapped["Site"] = relationship(back_populates="pack_shipments") #adding backreference to site connection 
+    site: Mapped["Site"] = relationship(back_populates="pack_shipments") 
 
 
 
