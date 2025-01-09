@@ -24,8 +24,6 @@ def shipment_home():
 
 
 class ShipmentForm(FlaskForm):
-    pack_identity = StringField(label="Pack identifier", validators=[DataRequired()])
-    pack_expiry = DateField(format='%Y-%m-%d')
     addressee =StringField(label="Addressee", validators=[DataRequired()])
     date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
@@ -37,13 +35,11 @@ def add_shipments():
      shipment_form = ShipmentForm()
      if shipment_form.validate_on_submit():
         pack_added = PackShipments(
-        pack_ids= shipment_form.pack_identity.data,
-        pack_expiry= shipment_form.pack_expiry.data,
         addressee= shipment_form.addressee.data,
         date_posted = shipment_form.date_posted.data,
         date_received= shipment_form.date_posted.data,
         next_due = shipment_form.next_due.data
-          #need to change and create the form 
+          
         )
         db.session.add(pack_added)
         db.session.commit()
@@ -67,20 +63,16 @@ def edit_shipments(id):
     edit_id = id
     if id== edit_id:
         query_edit = db.session.execute(db.select(PackShipments).where(PackShipments.id == edit_id)).scalar()
-        prev_pack_identity = query_edit.pack_identity 
-        prev_pack_expiry = query_edit.pack_expiry
         prev_addresse= query_edit.addressee
         prev_date_posted =query_edit.date_posted 
         prev_date_received =query_edit.date_recieved
         prev_next_due= query_edit.next_due
 
-        ed_form=ShipmentForm(pack_identity=prev_pack_identity, pack_expiry=prev_pack_expiry, addressee=prev_addresse,date_posted=prev_date_posted
+        ed_form=ShipmentForm(addressee=prev_addresse,date_posted=prev_date_posted
                              ,date_received=prev_date_received, next_due=prev_next_due) 
 
     
     if ed_form.validate_on_submit():
-            query_edit.pack_identity = ed_form.pack_identity .data
-            query_edit.pack_expiry= ed_form.pack_expiry
             query_edit.addressee = ed_form.addressee
             query_edit.date_posted = ed_form.date_posted
             query_edit.date_received = ed_form.date_received

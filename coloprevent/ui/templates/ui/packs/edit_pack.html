@@ -7,8 +7,10 @@
     </header>
     <body>
         <form method="POST" action="{{url_for('ui.edit_pack',id=id)}}">
-            {{ ed_form.csrf_token }}
-            {{ ed_form.pack_name.label }}  {{ ed_form.pack_name(size=20) }}
+            {{ed_form.csrf_token }}
+            {{ed_form.pack_name.label}}  {{ed_form.pack_name(size=20) }}
+            {{ed_form.pack_quantity.label}} {{ed_form..pack_quantity(size=20) }}
+            {{ed_form..pack_expiry.label}} {{ed_form..pack_expiry(size=20) }}
             <input type="submit" value="Go">
         </form>
     </body>

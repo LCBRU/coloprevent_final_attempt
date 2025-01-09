@@ -17,12 +17,12 @@ def index():
     ordered_list =[]
     for queried in q_list:
         ordered_list.append(queried)
-    return render_template('ui/summary.html', order_list = ordered_list)
+    return render_template('ui/summary.html', ordered_list = ordered_list)
     
 
 class SiteForm(FlaskForm):
-    site_name = StringField('name', validators=[DataRequired()])
-    back_up_contact = TextAreaField('Enter back up contact',validators=[DataRequired()])
+    site_name = StringField('Site name', validators=[DataRequired()])
+    site_back_up_contact = TextAreaField('Enter back up contact',validators=[DataRequired()])
     site_primary_contact = TextAreaField('Enter Primary contact',validators=[DataRequired()])
     site_code = IntegerField('Site code',validators=[DataRequired()])
 
@@ -32,8 +32,8 @@ def add():
     site_form = SiteForm()
     if site_form.validate_on_submit():
         site_added = Site(
-        name= site_form.site_name.data,
-        back_up_contact = site_form.back_up_contact.data,
+        site_name= site_form.site_name.data,
+        site_back_up_contact = site_form.site_back_up_contact.data,
         site_primary_contact= site_form.site_primary_contact.data,
         site_code = site_form.site_code.data
         )
@@ -59,12 +59,20 @@ def edit(id):
     edit_id = id
     if id== edit_id:
         query_edit = db.session.execute(db.select(Site).where(Site.id == edit_id)).scalar()
-        prev_site_name = query_edit.name
-        ed_form=SiteForm(site_name=prev_site_name) 
+        prev_site_name = query_edit.site_name
+        prev_site_backup_contact = query_edit.site_backup_contact
+        prev_site_primary_contact = query_edit.site_primary_contatct
+        prev_site_code = query_edit.site_code
+
+        ed_form=SiteForm(site_name=prev_site_name, site_backup_contact=prev_site_backup_contact, site_primary_contact=prev_site_primary_contact
+                         ,site_code=prev_site_code) 
 
     
     if ed_form.validate_on_submit():
-            query_edit.name= ed_form.site_name.data
+            query_edit.site_name= ed_form.site_name.data
+            query_edit.site_backup_contact = ed_form.site_back_up_contact
+            query_edit.site_primary_contact = ed_form.site_primary_contact
+            query_edit.site_code = ed_form.site_code
             db.session.add(query_edit)
             db.session.commit()
             return redirect(url_for('ui.index'))

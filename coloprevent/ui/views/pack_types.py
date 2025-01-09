@@ -12,7 +12,7 @@ from coloprevent.model import PackTypes
 from flask_wtf import FlaskForm
 
 class PacktypeForm(FlaskForm):
-    pack_type_name = RadioField(u'Packtypes',choices=[('screening', 'Screening'), ('fit', 'FIT'), ('research', 'Research'), ('tissue_ffpe', 'Tissue/FFPE')])
+    packtype_name = RadioField(u'Packtypes',choices=[('screening', 'Screening'), ('fit', 'FIT'), ('research', 'Research'), ('tissue_ffpe', 'Tissue/FFPE')])
 
 @blueprint.route('/packtypes_home', methods=['GET', 'POST'])
 def packtypes_home():
@@ -25,7 +25,7 @@ def add_packtypes():
      packtypes_form = PacktypeForm()
      if packtypes_form.validate_on_submit():
         pack_added = PackTypes(
-        name= packtypes_form.pack_type_name.data
+        packtype_name= packtypes_form.packtype_name.data
         )
         db.session.add(pack_added)
         db.session.commit()
@@ -49,13 +49,13 @@ def delete_packtypes(id):
 def edit_packtypes(id):
     edit_id = id
     if id== edit_id:
-        query_edit = db.session.execute(db.select(PackTypes).where(PackTypes.id == edit_id)).scalar()
-        prev_packtype = query_edit.pack_type_name
-        ed_form=PacktypeForm(pack_type_name=prev_packtype) 
+        query_edit =db.session.execute(db.select(PackTypes).where(PackTypes.id == edit_id)).scalar()
+        prev_packtype_name = query_edit.packtype_name
+        ed_form=PacktypeForm(pack_type_name=prev_packtype_name) 
 
     
     if ed_form.validate_on_submit():
-            query_edit.name= ed_form.pack_name.data
+            query_edit.packtype_name= ed_form.packtype_name.data
             db.session.add(query_edit)
             db.session.commit()
             return redirect(url_for('ui.packtypes_home'))

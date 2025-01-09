@@ -8,8 +8,8 @@ from datetime import date
 
 class Site(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    back_up_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
+    site_name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    site_back_up_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
     site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="site_id") #adding back refernce to packshipments connection
@@ -17,15 +17,23 @@ class Site(db.Model):
 
 class PackTypes(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    name: Mapped[str] = mapped_column(nullable=False)
+    packtype_name: Mapped[str] = mapped_column(nullable=False)
+    packs:Mapped[list["Packs"]] = relationship(back_populates="pack_types") 
+   
+    
+class Packs(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True) 
+    pack_identity:Mapped[int] = mapped_column(nullable=False)
+    pack_expiry:Mapped[date]= mapped_column(nullable=False)
+    pack_quantity: Mapped[int] = mapped_column(nullable=False)
+    pack_types: Mapped["PackTypes"] = relationship(back_populates="packs")
+    pack_types_id:Mapped[int] = mapped_column(ForeignKey("packtypes.id"))
     
 
 
 class PackShipments(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    site_id = Mapped[int] = mapped_column(ForeignKey("site.id")) #attempting to add site fk
-    pack_ids: Mapped[int] = mapped_column(nullable=False, unique=True)
-    pack_expiry:Mapped[date] = mapped_column(nullable=False)
+    site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) #attempting to add site fk
     addressee:Mapped[str] = mapped_column(String(100), nullable=False)
     date_posted:Mapped[date] = mapped_column( nullable=False)
     date_recieved:Mapped[date] = mapped_column( nullable=False)
@@ -34,9 +42,7 @@ class PackShipments(db.Model):
 
 
 
+
     
-class Packs(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True) 
-    pack_id:Mapped[int] = mapped_column(index=True) 
-    expiry:Mapped[date]= mapped_column
+
    

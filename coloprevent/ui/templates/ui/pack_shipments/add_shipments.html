@@ -8,8 +8,6 @@
     <body>
         <form method="POST" action="{{url_for('ui.add_shipments')}}">
             {{ shipment_form.csrf_token }}
-            {{ shipment_form.pack_identity.label }} {{ shipment_form.pack_identity(size=20) }}
-            {{ shipment_form.pack_expiry.label }} {{ shipment_form.pack_expiry(size=20) }}
             {{ shipment_form.addressee.label }} {{ shipment_form.addressee(size=20) }}
             {{ shipment_form.date_posted.label }} {{ shipment_form.date_posted(size=20) }}
             {{ shipment_form.date_received.label }} {{ shipment_form.date_received(size=20) }}

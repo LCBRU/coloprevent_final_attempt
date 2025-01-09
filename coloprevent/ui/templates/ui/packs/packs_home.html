@@ -10,9 +10,10 @@
             <tr>
               <th>Packs</th>
             </tr>
-            {% for item in order_list %}
+            {% for item in ordered_list %}
             <tr>
-              <td>{{item.pack_id}}</td>
+              <td>{{item.pack_identity}}</td>
+              <td>{{item.pack_quantity}}</td>
               <td>{{item.pack_expiry}}</td>
               <td><a href="{{url_for('ui.delete_pack', id=item.id)}}">DELETE</a></td>
               <td><a href="{{url_for('ui.edit_pack', id=item.id)}}">EDIT</a></td>

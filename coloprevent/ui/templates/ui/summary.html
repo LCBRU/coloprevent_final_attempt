@@ -3,16 +3,19 @@
 {% block menu_page_content %}
 <section class="container">
     <header>
-        <h2>Supplies ordered and distributed</h2>
+        <h2>Sites</h2>
     </header>
     <body>
         <table>
             <tr>
               <th>Site</th>
             </tr>
-            {% for item in order_list %}
+            {% for item in ordered_list %}
             <tr>
-              <td>{{item.name}}</td>
+              <td>{{item.site_name}}</td>
+              <td>{{item.site_back_up_contact}}</td>
+              <td>{{item.ite_primary_contact}}</td>
+              <td>{{item.site_code}}</td>
               <td><a href="{{url_for('ui.delete', id=item.id)}}">DELETE</a></td>
               <td><a href="{{url_for('ui.edit', id=item.id)}}">EDIT</a></td>
             </tr>

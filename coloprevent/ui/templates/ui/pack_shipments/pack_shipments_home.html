@@ -14,7 +14,10 @@
             </tr>
             {% for item in ordered_list %}
             <tr>
-              <td>{{item.name}}</td>
+              <td>{{item.addressee}}</td>
+              <td>{{item.date_posted}}</td>
+              <td>{{item.date_recieved}}</td>
+              <td>{{item.next_due}}</td>
               <td><a href="{{url_for('ui.delete_shipments', id=item.id)}}">DELETE</a></td>
               <td><a href="{{url_for('ui.edit_shipments', id=item.id)}}">EDIT</a></td>
             </tr>

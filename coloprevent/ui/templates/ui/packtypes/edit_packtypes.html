@@ -1,4 +1,5 @@
 {% extends "ui/menu_page.html" %}
+{% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
 
 
 {% block menu_page_content %}
@@ -8,15 +9,10 @@
     </header>
     <body>
         <form method="POST" action="{{url_for('ui.edit_pack',id=id)}}">
-            {% for subfield in ed_form.pack_type_name %}
-            
-            <tr>               
-            <td>{{ subfield }}</td> 
-            <td>{{ subfield.label }}</td>                
-            </tr>
-
-            {% endfor %}
-            {{ed_form.submit}}
+            <fieldset>
+                {{render_form_fields(ed_form)}} 
+                {{render_button_bar(url_for('ui.packtypes_home'))}}
+            </fieldset>
         </form>
     </body>
 </section>
