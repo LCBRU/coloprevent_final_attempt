@@ -32,6 +32,7 @@ class Packs(db.Model):
     site_id: Mapped[int]= mapped_column(ForeignKey("site.id"))
     packtypes: Mapped['PackTypes']=relationship(back_populates=('packs'))
     packtypes_id:Mapped[int]=mapped_column(ForeignKey("pack_types.id"))
+    pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="packs") 
   
     
 
@@ -44,6 +45,8 @@ class PackShipments(db.Model):
     next_due:Mapped[date] = mapped_column( nullable=False)
     site: Mapped["Site"] = relationship(back_populates="pack_shipments") 
     site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) 
+    packs: Mapped["Packs"] = relationship(back_populates="pack_shipments") 
+    pack_id:  Mapped[int] = mapped_column(ForeignKey("packs.id")) 
 
 
 

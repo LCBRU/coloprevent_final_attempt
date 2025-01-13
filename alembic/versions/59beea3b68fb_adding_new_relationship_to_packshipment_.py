@@ -1,8 +1,8 @@
-"""join tables using foreign keys
+"""adding new relationship to packshipment table
 
-Revision ID: c93dc9aa510d
+Revision ID: 59beea3b68fb
 Revises: 
-Create Date: 2025-01-10 15:28:32.214450
+Create Date: 2025-01-13 14:07:36.103130
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c93dc9aa510d'
+revision = '59beea3b68fb'
 down_revision = None
 branch_labels = None
 depends_on = None
