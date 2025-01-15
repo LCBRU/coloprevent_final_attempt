@@ -4,11 +4,11 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, DateField, IntegerField
+from wtforms import HiddenField, StringField, DateField, IntegerField, RadioField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import Packs
+from coloprevent.model import PackTypes, Packs
 from flask_wtf import FlaskForm
 
 @blueprint.route('/packs', methods=['GET', 'POST'])
@@ -23,7 +23,12 @@ class PackForm(FlaskForm):
     pack_identity = StringField('Pack ID', validators=[DataRequired()])
     pack_quantity = IntegerField('Quantity', validators=[DataRequired()])
     pack_expiry = DateField(format='%Y-%m-%d', validators=[DataRequired()])
+    pack_type = RadioField('Packtypes' , coerce=int)
 
+    def __init__(self, formdata=..., **kwargs):
+        super().__init__(formdata, **kwargs)
+
+        self.pack_type.choices=[(p.id, p.packtype_name) for p in db.session.execute(select(PackTypes)).scalars()]
 
 
 
@@ -60,8 +65,9 @@ def edit_pack(id):
         prev_pack_identity = query_edit.pack_identity,
         prev_pack_quantity = query_edit.pack_quantity,
         prev_pack_expiry = query_edit.pack_expiry,
+        prev_packtype_form = query_edit.packtypes_id
         
-        ed_form=PackForm(pack_identity=prev_pack_identity, pack_quantity=prev_pack_quantity, pack_name=prev_pack_expiry) 
+        ed_form=PackForm(pack_identity=prev_pack_identity, pack_quantity=prev_pack_quantity, pack_name=prev_pack_expiry, pack_type=prev_packtype_form) 
 
     
     if ed_form.validate_on_submit():

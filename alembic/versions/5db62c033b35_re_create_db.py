@@ -1,8 +1,8 @@
-"""adding new relationship to packshipment table
+"""re create db 
 
-Revision ID: 59beea3b68fb
+Revision ID: 5db62c033b35
 Revises: 
-Create Date: 2025-01-13 14:07:36.103130
+Create Date: 2025-01-14 10:30:43.377088
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '59beea3b68fb'
+revision = '5db62c033b35'
 down_revision = None
 branch_labels = None
 depends_on = None

@@ -13,7 +13,7 @@ class Site(db.Model):
     site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="site") 
-    packs: Mapped[list["Packs"]]= relationship(back_populates='site')
+    
 
 
 class PackTypes(db.Model):
@@ -28,8 +28,6 @@ class Packs(db.Model):
     pack_identity:Mapped[int] = mapped_column(nullable=False)
     pack_expiry:Mapped[date]= mapped_column(nullable=False)
     pack_quantity: Mapped[int] = mapped_column(nullable=False)
-    site: Mapped['Site']=relationship(back_populates='packs')
-    site_id: Mapped[int]= mapped_column(ForeignKey("site.id"))
     packtypes: Mapped['PackTypes']=relationship(back_populates=('packs'))
     packtypes_id:Mapped[int]=mapped_column(ForeignKey("pack_types.id"))
     pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="packs") 
