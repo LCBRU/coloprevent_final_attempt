@@ -25,7 +25,7 @@ class PackForm(FlaskForm):
     pack_expiry = DateField(format='%Y-%m-%d', validators=[DataRequired()])
     pack_type = RadioField('Packtypes' , coerce=int)
 
-    def __init__(self, formdata=..., **kwargs):
+    def __init__(self, formdata=None, **kwargs):
         super().__init__(formdata, **kwargs)
 
         self.pack_type.choices=[(p.id, p.packtype_name) for p in db.session.execute(select(PackTypes)).scalars()]
@@ -40,6 +40,7 @@ def add_pack():
         pack_identity= pack_form.pack_identity.data,
         pack_quantity = pack_form.pack_quantity.data,
         pack_expiry = pack_form.pack_expiry.data,
+        packtypes_id = pack_form.pack_type.data
         )
         db.session.add(pack_added)
         db.session.commit()
@@ -74,6 +75,7 @@ def edit_pack(id):
             query_edit.pack_expiry= ed_form.pack_expiry.data
             query_edit.pack_quantity = ed_form.pack_quantity.data 
             query_edit.pack_identity= ed_form.pack_identity.data
+            query_edit.packtypes_id = ed_form.pack_type.data 
             db.session.add(query_edit)
             db.session.commit()
             return redirect(url_for('ui.packs'))
