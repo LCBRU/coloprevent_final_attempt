@@ -8,7 +8,7 @@ from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, 
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import PackShipments
+from coloprevent.model import PackShipments, Packs, Site
 from flask_wtf import FlaskForm
 
 
@@ -28,7 +28,16 @@ class ShipmentForm(FlaskForm):
     date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')
-    submit = SubmitField()
+    packs = StringField('Packs')  #new change
+    site = StringField('Site') #new change
+
+    def __init__(self, formdata=None, **kwargs):
+        super().__init__(formdata, **kwargs)
+
+        self.packs.choices=[(p.id, p.packtype_name) for p in db.session.execute(select(Packs)).scalars()]
+        self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
+    
+   
 
 @blueprint.route('/add_shipments', methods=['GET', 'POST'])
 def add_shipments():
@@ -38,7 +47,9 @@ def add_shipments():
         addressee= shipment_form.addressee.data,
         date_posted = shipment_form.date_posted.data,
         date_received= shipment_form.date_posted.data,
-        next_due = shipment_form.next_due.data
+        next_due = shipment_form.next_due.data,
+        packs = shipment_form.packs.data,
+        site = shipment_form.site.data
           
         )
         db.session.add(pack_added)
@@ -67,9 +78,11 @@ def edit_shipments(id):
         prev_date_posted =query_edit.date_posted 
         prev_date_received =query_edit.date_recieved
         prev_next_due= query_edit.next_due
+        prev_pack = query_edit.packs
+        prev_site = query_edit.site 
 
         ed_form=ShipmentForm(addressee=prev_addresse,date_posted=prev_date_posted
-                             ,date_received=prev_date_received, next_due=prev_next_due) 
+                             ,date_received=prev_date_received, next_due=prev_next_due, packs=prev_pack, site=prev_site)
 
     
     if ed_form.validate_on_submit():
@@ -77,6 +90,8 @@ def edit_shipments(id):
             query_edit.date_posted = ed_form.date_posted
             query_edit.date_received = ed_form.date_received
             query_edit.next_due = ed_form.next_due
+            query_edit.packs = ed_form.packs
+            query_edit.site = ed_form.site
             db.session.add(query_edit)
             db.session.commit()
             return redirect(url_for('ui.shipment_home'))
