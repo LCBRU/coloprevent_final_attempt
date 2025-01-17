@@ -1,9 +1,21 @@
 {% extends "ui/menu_page.html" %}
+{% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
 
 {% block menu_page_content %}
 <section class="container">
     <header>
         <h2>Choose a packtype</h2>
+
+        <form method="GET" action="{{ url_for('ui.packtypes_home') }}">
+            <fieldset>
+                {{ search_form.hidden_tag() }}
+                {{ render_form_fields(search_form) }}
+    
+                <div class="button_bar" hx-target="body">
+                    <a class="icon add" href="javascript:;" title="Add packtype" hx-get="{{ url_for('ui.packtypes_home' ) }}" hx-target="body" hx-swap="beforeend" role="button">Add packtype</a>
+                </div>    
+            </fieldset>
+        </form>
     </header>
     <body>
         <table>

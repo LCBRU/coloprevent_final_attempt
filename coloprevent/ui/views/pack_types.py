@@ -6,7 +6,7 @@ from sqlalchemy import select
 from lbrc_flask.security import User
 from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField
 from wtforms.validators import Length, DataRequired
-from lbrc_flask.forms import FlashingForm
+from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackTypes
 from flask_wtf import FlaskForm
@@ -16,9 +16,14 @@ class PacktypeForm(FlaskForm):
 
 @blueprint.route('/packtypes_home', methods=['GET', 'POST'])
 def packtypes_home():
-     q_list = list(db.session.execute(db.select(PackTypes).order_by(PackTypes.id)).scalars())
- 
-     return render_template('ui/packtypes/packtypes_home.html', ordered_list=q_list)
+    search_form = SearchForm(search_placeholder='Search packtype Name', formdata=request.args) 
+
+    q_list = list(db.session.execute(db.select(PackTypes).order_by(PackTypes.id)).scalars())
+
+    if search_form.search.data:
+        q = q.where(PackTypes.pack_identity.like(f'%{search_form.search.data}%'))
+
+    return render_template('ui/packtypes/packtypes_home.html', ordered_list=q_list, search_form=search_form)
 
 @blueprint.route('/add_packtypes', methods=['GET', 'POST'])
 def add_packtypes():

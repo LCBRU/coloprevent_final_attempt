@@ -6,18 +6,25 @@ from sqlalchemy import select
 from lbrc_flask.security import User
 from wtforms import HiddenField, StringField, DateField, IntegerField, RadioField
 from wtforms.validators import Length, DataRequired
-from lbrc_flask.forms import FlashingForm
+from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackTypes, Packs
 from flask_wtf import FlaskForm
 
 @blueprint.route('/packs', methods=['GET', 'POST'])
 def packs():
+    search_form = SearchForm(search_placeholder='Search packs ID', formdata=request.args) 
+
     q_list = db.session.execute(db.select(Packs).order_by(Packs.id)).scalars()  
     ordered_list =[]
     for queried in q_list:
         ordered_list.append(queried)
-    return render_template('ui/packs/packs_home.html', ordered_list = ordered_list)
+
+
+    if search_form.search.data:
+        q = q.where(Packs.identifier.like(f'%{search_form.search.data}%'))
+
+    return render_template('ui/packs/packs_home.html', ordered_list = ordered_list, search_form=search_form)
 
 class PackForm(FlaskForm):
     pack_identity = StringField('Pack ID', validators=[DataRequired()])
@@ -25,8 +32,8 @@ class PackForm(FlaskForm):
     pack_expiry = DateField(format='%Y-%m-%d', validators=[DataRequired()])
     pack_type = RadioField('Packtypes' , coerce=int)
 
-    def __init__(self, formdata=None, **kwargs):
-        super().__init__(formdata, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__( **kwargs)
 
         self.pack_type.choices=[(p.id, p.packtype_name) for p in db.session.execute(select(PackTypes)).scalars()]
 

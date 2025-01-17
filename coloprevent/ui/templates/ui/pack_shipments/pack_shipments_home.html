@@ -1,4 +1,4 @@
-{% extends "ui/menu_page.html" %}
+
 {% extends "ui/menu_page.html" %}
 {% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
 
@@ -6,6 +6,15 @@
 <section class="container">
     <header>
         <h2>Shipments information</h2>
+
+        <fieldset>
+          {{ search_form.hidden_tag() }}
+          {{ render_form_fields(search_form) }}
+
+          <div class="button_bar" hx-target="body">
+              <a class="icon add" href="javascript:;" title="Add shipment" hx-get="{{ url_for('ui.shipment_home' ) }}" hx-target="body" hx-swap="beforeend" role="button">Add Shipment</a>
+          </div>    
+      </fieldset>
     </header>
     <body>
         <table>

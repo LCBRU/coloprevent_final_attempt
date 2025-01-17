@@ -6,7 +6,7 @@ from sqlalchemy import select
 from lbrc_flask.security import User
 from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, DateField
 from wtforms.validators import Length, DataRequired
-from lbrc_flask.forms import FlashingForm
+from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackShipments, Packs, Site
 from flask_wtf import FlaskForm
@@ -14,12 +14,17 @@ from flask_wtf import FlaskForm
 
 @blueprint.route('/shipments', methods=['GET', 'POST'])
 def shipment_home():
+     search_form = SearchForm(search_placeholder='Search shipment via packs identifier', formdata=request.args) 
+
      q_list = db.session.execute(db.select(PackShipments).order_by(PackShipments.id)).scalars()
      ordered_list =[]
      for queried in q_list:
         ordered_list.append(queried)
+
+     if search_form.search.data:
+        q = q.where(PackShipments.packtype_name.like(f'%{search_form.search.data}%'))
  
-     return render_template('ui/pack_shipments/pack_shipments_home.html', ordered_list=ordered_list)
+     return render_template('ui/pack_shipments/pack_shipments_home.html', ordered_list=ordered_list, search_form=search_form)
 
 
 
@@ -31,10 +36,10 @@ class ShipmentForm(FlaskForm):
     packs = StringField('Packs')  #new change
     site = StringField('Site') #new change
 
-    def __init__(self, formdata=None, **kwargs):
-        super().__init__(formdata, **kwargs)
+    def __init__(self,  **kwargs):
+        super().__init__(**kwargs)
 
-        self.packs.choices=[(p.id, p.packtype_name) for p in db.session.execute(select(Packs)).scalars()]
+        self.packs.choices=[(p.id, p.pack_identity) for p in db.session.execute(select(Packs)).scalars()]
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
     
    
@@ -44,12 +49,12 @@ def add_shipments():
      shipment_form = ShipmentForm()
      if shipment_form.validate_on_submit():
         pack_added = PackShipments(
-        addressee= shipment_form.addressee.data,
-        date_posted = shipment_form.date_posted.data,
-        date_received= shipment_form.date_posted.data,
-        next_due = shipment_form.next_due.data,
-        packs = shipment_form.packs.data,
-        site = shipment_form.site.data
+            addressee= shipment_form.addressee.data,
+            date_posted = shipment_form.date_posted.data,
+            date_received= shipment_form.date_received.data,
+            next_due = shipment_form.next_due.data,
+            packs = shipment_form.packs.data,
+            site = shipment_form.site.data
           
         )
         db.session.add(pack_added)
