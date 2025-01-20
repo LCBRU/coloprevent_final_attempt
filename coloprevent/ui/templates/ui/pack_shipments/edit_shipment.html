@@ -6,13 +6,13 @@
     <header>
         <h2>Add a site</h2>
     </header>
-    <body>
+    
         <form method="POST" action="{{url_for('ui.edit_shipments',id=id)}}">
             <fieldset>
                 {{render_form_fields(ed_form)}} 
                 {{render_button_bar(url_for('ui.shipment_home'))}}
             </fieldset>
         </form>
-    </body>
+
 </section>
 {% endblock %}

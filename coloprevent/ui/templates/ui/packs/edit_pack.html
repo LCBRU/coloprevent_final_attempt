@@ -6,14 +6,14 @@
     <header>
         <h2>Add a pack</h2>
     </header>
-    <body>
-        <form method="POST" action="{{url_for('ui.edit_pack',id=id)}}">
-            <fieldset>
-                {{render_form_fields(ed_form)}} 
-                {{render_button_bar(url_for('ui.packs'))}}
-            </fieldset>
+    
+    <form method="POST" action="{{url_for('ui.edit_pack',id=id)}}">
+        <fieldset>
+            {{render_form_fields(ed_form)}} 
+            {{render_button_bar(url_for('ui.packs'))}}
+        </fieldset>
 
-        </form>
-    </body>
+    </form>
+    
 </section>
 {% endblock %}
