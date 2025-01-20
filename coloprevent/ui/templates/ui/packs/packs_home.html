@@ -17,6 +17,7 @@
     </header>
         <table>
             <tr>
+              <th> </th>
               <th>Pack ID</th>
               <th>Pack Quantity</th>
               <th>Pack Expiry</th>
@@ -24,13 +25,13 @@
             </tr>
             {% for item in ordered_list %}
             <tr>
+              <td><a class="icon delete" href="{{url_for('ui.delete_pack', id=item.id)}}"></a>
+              <a class="icon edit" href="{{url_for('ui.edit_pack', id=item.id)}}"></a></td>
               <td>{{item.pack_identity}}</td>
               <td>{{item.pack_quantity}}</td>
               <td>{{item.pack_expiry}}</td>
-              <td>{{item.pack_type}}</td>
-              <td><a href="{{url_for('ui.delete_pack', id=item.id)}}">DELETE</a></td>
-              <td><a href="{{url_for('ui.edit_pack', id=item.id)}}">EDIT</a></td>
-            </tr>
+              <td>{{item.packtypes_id}}</td>
+             
             {% endfor %}
 
           </table>

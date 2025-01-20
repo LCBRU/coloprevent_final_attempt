@@ -28,7 +28,7 @@ def index():
 
 class SiteForm(FlaskForm):
     site_name = StringField('Site name', validators=[DataRequired()])
-    site_back_up_contact = TextAreaField('Enter back up contact',validators=[DataRequired()])
+    site_backup_contact = TextAreaField('Enter back up contact',validators=[DataRequired()])
     site_primary_contact = TextAreaField('Enter Primary contact',validators=[DataRequired()])
     site_code = IntegerField('Site code',validators=[DataRequired()])
 
@@ -39,7 +39,7 @@ def add():
     if site_form.validate_on_submit():
         site_added = Site(
         site_name= site_form.site_name.data,
-        site_backup_contact = site_form.site_back_up_contact.data,
+        site_backup_contact = site_form.site_backup_contact.data,
         site_primary_contact= site_form.site_primary_contact.data,
         site_code = site_form.site_code.data
         )
@@ -67,7 +67,7 @@ def edit(id):
         query_edit = db.session.execute(db.select(Site).where(Site.id == edit_id)).scalar()
         prev_site_name = query_edit.site_name
         prev_site_backup_contact = query_edit.site_backup_contact
-        prev_site_primary_contact = query_edit.site_primary_contatct
+        prev_site_primary_contact = query_edit.site_primary_contact
         prev_site_code = query_edit.site_code
 
         ed_form=SiteForm(site_name=prev_site_name, site_backup_contact=prev_site_backup_contact, site_primary_contact=prev_site_primary_contact
@@ -76,12 +76,12 @@ def edit(id):
     
     if ed_form.validate_on_submit():
             query_edit.site_name= ed_form.site_name.data
-            query_edit.site_backup_contact = ed_form.site_back_up_contact
-            query_edit.site_primary_contact = ed_form.site_primary_contact
-            query_edit.site_code = ed_form.site_code
+            query_edit.site_backup_contact = ed_form.site_backup_contact.data
+            query_edit.site_primary_contact = ed_form.site_primary_contact.data
+            query_edit.site_code = ed_form.site_code.data
             db.session.add(query_edit)
             db.session.commit()
             return refresh_response()
         
 
-    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Site", url=url_for("ui.edit",id=id))#might cause error
+    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Site", url=url_for("ui.edit",id=id))

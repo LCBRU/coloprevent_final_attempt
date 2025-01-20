@@ -20,13 +20,14 @@
     
         <table>
             <tr>
+            <th> </th>
               <th>Packtypes</th>
             </tr>
             {% for item in ordered_list %}
             <tr>
+              <td><a class="icon delete" href="{{url_for('ui.delete_packtypes', id=item.id)}}"></a>
+              <a class="icon edit" href="{{url_for('ui.edit_packtypes', id=item.id)}}"></a></td>
               <td>{{item.packtype_name}}</td>
-              <td><a href="{{url_for('ui.delete_packtypes', id=item.id)}}">DELETE</a></td>
-              <td><a href="{{url_for('ui.edit_packtypes', id=item.id)}}">EDIT</a></td>
             </tr>
             {% endfor %}
 
