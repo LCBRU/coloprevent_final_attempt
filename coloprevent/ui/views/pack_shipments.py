@@ -22,9 +22,9 @@ def shipment_home():
         ordered_list.append(queried)
 
      if search_form.search.data:
-        q = q.where(PackShipments.packtype_name.like(f'%{search_form.search.data}%'))
+        q = q.where(PackShipments.site.like(f'%{search_form.search.data}%'))
  
-     return render_template('ui/pack_shipments/pack_shipments_home.html', ordered_list=ordered_list, search_form=search_form)
+     return render_template('ui/pack_shipments/pack_shipments_home.html/', ordered_list=ordered_list, search_form=search_form)
 
 
 
@@ -59,9 +59,9 @@ def add_shipments():
         )
         db.session.add(pack_added)
         db.session.commit()
-        return redirect(url_for('ui.shipment_home'))
+        return refresh_response()
 
-     return render_template('ui/pack_shipments/add_shipments.html',shipment_form=shipment_form)
+     return render_template('lbrc/form_modal.html', form=shipment_form, title="Add Shipment", url=url_for("ui.add_shipments") )
 
 @blueprint.route('/delete_shipments/<int:id>', methods=['GET', 'POST'])
 def delete_shipments(id):
@@ -102,4 +102,4 @@ def edit_shipments(id):
             return redirect(url_for('ui.shipment_home'))
         
 
-    return render_template('ui/pack_shipments/edit_shipments.html', ed_form = ed_form, id=id)
+    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Shipment", url=url_for("ui.edit_shipments",id=id))

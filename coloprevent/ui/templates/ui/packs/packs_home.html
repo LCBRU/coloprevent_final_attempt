@@ -11,14 +11,17 @@
           {{ render_form_fields(search_form) }}
 
           <div class="button_bar" hx-target="body">
-              <a class="icon add" href="javascript:;" title="Add pack" hx-get="{{ url_for('ui.packs' ) }}" hx-target="body" hx-swap="beforeend" role="button">Add Pack</a>
+              <a class="icon add" href="javascript:;" title="Add pack" hx-get="{{ url_for('ui.add_pack' ) }}" hx-target="body" hx-swap="beforeend" role="button">Add Pack</a>
           </div>    
       </fieldset>
     </header>
     <body>
         <table>
             <tr>
-              <th>Packs</th>
+              <th>Pack ID</th>
+              <th>Pack Quantity</th>
+              <th>Pack Expiry</th>
+              <th>Pack type</th>
             </tr>
             {% for item in ordered_list %}
             <tr>

@@ -51,9 +51,9 @@ def add_pack():
         )
         db.session.add(pack_added)
         db.session.commit()
-        return redirect(url_for('ui.packs'))
+        return refresh_response()
     
-    return render_template('ui/packs/add_pack.html', pack_form=pack_form)
+    return render_template('lbrc/form_modal.html', form=pack_form , title="Add Pack", url=url_for("ui.add_pack"))
 
 @blueprint.route('/delete_pack/<int:id>', methods=['GET', 'POST'])
 def delete_pack(id):
@@ -85,7 +85,7 @@ def edit_pack(id):
             query_edit.packtypes_id = ed_form.pack_type.data 
             db.session.add(query_edit)
             db.session.commit()
-            return redirect(url_for('ui.packs'))
+            return refresh_response()
         
 
-    return render_template('ui/packs/edit_pack.html', ed_form = ed_form, id=id)
+    return render_template('lbrc/form_modal.html',form = ed_form, id=id, title="Edit Pack", url=url_for("ui.edit_pack",id=id))

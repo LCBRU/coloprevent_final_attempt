@@ -39,15 +39,15 @@ def add():
     if site_form.validate_on_submit():
         site_added = Site(
         site_name= site_form.site_name.data,
-        site_back_up_contact = site_form.site_back_up_contact.data,
+        site_backup_contact = site_form.site_back_up_contact.data,
         site_primary_contact= site_form.site_primary_contact.data,
         site_code = site_form.site_code.data
         )
         db.session.add(site_added)
         db.session.commit()
-        return redirect(url_for('ui.index'))
+        return refresh_response()
     
-    return render_template('ui/add.html', site_form=site_form)
+    return render_template('lbrc/form_modal.html', form=site_form, title="Add Site", url=url_for("ui.add"))
 
 @blueprint.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
@@ -81,7 +81,7 @@ def edit(id):
             query_edit.site_code = ed_form.site_code
             db.session.add(query_edit)
             db.session.commit()
-            return redirect(url_for('ui.index'))
+            return refresh_response()
         
 
-    return render_template('ui/edit.html', ed_form = ed_form, id=id)
+    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Site", url=url_for("ui.edit",id=id))#might cause error
