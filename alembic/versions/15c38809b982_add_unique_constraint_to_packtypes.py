@@ -1,8 +1,8 @@
-"""change column name
+"""add unique constraint to packtypes
 
-Revision ID: beb97bdd2e52
+Revision ID: 15c38809b982
 Revises: 
-Create Date: 2025-01-17 16:00:59.603925
+Create Date: 2025-01-21 11:12:36.139090
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'beb97bdd2e52'
+revision = '15c38809b982'
 down_revision = None
 branch_labels = None
 depends_on = None

@@ -11,7 +11,7 @@
           {{ render_form_fields(search_form) }}
 
           <div class="button_bar" hx-target="body">
-              <a class="icon add" href="javascript:;" title="Add site" hx-get="{{ url_for('ui.add')}}" hx-target="body" hx-swap="beforeend" role="button">Add Site</a>
+              <a class="icon add" href="javascript:;" title="Add site" hx-get="{{ url_for('ui.add')}}"  hx-target="body" hx-swap="beforeend" role="button">Add Site</a>
           </div>    
       </fieldset>
     </header>
@@ -27,7 +27,7 @@
             {% for item in ordered_list %}
             <tr>
               <td><a class="icon delete" href="{{url_for('ui.delete', id=item.id)}}"></a>
-              <a class="icon edit" href="{{url_for('ui.edit', id=item.id)}}"></a></td>
+              <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit', id=item.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
               <td>{{item.site_name}}</td>
               <td>{{item.site_backup_contact}}</td>
               <td>{{item.site_primary_contact}}</td>

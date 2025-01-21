@@ -4,7 +4,7 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, DateField, IntegerField
+from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, DateField, IntegerField,TextAreaField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
@@ -29,12 +29,12 @@ def shipment_home():
 
 
 class ShipmentForm(FlaskForm):
-    addressee =StringField(label="Addressee", validators=[DataRequired()])
+    addressee =TextAreaField(label="Addressee", validators=[DataRequired()])
     date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')
     packs = IntegerField('Packs ID')  #new change
-    site = StringField('Site') #new change
+    site = IntegerField('Site') #new change
 
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
@@ -81,7 +81,7 @@ def edit_shipments(id):
         query_edit = db.session.execute(db.select(PackShipments).where(PackShipments.id == edit_id)).scalar()
         prev_addresse= query_edit.addressee
         prev_date_posted =query_edit.date_posted 
-        prev_date_received =query_edit.date_recieved
+        prev_date_received =query_edit.date_received 
         prev_next_due= query_edit.next_due
         prev_pack = query_edit.pack_id
         prev_site = query_edit.site_id
@@ -91,12 +91,12 @@ def edit_shipments(id):
 
     
     if ed_form.validate_on_submit():
-            query_edit.addressee = ed_form.addressee
-            query_edit.date_posted = ed_form.date_posted
-            query_edit.date_received = ed_form.date_received
-            query_edit.next_due = ed_form.next_due
-            query_edit.pack_id = ed_form.packs
-            query_edit.site_id = ed_form.site
+            query_edit.addressee = ed_form.addressee.data
+            query_edit.date_posted = ed_form.date_posted.data
+            query_edit.date_received = ed_form.date_received.data
+            query_edit.next_due = ed_form.next_due.data
+            query_edit.pack_id = ed_form.packs.data
+            query_edit.site_id = ed_form.site.data
             db.session.add(query_edit)
             db.session.commit()
             return redirect(url_for('ui.shipment_home'))

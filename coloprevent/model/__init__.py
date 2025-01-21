@@ -18,7 +18,7 @@ class Site(db.Model):
 
 class PackTypes(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    packtype_name: Mapped[str] = mapped_column(nullable=False)
+    packtype_name: Mapped[str] = mapped_column(nullable=False, unique=True)
     packs:Mapped[list["Packs"]] = relationship(back_populates="packtypes") 
 
    
