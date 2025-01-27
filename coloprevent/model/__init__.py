@@ -50,6 +50,9 @@ class PackShipments(db.Model):
 class ConsumableName(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     consumable_name: Mapped[str]=mapped_column(String(100), nullable=False, unique=True)
+    cons_details: Mapped[list["ConsumableDetails"]] = relationship(back_populates="cons_name")
+    cons_estimates: Mapped[list["ConsumableEstimates"]] = relationship(back_populates="cons_name")
+    cons_packs: Mapped[list["ConsumablePacks"]] = relationship(back_populates="cons_name")
 
 class ConsumableDetails(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -58,17 +61,31 @@ class ConsumableDetails(db.Model):
     price_increase:Mapped[int]=mapped_column(nullable=True)
     price:Mapped[float]=mapped_column(nullable=False)
     quantity_per_pack:Mapped[int]=mapped_column(nullable=False)
+    cons_name_id: Mapped[int] = mapped_column(ForeignKey("consumable_name.id"))
+    cons_name:Mapped["ConsumableName"]= relationship(back_populates="cons_details")
+    cons_estimates: Mapped[list["ConsumableEstimates"]] = relationship(back_populates="cons_details")
+    cons_packs: Mapped[list["ConsumablePacks"]] = relationship(back_populates="cons_details")
+
 
 class ConsumableEstimates(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     est_number_consumables:Mapped[int]=mapped_column(nullable=False)
     est_packs_study: Mapped[int]=mapped_column(nullable=False)
     est_cost:Mapped[float]=mapped_column(nullable=False)
+    cons_name_id: Mapped[int] = mapped_column(ForeignKey("consumable_name.id"))
+    cons_name:Mapped["ConsumableName"]= relationship(back_populates="cons_estimates")
+    cons_details_id:Mapped[int]=mapped_column(ForeignKey("consumable_deatils.id"))
+    cons_details:Mapped["ConsumableDetails"]=relationship(back_populates="cons_estimates")
+
 
 class ConsumablePacks(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     date_received:Mapped[date]=mapped_column(nullable=False)
     cost:Mapped[float]=mapped_column(nullable=False)
     number_of_packs:Mapped[int]=mapped_column(nullable=False)
+    cons_name_id: Mapped[int] = mapped_column(ForeignKey("consumable_name.id"))
+    cons_name:Mapped["ConsumableName"]= relationship(back_populates="cons_packs")
+    cons_details_id:Mapped[int]=mapped_column(ForeignKey("consumable_deatils.id"))
+    cons_details:Mapped["ConsumableDetails"]=relationship(back_populates="cons_packs")
 
    
