@@ -46,9 +46,29 @@ class PackShipments(db.Model):
     packs: Mapped["Packs"] = relationship(back_populates="pack_shipments") 
     pack_id:  Mapped[int] = mapped_column(ForeignKey("packs.id")) 
 
+#.............................................................................Consumables..............................................
+class ConsumableName(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    consumable_name: Mapped[str]=mapped_column(String(100), nullable=False, unique=True)
 
+class ConsumableDetails(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    cat_no:Mapped[str] = mapped_column(unique=True, nullable=False) # looks alpa-numeric from spreadsheet 
+    supplier: Mapped[str]=mapped_column(nullable=False)
+    price_increase:Mapped[int]=mapped_column(nullable=True)
+    price:Mapped[float]=mapped_column(nullable=False)
+    quantity_per_pack:Mapped[int]=mapped_column(nullable=False)
 
+class ConsumableEstimates(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    est_number_consumables:Mapped[int]=mapped_column(nullable=False)
+    est_packs_study: Mapped[int]=mapped_column(nullable=False)
+    est_cost:Mapped[float]=mapped_column(nullable=False)
 
-    
+class ConsumablePacks(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date_received:Mapped[date]=mapped_column(nullable=False)
+    cost:Mapped[float]=mapped_column(nullable=False)
+    number_of_packs:Mapped[int]=mapped_column(nullable=False)
 
    
