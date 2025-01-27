@@ -25,7 +25,7 @@ class PackTypes(db.Model):
     
 class Packs(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    pack_identity:Mapped[int] = mapped_column(nullable=False)
+    pack_identity:Mapped[str] = mapped_column(nullable=False, unique=True)
     pack_expiry:Mapped[date]= mapped_column(nullable=False)
     pack_quantity: Mapped[int] = mapped_column(nullable=False)
     packtypes: Mapped['PackTypes']=relationship(back_populates=('packs'))
@@ -37,7 +37,7 @@ class Packs(db.Model):
 
 class PackShipments(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    addressee:Mapped[str] = mapped_column(String(100), nullable=False)
+    addressee:Mapped[str] = mapped_column(String(100), nullable=False,unique=True)
     date_posted:Mapped[date] = mapped_column( nullable=False)
     date_received:Mapped[date] = mapped_column( nullable=False)
     next_due:Mapped[date] = mapped_column( nullable=False)

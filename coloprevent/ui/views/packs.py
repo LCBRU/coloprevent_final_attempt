@@ -29,7 +29,7 @@ def packs():
 class PackForm(FlaskForm):
     pack_identity = StringField('Pack ID', validators=[DataRequired()])
     pack_quantity = IntegerField('Quantity', validators=[DataRequired()])
-    pack_expiry = DateField(format='%Y-%m-%d', validators=[DataRequired()])
+    pack_expiry = DateField(format='%Y-%m-%d')
     pack_type = RadioField('Packtypes' , coerce=int)
 
     def __init__(self, **kwargs):
@@ -70,18 +70,18 @@ def edit_pack(id):
     edit_id = id
     if id== edit_id:
         query_edit = db.session.execute(db.select(Packs).where(Packs.id == edit_id)).scalar()
-        prev_pack_identity = query_edit.pack_identity,
-        prev_pack_quantity = query_edit.pack_quantity,
-        prev_pack_expiry = query_edit.pack_expiry,
+        prev_pack_identity = query_edit.pack_identity
+        prev_pack_quantity = query_edit.pack_quantity
+        prev_pack_expiry = query_edit.pack_expiry
         prev_packtype_form = query_edit.packtypes_id
         
-        ed_form=PackForm(pack_identity=prev_pack_identity, pack_quantity=prev_pack_quantity, pack_name=prev_pack_expiry, pack_type=prev_packtype_form) 
+        ed_form=PackForm(pack_identity=prev_pack_identity, pack_quantity=prev_pack_quantity, pack_expiry=prev_pack_expiry, packtypes_id=prev_packtype_form) 
 
     
     if ed_form.validate_on_submit():
-            query_edit.pack_expiry= ed_form.pack_expiry.data
-            query_edit.pack_quantity = ed_form.pack_quantity.data 
             query_edit.pack_identity= ed_form.pack_identity.data
+            query_edit.pack_quantity = ed_form.pack_quantity.data 
+            query_edit.pack_expiry= ed_form.pack_expiry.data
             query_edit.packtypes_id = ed_form.pack_type.data 
             db.session.add(query_edit)
             db.session.commit()

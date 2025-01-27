@@ -99,7 +99,7 @@ def edit_shipments(id):
             query_edit.site_id = ed_form.site.data
             db.session.add(query_edit)
             db.session.commit()
-            return redirect(url_for('ui.shipment_home'))
+            return refresh_response()
         
 
     return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Shipment", url=url_for("ui.edit_shipments",id=id))
