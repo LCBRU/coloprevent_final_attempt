@@ -13,7 +13,7 @@ from flask_wtf import FlaskForm
 
 @blueprint.route('/consumable', methods=['GET', 'POST'])
 def consumable_home():
-    search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
+    search_form = SearchForm(search_placeholder='Search consumable name', formdata=request.args) 
 
     q_list = db.session.execute(db.select(Consumable).order_by(Consumable.id)).scalars()
     ordered_list =[]
