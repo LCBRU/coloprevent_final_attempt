@@ -1,8 +1,8 @@
-"""alter db
+"""add consumable table
 
-Revision ID: f709500fc19c
+Revision ID: dbbad202bb70
 Revises: 
-Create Date: 2025-01-24 13:04:24.341233
+Create Date: 2025-01-28 11:30:58.781357
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f709500fc19c'
+revision = 'dbbad202bb70'
 down_revision = None
 branch_labels = None
 depends_on = None
