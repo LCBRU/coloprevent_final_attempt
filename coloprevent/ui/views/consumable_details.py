@@ -31,7 +31,7 @@ class ConsumableDetailsForm(FlaskForm):
     price_increase = IntegerField('Price increase', validators=[DataRequired()])
     price = FloatField('Price', validators=[DataRequired()])
     quantity_per_pack = IntegerField('Quantity per pack', validators=[DataRequired()])
-    consumable = IntegerField('Consumable')
+    consumable = IntegerField('Consumable Name')
 
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
