@@ -21,13 +21,24 @@
         <table>
             <tr>
               <th> </th>
-              <th>Consumable</th>
+              <th>Cat no</th>
+              <th>Supplier</th>
+              <th>Price increase</th>
+              <th>Price</th>
+              <th>Quantity per pack</th>
+              <th>Consumable item</th>
             </tr>
             {% for item in ordered_list %}
             <tr>
-              <td><a class="icon delete" href="{{url_for('ui.delete_consumable', id=item.id)}}"></a>
-              <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit_consumable', id=item.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
-              <td>{{item.consumable_name}}</td>
+              <td><a class="icon delete" href="{{url_for('ui.delete_consumable_details', id=item.id)}}"></a>
+              <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit_consumable_details', id=item.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
+              <td>{{item.cat_no}}</td>
+              <td>{{item.supplier}}</td>
+              <td>{{item.price_increase}}</td>
+              <td>{{item.price}}</td>
+              <td>{{item.quantity_per_pack}}</td>
+              <td>{{item.cons_name.consumable_name}}</td>
+
             </tr>
             {% endfor %}
 
