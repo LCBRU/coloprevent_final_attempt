@@ -85,4 +85,57 @@ class ConsumablePacks(db.Model):
     cons_name_id: Mapped[int] = mapped_column(ForeignKey("consumable.id"))
     cons_name:Mapped["Consumable"]= relationship(back_populates="cons_packs")
    
-   
+
+   #....................................Visit tables...................................................................................
+
+class PatientDetails(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    screening_id: Mapped[str]=mapped_column(nullable=False, unique=True)
+    pid:Mapped[str]=mapped_column(nullable=False, unique=True)
+    date_of_consent: Mapped[date]=mapped_column(nullable=False)
+    visit_1: Mapped[list["PatientVisit1"]] = relationship(back_populates="patient_details")
+    visit_4: Mapped[list["PatientVisit4"]] = relationship(back_populates="patient_details")
+    visit_5: Mapped[list["PatientVisit5"]] = relationship(back_populates="patient_details")
+    visit_6: Mapped[list["PatientVisit6"]] = relationship(back_populates="patient_details")
+    visit_7: Mapped[list["PatientVisit7"]] = relationship(back_populates="patient_details")
+    visit_9: Mapped[list["PatientVisit9"]] = relationship(back_populates="patient_details")
+
+
+class PatientVisit1(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    fit_received_vis_1:Mapped[date] = mapped_column(nullable=True)
+    bloods_received_vis1:Mapped[date] = mapped_column(nullable=True)
+    patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
+    patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_1")
+
+class PatientVisit4(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    bloods_received_vis_4:Mapped[date] = mapped_column(nullable=True)
+    patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
+    patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_4")
+
+class PatientVisit5(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    fit_received_vis_5:Mapped[date] = mapped_column(nullable=True)
+    bloods__received_vis_5:Mapped[date] = mapped_column(nullable=True)
+    patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
+    patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_5")
+
+class PatientVisit6(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    bloods_received_vis_6:Mapped[date] = mapped_column(nullable=True)
+    patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
+    patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_6")
+
+class PatientVisit7(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    bloods_received_vis_7:Mapped[date] = mapped_column(nullable=True)
+    patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
+    patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_7")
+
+class PatientVisit9(db.Model):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    fit_received_vis_9:Mapped[date] = mapped_column(nullable=True)
+    bloods_received_vis_9:Mapped[date] = mapped_column(nullable=True)
+    patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
+    patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_9")

@@ -27,7 +27,7 @@ def consumable_packs_home():
 
 
 class ConsumablePacksForm(FlaskForm):
-    date_receieved = DateField('Date recieved', validators=[DataRequired()])
+    date_received = DateField('Date recieved', validators=[DataRequired()])
     cost = FloatField('Cost', validators=[DataRequired()])
     number_of_packs = IntegerField('Number of packs', validators=[DataRequired()])
     consumable = IntegerField('Consumable Name')
@@ -82,7 +82,7 @@ def edit_consumable_packs(id):
 
     
     if ed_form.validate_on_submit():
-            query_edit.date_received = ed_form.date_receieved.data
+            query_edit.date_received = ed_form.date_received.data
             query_edit.cost = ed_form.cost.data
             query_edit.number_of_packs = ed_form.number_of_packs.data 
             query_edit.cons_name_id = ed_form.consumable.data 
@@ -91,4 +91,4 @@ def edit_consumable_packs(id):
             return refresh_response()
         
 
-    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Consumable packs", url=url_for("ui.edit_consumable_packss",id=id))
+    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Consumable packs", url=url_for("ui.edit_consumable_packs",id=id))
