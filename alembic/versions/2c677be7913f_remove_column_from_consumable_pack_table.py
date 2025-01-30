@@ -1,8 +1,8 @@
-"""add consumable table
+"""remove column from consumable pack table
 
-Revision ID: dbbad202bb70
+Revision ID: 2c677be7913f
 Revises: 
-Create Date: 2025-01-28 11:30:58.781357
+Create Date: 2025-01-30 12:35:26.850134
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'dbbad202bb70'
+revision = '2c677be7913f'
 down_revision = None
 branch_labels = None
 depends_on = None

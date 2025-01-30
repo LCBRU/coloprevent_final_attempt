@@ -64,7 +64,6 @@ class ConsumableDetails(db.Model):
     cons_name_id: Mapped[int] = mapped_column(ForeignKey("consumable.id"))
     cons_name:Mapped["Consumable"]= relationship(back_populates="cons_details")
     cons_estimates: Mapped[list["ConsumableEstimates"]] = relationship(back_populates="cons_details")
-    cons_packs: Mapped[list["ConsumablePacks"]] = relationship(back_populates="cons_details")
 
 
 class ConsumableEstimates(db.Model):
@@ -85,7 +84,5 @@ class ConsumablePacks(db.Model):
     number_of_packs:Mapped[int]=mapped_column(nullable=False)
     cons_name_id: Mapped[int] = mapped_column(ForeignKey("consumable.id"))
     cons_name:Mapped["Consumable"]= relationship(back_populates="cons_packs")
-    cons_details_id:Mapped[int]=mapped_column(ForeignKey("consumable_details.id"))
-    cons_details:Mapped["ConsumableDetails"]=relationship(back_populates="cons_packs")
-
+   
    
