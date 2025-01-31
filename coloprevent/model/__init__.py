@@ -12,39 +12,38 @@ class Site(db.Model):
     site_backup_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
     site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="site") 
+    pack_shipment: Mapped[list["PackShipment"]] = relationship(back_populates="site") 
     
 
 
-class PackTypes(db.Model):
+class PackType(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
     packtype_name: Mapped[str] = mapped_column(nullable=False, unique=True)
-    packs:Mapped[list["Packs"]] = relationship(back_populates="packtypes") 
+    pack:Mapped[list["Pack"]] = relationship(back_populates="packtype") 
 
    
     
-class Packs(db.Model):
+class Pack(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True) 
     pack_identity:Mapped[str] = mapped_column(nullable=False, unique=True)
     pack_expiry:Mapped[date]= mapped_column(nullable=False)
-    pack_quantity: Mapped[int] = mapped_column(nullable=False)
-    packtypes: Mapped['PackTypes']=relationship(back_populates=('packs'))
-    packtypes_id:Mapped[int]=mapped_column(ForeignKey("pack_types.id"))
-    pack_shipments: Mapped[list["PackShipments"]] = relationship(back_populates="packs") 
+    packtype: Mapped['PackType']=relationship(back_populates=('pack'))
+    packtype_id:Mapped[int]=mapped_column(ForeignKey("pack_type.id"))
+    pack_shipment: Mapped[list["PackShipment"]] = relationship(back_populates="pack") 
   
     
 
 
-class PackShipments(db.Model):
+class PackShipment(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     addressee:Mapped[str] = mapped_column(String(100), nullable=False,unique=True)
     date_posted:Mapped[date] = mapped_column( nullable=False)
     date_received:Mapped[date] = mapped_column( nullable=False)
     next_due:Mapped[date] = mapped_column( nullable=False)
-    site: Mapped["Site"] = relationship(back_populates="pack_shipments") 
+    site: Mapped["Site"] = relationship(back_populates="pack_shipment") 
     site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) 
-    packs: Mapped["Packs"] = relationship(back_populates="pack_shipments") 
-    pack_id:  Mapped[int] = mapped_column(ForeignKey("packs.id")) 
+    pack: Mapped["Pack"] = relationship(back_populates="pack_shipment") 
+    pack_id:  Mapped[int] = mapped_column(ForeignKey("pack.id")) 
 
 #.............................................................................Consumables..............................................
 class Consumable(db.Model):
