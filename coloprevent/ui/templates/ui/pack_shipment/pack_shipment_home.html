@@ -35,7 +35,7 @@
             <td>{{item.date_posted}}</td>
             <td>{{item.date_received}}</td>
             <td>{{item.next_due}}</td>
-            <td>{{item.pack.pack_identity}}</td>
+            <td><a class="icon add" href="javascript:;" title="Add pack to shipment" hx-get="{{ url_for('ui.search_pack', id=item.id ) }}" hx-target="body" hx-swap="beforeend" role="button"></a></td>
             <td>{{item.site.site_name}}</td>
           </tr>
           {% endfor %}

@@ -10,6 +10,7 @@ from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackShipment, Pack, Site
 from flask_wtf import FlaskForm
+from lbrc_flask.requests import get_value_from_all_arguments
 
 
 @blueprint.route('/shipment', methods=['GET', 'POST'])
@@ -103,3 +104,63 @@ def edit_shipment(id):
         
 
     return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Shipment", url=url_for("ui.edit_shipments",id=id))
+
+
+
+
+@blueprint.route("/add_shipment/add_pack/<int:id>/")
+def search_pack(id):
+    p: PackShipment = db.get_or_404(PackShipment, id)
+    return render_template(
+    "lbrc/search.html",
+    title=f"Add packs to shipment for site '{p.site.site_name}'",
+    # results_url=url_for('ui.group_shared_user_search_results', group_id=g.id),
+    results_url = ""
+)
+
+
+@blueprint.route("/add_shipment/add_pack/<int:id>/search_results/<int:page>")   
+@blueprint.route("/add_shipment/add_pack/<int:id>/search_results")
+def search_pack_search_results(id, page=1):
+    p: PackShipment = db.get_or_404(PackShipment, id)
+    search = get_value_from_all_arguments('search_string') or ''
+
+    q =  (
+        select(Pack)
+        .order_by(Pack.pack_identity, Pack.id)
+    )
+
+    if search:
+        q = q.where(Pack.pack_identity == search)
+
+
+    # results = db.paginate(
+    #     select=q,
+    #     page=page,
+    #     per_page=5,
+    #     error_out=False,
+    # )
+
+    return render_template(
+            "lbrc/search_add_results.html",
+            add_title="Add pack shipment" '{q.pack_identity}',
+            add_url=url_for('ui_add_pack_to_shipment', id=p.id),
+            results_url='ui.search_pack_search_results',
+            results_url_args={'id': p.id},
+            #results=results,
+        )
+
+
+@blueprint.route("/add_shipment/add_pack/<int:id>/add_pack_to_shipment", methods=['POST'])
+def add_pack_to_shipment(id):
+    ps = db.get_or_404(PackShipment, id)
+
+    id: int = get_value_from_all_arguments('id')
+    pk: Pack = db.get_or_404(Pack, id)
+
+    ps.pack_identity.add(pk)
+
+    db.session.add(ps)
+    db.session.commit()
+
+    return refresh_response()
