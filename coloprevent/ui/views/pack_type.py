@@ -12,7 +12,7 @@ from coloprevent.model import PackType
 from flask_wtf import FlaskForm
 
 class PacktypeForm(FlaskForm):
-    packtype_name = RadioField('Packtype',choices=[('Screening', 'Screening'), ('FIT', 'FIT'), ('Research', 'Research'), ('Tissue FFPE', 'Tissue/FFPE')])
+    packtype_name = StringField("Name")
 
 @blueprint.route('/packtype_home', methods=['GET', 'POST'])
 def packtype_home():

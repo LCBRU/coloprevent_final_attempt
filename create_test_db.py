@@ -25,6 +25,14 @@ alembic_cfg = Config("alembic.ini")
 command.stamp(alembic_cfg, "head")
 
 # TO DO: Create test data
+site_added = Site(
+    site_name= "Leicester",
+    site_backup_contact = "Test backup",
+    site_primary_contact= "Test primary contact",
+    site_code = "123ABC")
+
+db.session.add(site_added)
+db.session.commit()
 db.session.commit()
 db.session.close()
 

@@ -34,13 +34,11 @@ class ShipmentForm(FlaskForm):
     date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')
-    pack = IntegerField('Packs ID')  #new change
-    site = IntegerField('Site') #new change
+    site = RadioField('Site') 
 
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
-        self.pack.choices=[(p.id, p.pack_identity) for p in db.session.execute(select(Pack)).scalars()]
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
     
    
@@ -54,7 +52,6 @@ def add_shipment():
             date_posted = shipment_form.date_posted.data,
             date_received= shipment_form.date_received.data,
             next_due = shipment_form.next_due.data,
-            pack_id = shipment_form.pack.data,
             site_id = shipment_form.site.data
           
         )
@@ -84,11 +81,10 @@ def edit_shipment(id):
         prev_date_posted =query_edit.date_posted 
         prev_date_received =query_edit.date_received 
         prev_next_due= query_edit.next_due
-        prev_pack = query_edit.pack_id
         prev_site = query_edit.site_id
 
         ed_form=ShipmentForm(addressee=prev_addresse,date_posted=prev_date_posted
-                             ,date_received=prev_date_received, next_due=prev_next_due, pack=prev_pack, site=prev_site)
+                             ,date_received=prev_date_received, next_due=prev_next_due, site=prev_site)
 
     
     if ed_form.validate_on_submit():
@@ -96,14 +92,13 @@ def edit_shipment(id):
             query_edit.date_posted = ed_form.date_posted.data
             query_edit.date_received = ed_form.date_received.data
             query_edit.next_due = ed_form.next_due.data
-            query_edit.pack_id = ed_form.pack.data
             query_edit.site_id = ed_form.site.data
             db.session.add(query_edit)
             db.session.commit()
             return refresh_response()
         
 
-    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Shipment", url=url_for("ui.edit_shipments",id=id))
+    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Shipment", url=url_for("ui.edit_shipment",id=id))
 
 
 
@@ -114,8 +109,8 @@ def search_pack(id):
     return render_template(
     "lbrc/search.html",
     title=f"Add packs to shipment for site '{p.site.site_name}'",
-    # results_url=url_for('ui.group_shared_user_search_results', group_id=g.id),
-    results_url = ""
+    results_url=url_for('ui.search_pack_search_results', id=p.id),
+ 
 )
 
 
@@ -134,31 +129,43 @@ def search_pack_search_results(id, page=1):
         q = q.where(Pack.pack_identity == search)
 
 
-    # results = db.paginate(
-    #     select=q,
-    #     page=page,
-    #     per_page=5,
-    #     error_out=False,
-    # )
+    results = db.paginate(
+        select=q,
+        page=page,
+        per_page=5,
+        error_out=False,
+    )
 
     return render_template(
             "lbrc/search_add_results.html",
             add_title="Add pack shipment" '{q.pack_identity}',
-            add_url=url_for('ui_add_pack_to_shipment', id=p.id),
+            add_url=url_for('ui.add_pack_to_shipment', id=p.id),
             results_url='ui.search_pack_search_results',
             results_url_args={'id': p.id},
-            #results=results,
+            results=results,
         )
 
 
-@blueprint.route("/add_shipment/add_pack/<int:id>/add_pack_to_shipment", methods=['POST'])
+@blueprint.route("/add_pack/<int:id>/add_pack_to_shipment", methods=['POST'])
 def add_pack_to_shipment(id):
     ps = db.get_or_404(PackShipment, id)
 
     id: int = get_value_from_all_arguments('id')
     pk: Pack = db.get_or_404(Pack, id)
 
-    ps.pack_identity.add(pk)
+    ps.packs.append(pk) 
+
+    db.session.add(ps)
+    db.session.commit()
+
+    return refresh_response()
+
+@blueprint.route("/shipment/<int:id>/pack/<int:pack_id>/delete", methods=['POST'])
+def delete_pack_to_shipment(id,pack_id):
+    ps = db.get_or_404(PackShipment, id)
+    pk: Pack = db.get_or_404(Pack, pack_id)
+
+    ps.packs.remove(pk) 
 
     db.session.add(ps)
     db.session.commit()
