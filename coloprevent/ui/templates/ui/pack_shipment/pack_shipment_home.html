@@ -33,13 +33,13 @@
             <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit_shipment', id=item.id)}}" hx-target="body" hx-swap="beforeend"></a></td>
             <td>{{item.addressee}}</td>
             <td>{{item.date_posted|date_format }}</td>
-            <td>{{item.date_received|date_format}}</td>
-            <td>{{item.next_due|date_format}}</td>
+            <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.add_shipment_received', id=item.id)}}" hx-target="body" hx-swap="beforeend"></a>{{item.date_received|date_format }}</td>
+            <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.add_shipment_next_due', id=item.id)}}" hx-target="body" hx-swap="beforeend"></a>{{item.next_due|date_format }}</td>
             <td class="grid_stacked_left">
           
           {% for p in item.packs %}
           <div class="dropdown"> 
-            
+
             <a href="javascript:;" class="icon pack" role="button" >{{p.name}}</a>
             <ul>
               <li> <a href="javascript:;" title="Remove pack from shipment" hx-post="{{ url_for('ui.delete_pack_to_shipment', id=item.id, pack_id=p.id ) }}" >Remove</a></li>

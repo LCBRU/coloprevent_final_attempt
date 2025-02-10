@@ -32,6 +32,22 @@ def shipment_home():
 class ShipmentForm(FlaskForm):
     addressee =TextAreaField(label="Addressee", validators=[DataRequired()])
     date_posted = DateField(format='%Y-%m-%d')
+    site = RadioField('Site') 
+
+    def __init__(self,  **kwargs):
+        super().__init__(**kwargs)
+
+        self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
+
+class ShipmentDate1Form(FlaskForm):
+    date_received = DateField(format='%Y-%m-%d')
+
+class ShipmentDate2Form(FlaskForm):
+    next_due = DateField(format='%Y-%m-%d')
+
+class EditShipmentForm(FlaskForm):
+    addressee =TextAreaField(label="Addressee", validators=[DataRequired()])
+    date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')
     site = RadioField('Site') 
@@ -40,6 +56,7 @@ class ShipmentForm(FlaskForm):
         super().__init__(**kwargs)
 
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
+
     
    
 
@@ -50,8 +67,6 @@ def add_shipment():
         pack_added = PackShipment(
             addressee= shipment_form.addressee.data,
             date_posted = shipment_form.date_posted.data,
-            date_received= shipment_form.date_received.data,
-            next_due = shipment_form.next_due.data,
             site_id = shipment_form.site.data
           
         )
@@ -60,6 +75,31 @@ def add_shipment():
         return refresh_response()
 
      return render_template('lbrc/form_modal.html', form=shipment_form, title="Add Shipment", url=url_for("ui.add_shipment") )
+
+@blueprint.route('/add_shipment_received/<int:id>', methods=['GET', 'POST'])
+def add_shipment_received(id):
+    find_record = db.session.execute(db.select(PackShipment).order_by(PackShipment.id)).scalar()
+    add_date_form = ShipmentDate1Form()
+    if add_date_form.validate_on_submit():
+        find_record.date_received = add_date_form.date_received.data
+        db.session.add(find_record)
+        db.session.commit()
+        return refresh_response()
+    return render_template('lbrc/form_modal.html', form = add_date_form, id=id, title="Add received date", url=url_for("ui.add_shipment_received",id=id))
+
+@blueprint.route('/add_shipment_next_due/<int:id>', methods=['GET', 'POST'])
+def add_shipment_next_due(id):
+    find_record = db.session.execute(db.select(PackShipment).order_by(PackShipment.id)).scalar()
+    add_date_form = ShipmentDate2Form()
+    if add_date_form.validate_on_submit():
+        find_record.next_due = add_date_form.next_due.data
+        db.session.add(find_record)
+        db.session.commit()
+        return refresh_response()
+    return render_template('lbrc/form_modal.html', form = add_date_form, id=id, title="Add next due date", url=url_for("ui.add_shipment_next_due",id=id))
+   
+
+
 
 @blueprint.route('/delete_shipment/<int:id>', methods=['GET', 'POST'])
 def delete_shipment(id):
@@ -83,7 +123,7 @@ def edit_shipment(id):
         prev_next_due= query_edit.next_due
         prev_site = query_edit.site_id
 
-        ed_form=ShipmentForm(addressee=prev_addresse,date_posted=prev_date_posted
+        ed_form=EditShipmentForm(addressee=prev_addresse,date_posted=prev_date_posted
                              ,date_received=prev_date_received, next_due=prev_next_due, site=prev_site)
 
     
