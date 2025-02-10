@@ -39,6 +39,7 @@
           
           {% for p in item.packs %}
           <div class="dropdown"> 
+            
             <a href="javascript:;" class="icon pack" role="button" >{{p.name}}</a>
             <ul>
               <li> <a href="javascript:;" title="Remove pack from shipment" hx-post="{{ url_for('ui.delete_pack_to_shipment', id=item.id, pack_id=p.id ) }}" >Remove</a></li>
@@ -46,8 +47,9 @@
           </div>
            
           {% endfor %}
-         
+           
             <a class="icon add" href="javascript:;" title="Add pack to shipment" hx-get="{{ url_for('ui.search_pack', id=item.id ) }}" hx-target="body" hx-swap="beforeend" role="button"></a>
+            
             </td>
     
             <td>{{item.site.site_name}}</td>

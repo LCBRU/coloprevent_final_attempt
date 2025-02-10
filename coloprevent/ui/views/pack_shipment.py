@@ -122,11 +122,14 @@ def search_pack_search_results(id, page=1):
 
     q =  (
         select(Pack)
+        .where(Pack.pack_shipment_id == None)
         .order_by(Pack.pack_identity, Pack.id)
     )
 
     if search:
         q = q.where(Pack.pack_identity == search)
+
+    
 
 
     results = db.paginate(
@@ -135,6 +138,7 @@ def search_pack_search_results(id, page=1):
         per_page=5,
         error_out=False,
     )
+
 
     return render_template(
             "lbrc/search_add_results.html",
