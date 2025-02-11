@@ -29,7 +29,7 @@ site_added = Site(
     site_name= "Leicester",
     site_backup_contact = "Test backup",
     site_primary_contact= "Test primary contact",
-    site_code = "123ABC")
+    site_code = 1)
 
 db.session.add(site_added)
 db.session.commit()

@@ -2,11 +2,12 @@ from sqlalchemy import String, Integer, ForeignKey
 from lbrc_flask.database import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import date
+from lbrc_flask.security import AuditMixin 
 
 
 
 
-class Site(db.Model):
+class Site(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
     site_name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     site_backup_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
@@ -16,14 +17,14 @@ class Site(db.Model):
     
 
 
-class PackType(db.Model):
+class PackType(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
     packtype_name: Mapped[str] = mapped_column(nullable=False, unique=True)
     packs:Mapped[list["Pack"]] = relationship(back_populates="packtype") 
 
    
     
-class Pack(db.Model):
+class Pack(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
     pack_identity:Mapped[str] = mapped_column(nullable=False, unique=True)
     pack_expiry:Mapped[date]= mapped_column(nullable=False)
@@ -38,7 +39,7 @@ class Pack(db.Model):
     
 
 
-class PackShipment(db.Model):
+class PackShipment(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     addressee:Mapped[str] = mapped_column(String(100), nullable=False,unique=True)
     date_posted:Mapped[date] = mapped_column( nullable=False)
@@ -50,14 +51,14 @@ class PackShipment(db.Model):
    
 
 #.............................................................................Consumables..............................................
-class Consumable(db.Model):
+class Consumable(db.Model,AuditMixin ):
     id: Mapped[int] = mapped_column(primary_key=True)
     consumable_name: Mapped[str]=mapped_column(String(100), nullable=False, unique=True)
     cons_details: Mapped[list["ConsumableDetails"]] = relationship(back_populates="cons_name")
     cons_estimates: Mapped[list["ConsumableEstimates"]] = relationship(back_populates="cons_name")
     cons_packs: Mapped[list["ConsumablePacks"]] = relationship(back_populates="cons_name")
 
-class ConsumableDetails(db.Model):
+class ConsumableDetails(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     cat_no:Mapped[str] = mapped_column(unique=True, nullable=False) # looks alpa-numeric from spreadsheet 
     supplier: Mapped[str]=mapped_column(nullable=False)
@@ -69,7 +70,7 @@ class ConsumableDetails(db.Model):
     cons_estimates: Mapped[list["ConsumableEstimates"]] = relationship(back_populates="cons_details")
 
 
-class ConsumableEstimates(db.Model):
+class ConsumableEstimates(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     est_number_consumables:Mapped[int]=mapped_column(nullable=False)
     est_packs_study: Mapped[int]=mapped_column(nullable=False)
@@ -80,7 +81,7 @@ class ConsumableEstimates(db.Model):
     cons_details:Mapped["ConsumableDetails"]=relationship(back_populates="cons_estimates")
 
 
-class ConsumablePacks(db.Model):
+class ConsumablePacks(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     date_received:Mapped[date]=mapped_column(nullable=False)
     cost:Mapped[float]=mapped_column(nullable=False)
@@ -91,7 +92,7 @@ class ConsumablePacks(db.Model):
 
    #....................................Visit tables...................................................................................
 
-class PatientDetails(db.Model):
+class PatientDetails(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     screening_id: Mapped[str]=mapped_column(nullable=False, unique=True)
     pid:Mapped[str]=mapped_column(nullable=False, unique=True)
@@ -104,39 +105,39 @@ class PatientDetails(db.Model):
     visit_9: Mapped[list["PatientVisit9"]] = relationship(back_populates="patient_details")
 
 
-class PatientVisit1(db.Model):
+class PatientVisit1(db.Model,AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     fit_received_vis_1:Mapped[date] = mapped_column(nullable=True)
     bloods_received_vis1:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_1")
 
-class PatientVisit4(db.Model):
+class PatientVisit4(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     bloods_received_vis_4:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_4")
 
-class PatientVisit5(db.Model):
+class PatientVisit5(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     fit_received_vis_5:Mapped[date] = mapped_column(nullable=True)
     bloods__received_vis_5:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_5")
 
-class PatientVisit6(db.Model):
+class PatientVisit6(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     bloods_received_vis_6:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_6")
 
-class PatientVisit7(db.Model):
+class PatientVisit7(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     bloods_received_vis_7:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_7")
 
-class PatientVisit9(db.Model):
+class PatientVisit9(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     fit_received_vis_9:Mapped[date] = mapped_column(nullable=True)
     bloods_received_vis_9:Mapped[date] = mapped_column(nullable=True)

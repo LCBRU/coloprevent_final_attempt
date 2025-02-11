@@ -72,7 +72,7 @@ def edit_pack(id):
         prev_pack_expiry = query_edit.pack_expiry
         prev_packtype_form = query_edit.packtype_id
         
-        ed_form=PackForm(pack_identity=prev_pack_identity, pack_expiry=prev_pack_expiry, packtype_id=prev_packtype_form) 
+        ed_form=PackForm(pack_identity=prev_pack_identity, pack_expiry=prev_pack_expiry, pack_type=prev_packtype_form) 
 
     
     if ed_form.validate_on_submit():

@@ -28,8 +28,8 @@ def index():
 
 class SiteForm(FlaskForm):
     site_name = StringField('Site name', validators=[DataRequired()])
-    site_backup_contact = TextAreaField('Enter back up contact',validators=[DataRequired()])
-    site_primary_contact = TextAreaField('Enter Primary contact',validators=[DataRequired()])
+    site_primary_contact = TextAreaField('Primary contact',validators=[DataRequired()])
+    site_backup_contact = TextAreaField('Back up contact',validators=[DataRequired()])
     site_code = IntegerField('Site code',validators=[DataRequired()])
 
 

@@ -78,8 +78,9 @@ def add_shipment():
 
 @blueprint.route('/add_shipment_received/<int:id>', methods=['GET', 'POST'])
 def add_shipment_received(id):
-    find_record = db.session.execute(db.select(PackShipment).order_by(PackShipment.id)).scalar()
-    add_date_form = ShipmentDate1Form()
+    find_record = db.get_or_404(PackShipment,id)
+    prev_date_received = find_record.date_received
+    add_date_form = ShipmentDate1Form(date_received = prev_date_received)
     if add_date_form.validate_on_submit():
         find_record.date_received = add_date_form.date_received.data
         db.session.add(find_record)
@@ -89,8 +90,9 @@ def add_shipment_received(id):
 
 @blueprint.route('/add_shipment_next_due/<int:id>', methods=['GET', 'POST'])
 def add_shipment_next_due(id):
-    find_record = db.session.execute(db.select(PackShipment).order_by(PackShipment.id)).scalar()
-    add_date_form = ShipmentDate2Form()
+    find_record = db.get_or_404(PackShipment, id)
+    prev_next_due = find_record.next_due
+    add_date_form = ShipmentDate2Form(next_due = prev_next_due)
     if add_date_form.validate_on_submit():
         find_record.next_due = add_date_form.next_due.data
         db.session.add(find_record)
