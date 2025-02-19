@@ -26,7 +26,7 @@ class PackType(db.Model, AuditMixin):
     
 class Pack(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    pack_identity:Mapped[str] = mapped_column(nullable=False, unique=True)
+    pack_identity:Mapped[int] = mapped_column(nullable=False, unique=True)
     pack_expiry:Mapped[date]= mapped_column(nullable=False)
     packtype: Mapped['PackType']=relationship(back_populates=('packs'))
     packtype_id:Mapped[int]=mapped_column(ForeignKey("pack_type.id"))
