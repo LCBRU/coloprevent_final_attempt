@@ -33,6 +33,5 @@ site_added = Site(
 
 db.session.add(site_added)
 db.session.commit()
-db.session.commit()
 db.session.close()
 
