@@ -11,8 +11,8 @@ from lbrc_flask.response import refresh_response
 from coloprevent.model import Site
 from flask_wtf import FlaskForm
 
-@blueprint.route('/', methods=['GET', 'POST'])
-def index():
+@blueprint.route('/site_home', methods=['GET', 'POST'])
+def site_home():
     search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
 
     q_list = db.session.execute(db.select(Site).order_by(Site.id)).scalars()
@@ -56,7 +56,7 @@ def delete(id):
         query_del = db.session.execute(db.select(Site).where(Site.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
-        return redirect(url_for('ui.index'))
+        return redirect(url_for('ui.site_home'))
     return render_template('ui/delete.html', id=id)
 
 

@@ -13,8 +13,9 @@ from flask_wtf import FlaskForm
 from lbrc_flask.requests import get_value_from_all_arguments
 
 
+
 @blueprint.route('/shipment', methods=['GET', 'POST'])
-def shipment_home():
+def index():
      search_form = SearchForm(search_placeholder='Search shipment via packs identifier', formdata=request.args) 
 
      q_list = db.session.execute(db.select(PackShipment).order_by(PackShipment.id)).scalars()
@@ -110,7 +111,7 @@ def delete_shipment(id):
         query_del = db.session.execute(db.select(PackShipment).where(PackShipment.id == delete_id)).scalar()
         db.session.delete(query_del)
         db.session.commit()
-        return redirect(url_for('ui.shipment_home'))
+        return redirect(url_for('ui.index'))
     return render_template('ui/pack_shipment/pack_shipment_home.html', id=id)
 
 
