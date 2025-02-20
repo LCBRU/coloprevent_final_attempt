@@ -14,7 +14,7 @@ from lbrc_flask.requests import get_value_from_all_arguments
 
 
 
-@blueprint.route('/shipment', methods=['GET', 'POST'])
+@blueprint.route('/', methods=['GET', 'POST'])
 def index():
      search_form = SearchForm(search_placeholder='Search shipment via packs identifier', formdata=request.args) 
 
@@ -26,7 +26,7 @@ def index():
      if search_form.search.data:
         q = q.where(PackShipment.site.like(f'%{search_form.search.data}%'))
  
-     return render_template('ui/pack_shipment/pack_shipment_home.html/', ordered_list=ordered_list, search_form=search_form)
+     return render_template('ui/pack_shipment/pack_shipment_home.html', ordered_list=ordered_list, search_form=search_form)
 
 
 

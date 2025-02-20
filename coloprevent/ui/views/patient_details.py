@@ -27,7 +27,7 @@ def patient_details_home():
 
 class PatientDetailsForm(FlaskForm):
     screening_id = StringField('Screening ID', validators=[DataRequired()])
-    pid= StringField('PID', validators=[DataRequired()])
+    pid = StringField('PID', validators=[DataRequired()])
     date_of_consent = DateField('Date of consent', validators=[DataRequired()])
     
 
@@ -37,7 +37,7 @@ def add_patient_details ():
     if patient_details_form.validate_on_submit():
         patient_details_added = PatientDetails(
             screening_id = patient_details_form.screening_id.data,
-            pid = patient_details_form.pid,
+            pid = patient_details_form.pid.data,
             date_of_consent = patient_details_form.date_of_consent.data
         )
         db.session.add(patient_details_added)
@@ -56,4 +56,27 @@ def delete_patient_details(id):
         db.session.commit()
         return redirect(url_for('ui.patient_details_home'))
     return render_template('ui/patient_details/delete_patient_details.html', id=id)
+
+@blueprint.route('/edit_patient_details/<int:id>', methods=['GET', 'POST'])
+def edit_patient_details(id):
+    edit_id = id
+    if id== edit_id:
+        query_edit = db.session.execute(db.select(PatientDetails).where(PatientDetails.id == edit_id)).scalar()
+        prev_screening_id = query_edit.screening_id
+        prev_pid = query_edit.pid
+        prev_date_of_consent = query_edit.date_of_consent
+
+        ed_form=PatientDetailsForm(screening_id=prev_screening_id, pid=prev_pid, date_of_consent=prev_date_of_consent) 
+
+    
+    if ed_form.validate_on_submit():
+            query_edit.screening_id= ed_form.screening_id.data
+            query_edit.pid = ed_form.pid.data
+            query_edit.date_of_consent = ed_form.date_of_consent.data
+            db.session.add(query_edit)
+            db.session.commit()
+            return refresh_response()
+        
+
+    return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Patient Details", url=url_for("ui.edit_patient_details",id=id))
 

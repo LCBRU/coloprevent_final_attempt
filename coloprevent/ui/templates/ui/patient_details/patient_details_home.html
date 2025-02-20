@@ -21,20 +21,17 @@
         <table>
             <tr>
               <th> </th>
-              <th>Date received</th>
-              <th>Cost</th>
-              <th>Number of packs</th>
-              <th>Consumable item</th>
+              <th>Screening ID</th>
+              <th>PID</th>
+              <th>Date of consent</th>
             </tr>
             {% for item in ordered_list %}
             <tr>
               <td><a class="icon delete" href="{{url_for('ui.delete_patient_details', id=item.id)}}"></a>
               <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit_patient_details', id=item.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
-              <td>{{item.date_received}}</td>
-              <td>{{item.cost}}</td>
-              <td>{{item.number_of_packs}}</td>
-              <td>{{item.cons_name.consumable_name}}</td>
-
+              <td>{{item.screening_id}}</td>
+              <td>{{item.pid}}</td>
+              <td>{{item.date_of_consent|date_format }}</td>
             </tr>
             {% endfor %}
 

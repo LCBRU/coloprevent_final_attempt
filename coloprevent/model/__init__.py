@@ -32,11 +32,14 @@ class Pack(db.Model, AuditMixin):
     packtype_id:Mapped[int]=mapped_column(ForeignKey("pack_type.id"))
     pack_shipment: Mapped["PackShipment"] = relationship(back_populates="packs") 
     pack_shipment_id: Mapped[int] = mapped_column(ForeignKey("pack_shipment.id"), nullable=True)
+    expiry_report: Mapped[list["ExpiryReport"]] = relationship(back_populates="pack") #added for report test
     @property
     def name(self):
         return f'{self.packtype.packtype_name}: {self.pack_identity}'
-  
+
     
+    
+
 
 
 class PackShipment(db.Model, AuditMixin):
@@ -47,7 +50,23 @@ class PackShipment(db.Model, AuditMixin):
     next_due:Mapped[date] = mapped_column( nullable=True)
     site: Mapped["Site"] = relationship(back_populates="pack_shipment") 
     site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) 
-    packs:Mapped[list["Pack"]] = relationship(back_populates="pack_shipment") 
+    packs:Mapped[list["Pack"]] = relationship(back_populates="pack_shipment")
+    expiry_report: Mapped[list["ExpiryReport"]] = relationship(back_populates="pack_shipment") 
+
+    
+
+class ExpiryReport(db.Model, AuditMixin):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    pack_id: Mapped[int] = mapped_column(ForeignKey("pack.id"))
+    pack: Mapped["Pack"] = relationship(back_populates="expiry_report")
+    pack_shipment_id:Mapped[int] = mapped_column(ForeignKey("pack_shipment.id"))
+    pack_shipment: Mapped["PackShipment"] = relationship(back_populates="expiry_report")
+  
+     
+
+    
+    
+
    
 
 #.............................................................................Consumables..............................................
@@ -108,7 +127,7 @@ class PatientDetails(db.Model, AuditMixin):
 class PatientVisit1(db.Model,AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     fit_received_vis_1:Mapped[date] = mapped_column(nullable=True)
-    bloods_received_vis1:Mapped[date] = mapped_column(nullable=True)
+    bloods_received_vis_1:Mapped[date] = mapped_column(nullable=True) #correct underscore 
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_1")
 

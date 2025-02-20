@@ -1,0 +1,32 @@
+{% extends "ui/menu_page.html" %}
+{% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
+
+{% block menu_page_content %}
+<section class="container">
+    <header>
+        <h2>Expiry check</h2>
+
+    </header>
+    
+        <table>
+            <tr>
+              <th> </th>
+              <th>Pack Identity</th>
+              <th>Pack Expiry</th>
+              <th>Site</th>
+            </tr>
+            {% for item in ordered_list %}
+            <tr>
+              <td>{{item.pack_identity}}</td>
+              <td>{{item.pack_expiry}}</td>
+              <td>{{item.pack_shipment.site.site_name}}</td>
+            </tr>
+            {% endfor %}
+
+          </table>
+
+
+    
+
+</section>
+{% endblock %}
