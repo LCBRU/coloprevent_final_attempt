@@ -78,7 +78,7 @@ def add_fit_received_vis_1(id):
     prev_fit_received = find_record.fit_received_vis_1
     add_fit_received_form_1 = FitVisit1Form (fit_received_vis_1 = prev_fit_received)
     if add_fit_received_form_1.validate_on_submit():
-        find_record.bloods_received_vis_1= add_fit_received_form_1.fit_received_vis_1.data
+        find_record.fit_received_vis_1= add_fit_received_form_1.fit_received_vis_1.data
         db.session.add(find_record)
         db.session.commit()
         return refresh_response()
