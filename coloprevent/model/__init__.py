@@ -1,7 +1,7 @@
 from sqlalchemy import String, Integer, ForeignKey
 from lbrc_flask.database import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import date
+from datetime import date, time
 from lbrc_flask.security import AuditMixin 
 
 
@@ -162,3 +162,49 @@ class PatientVisit9(db.Model, AuditMixin):
     bloods_received_vis_9:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_9")
+
+    #...................................City Sprint Tracker............................................................................
+
+class CsFrom(db.Model, AuditMixin):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    cs_from: Mapped[str] = mapped_column(nullable=True, unique=True)
+
+class CsSiteCode(db.Model, AuditMixin):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    cs_site_code: Mapped[str] = mapped_column(unique=True, nullable=True)
+
+
+class CsTo(db.Model, AuditMixin):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    cs_to: Mapped[str] = mapped_column(unique=True, nullable=True)
+
+class CsSentDetails(db.Model, AuditMixin):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    date_logged_citysprint: Mapped[date] = mapped_column(nullable=False)
+    citysprint_ref_number: Mapped[int] = mapped_column(nullable=False, unique=True)
+    total_cost: Mapped[float] = mapped_column(nullable=False)
+    cost: Mapped[float] = mapped_column(nullable=False) #will need to add vat to this 
+    packaging: Mapped[str] = mapped_column(nullable=False)
+    number_of_aliquots:Mapped[int] = mapped_column(nullable=False)
+    storage_logs_available:Mapped[str] = mapped_column(nullable=False)
+    content: Mapped[str]= mapped_column(nullable=False)
+    scheduled_date_of_receipt:Mapped[date] = mapped_column(nullable=False)
+
+class CsReceivedDetails(db.Model, AuditMixin):
+     id: Mapped[int] =mapped_column(primary_key=True)
+     date_received: Mapped[date]= mapped_column(nullable=False)
+     time_received: Mapped[time]= mapped_column(nullable=False)
+     time_freezer: Mapped[time] = mapped_column(nullable=False)
+    
+
+class CsRecipient(db.Model, AuditMixin):
+    id: Mapped[int] =mapped_column(primary_key=True)
+    received_by: Mapped[str] = mapped_column(nullable=False)
+    
+
+    
+
+
+
+
+    
