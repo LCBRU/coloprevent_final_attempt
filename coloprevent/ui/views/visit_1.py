@@ -43,7 +43,6 @@ def add_visit_1():
     visit_1_form = Visit1Form()
     if visit_1_form .validate_on_submit():
         visit_1_added =PatientVisit1(
-        fit_received_vis_1= visit_1_form.fit_received_vis_1.data,
         patient_details_id= visit_1_form.patient_details .data,
         )
         db.session.add(visit_1_added)
@@ -96,9 +95,10 @@ def delete_visit_1(id):
 
 
 class EditVisit1Form(FlaskForm):
+    patient_details = RadioField('Patient')
     fit_received_vis_1 = DateField("Date FIT received", format='%Y-%m-%d')
     bloods_received_vis_1 = DateField("Date Blood received", format='%Y-%m-%d')
-    patient_details = RadioField('Patient')
+    
 
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)

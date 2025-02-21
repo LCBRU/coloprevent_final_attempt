@@ -140,7 +140,7 @@ class PatientVisit4(db.Model, AuditMixin):
 class PatientVisit5(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     fit_received_vis_5:Mapped[date] = mapped_column(nullable=True)
-    bloods__received_vis_5:Mapped[date] = mapped_column(nullable=True)
+    bloods_received_vis_5:Mapped[date] = mapped_column(nullable=True)
     patient_details_id: Mapped[int] = mapped_column(ForeignKey("patient_details.id"))
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_5")
 
