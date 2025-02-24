@@ -168,9 +168,6 @@ class PatientVisit9(db.Model, AuditMixin):
 class CsFrom(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
     cs_from: Mapped[str] = mapped_column(nullable=True, unique=True)
-
-class CsSiteCode(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
     cs_site_code: Mapped[str] = mapped_column(unique=True, nullable=True)
 
 
@@ -195,11 +192,7 @@ class CsReceivedDetails(db.Model, AuditMixin):
      date_received: Mapped[date]= mapped_column(nullable=False)
      time_received: Mapped[time]= mapped_column(nullable=False)
      time_freezer: Mapped[time] = mapped_column(nullable=False)
-    
-
-class CsRecipient(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    received_by: Mapped[str] = mapped_column(nullable=False)
+     received_by: Mapped[str] = mapped_column(nullable=False)
     
 
     
