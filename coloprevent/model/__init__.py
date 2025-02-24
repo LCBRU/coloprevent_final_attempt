@@ -179,7 +179,7 @@ class CsSentDetails(db.Model, AuditMixin):
     packaging: Mapped[str] = mapped_column(nullable=False)
     number_of_aliquots:Mapped[int] = mapped_column(nullable=False)
     storage_logs_available:Mapped[str] = mapped_column(nullable=False)
-    content: Mapped[str]= mapped_column(nullable=False)
+    content: Mapped[str]= mapped_column(nullable=False) #multiple samples may need to split table 
     scheduled_date_of_receipt:Mapped[date] = mapped_column(nullable=False)
 
 class CsReceivedDetails(db.Model, AuditMixin):
@@ -190,12 +190,6 @@ class CsReceivedDetails(db.Model, AuditMixin):
      received_by: Mapped[str] = mapped_column(nullable=False)
     
 #...........................QC tracker Blood collection...............................................................    
-class PackingInformation(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    packed_by:Mapped[str]= mapped_column(unique=True, nullable=False)
-    blood_coll_qc: Mapped[list["BloodCollectionQc"]] = relationship(back_populates="packed_by")
-
-    pass
 
 class PackingInformation(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
