@@ -17,7 +17,6 @@ def pack_expiry_report():
    q = select(
    Pack.pack_identity,
    Pack.pack_expiry,
-   # Pack.pack_shipment_id,
    Site.site_name,
    ).join(
    Pack.pack_shipment
