@@ -51,14 +51,6 @@ class PackShipment(db.Model, AuditMixin):
 
     
 
-class ExpiryReport(db.Model, AuditMixin):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    pack_id: Mapped[int] = mapped_column(ForeignKey("pack.id"))
-    pack: Mapped["Pack"] = relationship(back_populates="expiry_report")
-   
-  
-    
-
 #.............................................................................Consumables..............................................
 class Consumable(db.Model,AuditMixin ):
     id: Mapped[int] = mapped_column(primary_key=True)

@@ -17,11 +17,28 @@ def pack_expiry_report():
    q = select(
    Pack.pack_identity,
    Pack.pack_expiry,
-   Pack.pack_shipment_id,)
-   # Site.site_name,).join 
-   # (Pack.pack_identity).join
+   # Pack.pack_shipment_id,
+   Site.site_name,
+   ).join(
+   Pack.pack_shipment
+   ).join(
+   PackShipment.site,
+   )
+
+
+
+   # Site.site_name,).join
+   # (Pack.id).join
    # (PackShipment.id)
-  
+   # Pack.pack_identity,
+   #  Pack.pack_expiry,
+   #  Site.site_name
+   # ).join(
+   #  Site, PackShipment.site_id == Site.id
+   # ).join(
+   #  Pack, PackShipment.packs == Pack.id
+   # )
+   
 
 
    results = db.session.execute(q).mappings()
