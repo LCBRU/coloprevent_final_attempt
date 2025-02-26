@@ -26,19 +26,6 @@ def pack_expiry_report():
 
 
 
-   # Site.site_name,).join
-   # (Pack.id).join
-   # (PackShipment.id)
-   # Pack.pack_identity,
-   #  Pack.pack_expiry,
-   #  Site.site_name
-   # ).join(
-   #  Site, PackShipment.site_id == Site.id
-   # ).join(
-   #  Pack, PackShipment.packs == Pack.id
-   # )
-   
-
 
    results = db.session.execute(q).mappings()
    return render_template( "ui/reports/pack_exp_report.html", results=results)
