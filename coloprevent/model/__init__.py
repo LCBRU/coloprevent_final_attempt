@@ -33,7 +33,6 @@ class Pack(db.Model, AuditMixin):
     pack_shipment: Mapped["PackShipment"] = relationship(back_populates="packs") 
     pack_shipment_id: Mapped[int] = mapped_column(ForeignKey("pack_shipment.id"), nullable=True)
     expiry_report: Mapped[list["ExpiryReport"]] = relationship(back_populates="pack") #added for report test
-    blood_coll_qc: Mapped[list["BloodCollectionQc"]] = relationship(back_populates="pack")
     @property
     def name(self):
         return f'{self.packtype.packtype_name}: {self.pack_identity}'
@@ -48,7 +47,7 @@ class PackShipment(db.Model, AuditMixin):
     site: Mapped["Site"] = relationship(back_populates="pack_shipment") 
     site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) 
     packs:Mapped[list["Pack"]] = relationship(back_populates="pack_shipment")
-    expiry_report: Mapped[list["ExpiryReport"]] = relationship(back_populates="pack_shipment") 
+ 
 
     
 
@@ -56,8 +55,7 @@ class ExpiryReport(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     pack_id: Mapped[int] = mapped_column(ForeignKey("pack.id"))
     pack: Mapped["Pack"] = relationship(back_populates="expiry_report")
-    pack_shipment_id:Mapped[int] = mapped_column(ForeignKey("pack_shipment.id"))
-    pack_shipment: Mapped["PackShipment"] = relationship(back_populates="expiry_report")
+   
   
     
 
@@ -156,69 +154,6 @@ class PatientVisit9(db.Model, AuditMixin):
     patient_details:Mapped["PatientDetails"]= relationship(back_populates="visit_9")
 
     #...................................City Sprint Tracker............................................................................
-
-class CsFrom(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    cs_from: Mapped[str] = mapped_column(nullable=True, unique=True)
-
-class CsSiteCode(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)    
-    cs_site_code: Mapped[str] = mapped_column(unique=True, nullable=True)
-
-
-class CsTo(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    cs_to: Mapped[str] = mapped_column(unique=True, nullable=True)
-
-class CsSentDetails(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    date_logged_citysprint: Mapped[date] = mapped_column(nullable=False)
-    citysprint_ref_number: Mapped[int] = mapped_column(nullable=False, unique=True)
-    total_cost: Mapped[float] = mapped_column(nullable=False)
-    cost: Mapped[float] = mapped_column(nullable=False) #will need to add vat to this 
-    packaging: Mapped[str] = mapped_column(nullable=False)
-    number_of_aliquots:Mapped[int] = mapped_column(nullable=False)
-    storage_logs_available:Mapped[str] = mapped_column(nullable=False)
-    content: Mapped[str]= mapped_column(nullable=False) #multiple samples may need to split table 
-    scheduled_date_of_receipt:Mapped[date] = mapped_column(nullable=False)
-
-class CsReceivedDetails(db.Model, AuditMixin):
-     id: Mapped[int] =mapped_column(primary_key=True)
-     date_received: Mapped[date]= mapped_column(nullable=False)
-     time_received: Mapped[time]= mapped_column(nullable=False)
-     time_freezer: Mapped[time] = mapped_column(nullable=False)
-     received_by: Mapped[str] = mapped_column(nullable=False)
-    
-#...........................QC tracker Blood collection...............................................................    
-
-class PackingInformation(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    packed_by:Mapped[str]= mapped_column(unique=True, nullable=False)
-    packed_by_qc: Mapped[list["BloodCollectionQc"]] = relationship(back_populates="packed_by")
-    pass
-
-class CheckPackInformation(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    checked_by:Mapped[str]= mapped_column(unique=True, nullable=False)
-    checked_by_qc: Mapped[list["BloodCollectionQc"]] = relationship(back_populates="checked_by")
-    pass
-
-
-
-class BloodCollectionQc(db.Model, AuditMixin):
-    id: Mapped[int] =mapped_column(primary_key=True)
-    pack_id: Mapped[int] = mapped_column(ForeignKey("pack.id")) #connecting pack table 
-    pack: Mapped["Pack"] = relationship(back_populates="blood_coll_qc")
-    pack_description: Mapped[int]= mapped_column(nullable=False)
-    packed_by_id: Mapped[int] = mapped_column(ForeignKey("packing_information.id"))
-    packed_by: Mapped["PackingInformation"] = relationship(back_populates="packed_by_qc")
-    date_packed: Mapped[date] = mapped_column(nullable=False)
-    checked_by_id: Mapped[int] = mapped_column(ForeignKey("check_pack_information.id"))
-    checked_by: Mapped["CheckPackInformation"] = relationship(back_populates="checked_by_qc")
-    date_checked: Mapped[date] = mapped_column(nullable=False)
-    yes_no_passed: Mapped[str]= mapped_column(nullable=False)
-    comments: Mapped[str] = mapped_column(nullable=True)
-    pass 
 
 
 
