@@ -16,7 +16,7 @@ from lbrc_flask.requests import get_value_from_all_arguments
 
 @blueprint.route('/', methods=['GET', 'POST'])
 def index():
-     search_form = SearchForm(search_placeholder='Search shipment via packs identifier', formdata=request.args) 
+     search_form = SearchForm(search_placeholder='Search shipment via date posted', formdata=request.args) 
 
      q_list = db.session.execute(db.select(PackShipment).order_by(PackShipment.id)).scalars()
      ordered_list =[]
@@ -24,7 +24,7 @@ def index():
         ordered_list.append(queried)
 
      if search_form.search.data:
-        q = q.where(PackShipment.site.like(f'%{search_form.search.data}%'))
+        q = q.where(PackShipment.date_posted.like(f'%{search_form.search.data}%'))
  
      return render_template('ui/pack_shipment/pack_shipment_home.html', ordered_list=ordered_list, search_form=search_form)
 
