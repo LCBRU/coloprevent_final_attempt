@@ -11,12 +11,14 @@
         <table>
             <tr>
               <th>Pack Identity</th>
+              <th>Packtype</th>
               <th>Pack Expiry</th>
               <th>Site</th>
             </tr>
             {% for item in results %}
             <tr>
               <td>{{item.pack_identity}}</td>
+              <td>{{item.packtype_name}}</td>
               <td>{{item.pack_expiry|date_format}}</td>
               <td>{{item.site_name}}</td>
             </tr>
