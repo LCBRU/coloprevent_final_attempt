@@ -31,7 +31,6 @@ def index():
 
 
 class ShipmentForm(FlaskForm):
-    addressee =TextAreaField(label="Addressee", validators=[DataRequired()])
     date_posted = DateField(format='%Y-%m-%d')
     site = RadioField('Site') 
 
@@ -47,7 +46,6 @@ class ShipmentDate2Form(FlaskForm):
     next_due = DateField(format='%Y-%m-%d')
 
 class EditShipmentForm(FlaskForm):
-    addressee =TextAreaField(label="Addressee", validators=[DataRequired()])
     date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')
@@ -66,7 +64,6 @@ def add_shipment():
      shipment_form = ShipmentForm()
      if shipment_form.validate_on_submit():
         pack_added = PackShipment(
-            addressee= shipment_form.addressee.data,
             date_posted = shipment_form.date_posted.data,
             site_id = shipment_form.site.data
           
@@ -120,18 +117,16 @@ def edit_shipment(id):
     edit_id = id
     if id== edit_id:
         query_edit = db.session.execute(db.select(PackShipment).where(PackShipment.id == edit_id)).scalar()
-        prev_addresse= query_edit.addressee
         prev_date_posted =query_edit.date_posted 
         prev_date_received =query_edit.date_received 
         prev_next_due= query_edit.next_due
         prev_site = query_edit.site_id
 
-        ed_form=EditShipmentForm(addressee=prev_addresse,date_posted=prev_date_posted
+        ed_form=EditShipmentForm(date_posted=prev_date_posted
                              ,date_received=prev_date_received, next_due=prev_next_due, site=prev_site)
 
     
     if ed_form.validate_on_submit():
-            query_edit.addressee = ed_form.addressee.data
             query_edit.date_posted = ed_form.date_posted.data
             query_edit.date_received = ed_form.date_received.data
             query_edit.next_due = ed_form.next_due.data

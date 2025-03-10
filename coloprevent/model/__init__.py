@@ -39,7 +39,6 @@ class Pack(db.Model, AuditMixin):
 
 class PackShipment(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
-    addressee:Mapped[str] = mapped_column(String(100), nullable=False,unique=True)
     date_posted:Mapped[date] = mapped_column( nullable=False)
     date_received:Mapped[date] = mapped_column( nullable=True)
     next_due:Mapped[date] = mapped_column( nullable=True)
