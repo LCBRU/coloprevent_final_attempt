@@ -5,15 +5,19 @@
 <section class="container">
     <header>
         <h2>Sites</h2>
-
+        
+      <form method="GET" action="{{ url_for('ui.site_home') }}">
         <fieldset>
           {{ search_form.hidden_tag() }}
           {{ render_form_fields(search_form) }}
+      
 
           <div class="button_bar" hx-target="body">
               <a class="icon add" href="javascript:;" title="Add site" hx-get="{{ url_for('ui.add')}}"  hx-target="body" hx-swap="beforeend" role="button">Add Site</a>
           </div>    
       </fieldset>
+    </form>
+
     </header>
     
         <table>

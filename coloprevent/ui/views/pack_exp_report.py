@@ -19,6 +19,7 @@ def pack_expiry_report():
    Pack.pack_expiry,
    PackType.packtype_name,
    Site.site_name,
+   ).join(Pack.packtype
    ).join(
    Pack.pack_shipment
    ).join(

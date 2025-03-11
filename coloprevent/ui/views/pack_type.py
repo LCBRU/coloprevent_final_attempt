@@ -16,12 +16,12 @@ class PacktypeForm(FlaskForm):
 
 @blueprint.route('/packtype_home', methods=['GET', 'POST'])
 def packtype_home():
-    search_form = SearchForm(search_placeholder='Search packtype Name', formdata=request.args) 
-
-    q_list = list(db.session.execute(db.select(PackType).order_by(PackType.id)).scalars())
-
+    search_form = SearchForm(search_placeholder='Search packtype Name', formdata=request.args)
+    q = db.select(PackType).order_by(PackType.id)
     if search_form.search.data:
-        q = q.where(PackType.pack_identity.like(f'%{search_form.search.data}%'))
+        q = q.where(PackType.packtype_name.like(f'%{search_form.search.data}%'))
+    q_list = db.session.execute(q).scalars()
+
 
     return render_template('ui/packtype/packtype_home.html', ordered_list=q_list, search_form=search_form)
 

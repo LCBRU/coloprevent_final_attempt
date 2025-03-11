@@ -14,15 +14,16 @@ from flask_wtf import FlaskForm
 @blueprint.route('/site_home', methods=['GET', 'POST'])
 def site_home():
     search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
-
-    q_list = db.session.execute(db.select(Site).order_by(Site.id)).scalars()
+    q = db.select(Site).order_by(Site.id)
+    if search_form.search.data:
+        q = q.where(Site.site_name.like(f'%{search_form.search.data}%'))
+    q_list = db.session.execute(q).scalars()
     ordered_list =[]
     for queried in q_list:
         ordered_list.append(queried)
 
 
-    if search_form.search.data:
-        q = q.where(Site.site_name.like(f'%{search_form.search.data}%'))
+    
     return render_template('ui/summary.html', ordered_list = ordered_list, search_form=search_form)
     
 
