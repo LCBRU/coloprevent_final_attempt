@@ -24,7 +24,7 @@ def pack():
 
     return render_template('ui/pack/pack_home.html', ordered_list = ordered_list, search_form=search_form)
 
-class PackForm(FlaskForm):
+class PackForm(FlashingForm):
     pack_identity = IntegerField('Pack Identity', validators=[DataRequired()])
     pack_expiry = DateField(format='%Y-%m-%d')
     pack_type = RadioField('Packtype' , coerce=int)

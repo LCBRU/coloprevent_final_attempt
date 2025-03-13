@@ -2,9 +2,9 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select
+from sqlalchemy import select, and_ , or_
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, DateField, IntegerField,TextAreaField
+from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, DateField, IntegerField,TextAreaField, SelectField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
@@ -12,14 +12,47 @@ from coloprevent.model import PackShipment, Pack, Site
 from flask_wtf import FlaskForm
 from lbrc_flask.requests import get_value_from_all_arguments
 
+class SiteDropDownForm (SearchForm):
+    site = SelectField('Site ID')
+    date_posted_from = DateField()
+    date_posted_to = DateField()
+    def __init__(self,  **kwargs):
+        super().__init__(**kwargs)
+
+        self.site.choices=[("","")]+[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
 def index():
-     search_form = SearchForm(search_placeholder='Search by site', formdata=request.args) 
+     search_form = SiteDropDownForm(search_placeholder='Search by site', formdata=request.args) 
      q = db.select(PackShipment).order_by(PackShipment.id)
      if search_form.search.data:
-        q = q.where(PackShipment.site.has(Site.site_name.like(f'%{search_form.search.data}%')))
+       q = q.where(
+
+            PackShipment.site.has(Site.site_name.like(f"%{search_form.search.data}%")),
+    
+    
+    )
+       
+     if search_form.site.data:
+        q = q.where(
+       
+        PackShipment.site_id == search_form.site.data)
+
+     if search_form.date_posted_from.data:
+          q = q.where(
+       
+        PackShipment.date_posted > search_form.date_posted_from.data)
+  
+     if search_form.date_posted_to.data:
+          q = q.where(
+       
+        PackShipment.date_posted < search_form.date_posted_to.data)
+        
+    
+       
+     print(f"Search Form Site Data: {search_form.site.data}") 
+     
      q_list = db.session.execute(q).scalars()
      ordered_list =[]
      for queried in q_list:
@@ -29,7 +62,7 @@ def index():
 
 
 
-class ShipmentForm(FlaskForm):
+class ShipmentForm(FlashingForm):
     date_posted = DateField(format='%Y-%m-%d')
     site = RadioField('Site') 
 
@@ -38,13 +71,13 @@ class ShipmentForm(FlaskForm):
 
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
 
-class ShipmentDate1Form(FlaskForm):
+class ShipmentDate1Form(FlashingForm):
     date_received = DateField(format='%Y-%m-%d')
 
-class ShipmentDate2Form(FlaskForm):
+class ShipmentDate2Form(FlashingForm):
     next_due = DateField(format='%Y-%m-%d')
 
-class EditShipmentForm(FlaskForm):
+class EditShipmentForm(FlashingForm):
     date_posted = DateField(format='%Y-%m-%d')
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')

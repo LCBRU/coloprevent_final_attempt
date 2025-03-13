@@ -27,7 +27,7 @@ def site_home():
     return render_template('ui/summary.html', ordered_list = ordered_list, search_form=search_form)
     
 
-class SiteForm(FlaskForm):
+class SiteForm(FlashingForm):
     site_name = StringField('Site name', validators=[DataRequired()])
     site_primary_contact = TextAreaField('Primary contact',validators=[DataRequired()])
     site_backup_contact = TextAreaField('Back up contact',validators=[DataRequired()])

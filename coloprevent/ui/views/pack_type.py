@@ -11,7 +11,7 @@ from lbrc_flask.response import refresh_response
 from coloprevent.model import PackType
 from flask_wtf import FlaskForm
 
-class PacktypeForm(FlaskForm):
+class PacktypeForm(FlashingForm):
     packtype_name = StringField("Name")
 
 @blueprint.route('/packtype_home', methods=['GET', 'POST'])
