@@ -5,6 +5,14 @@
 <section class="container">
     <header>
         <h2>Expiry check</h2>
+        <form method="GET" action="{{ url_for('ui.pack_expiry_report') }}">
+        <fieldset class="columns">
+          {{ search_form.hidden_tag() }}
+          {{ render_form_fields(search_form) }}
+
+    
+          </div>    
+      </fieldset>
 
     </header>
     

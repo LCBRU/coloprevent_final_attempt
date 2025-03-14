@@ -7,7 +7,7 @@
         <h2>Sites</h2>
         
       <form method="GET" action="{{ url_for('ui.site_home') }}">
-        <fieldset>
+        <fieldset class="columns">
           {{ search_form.hidden_tag() }}
           {{ render_form_fields(search_form) }}
       

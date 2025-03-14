@@ -8,7 +8,7 @@ from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, 
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import PackShipment, Pack, Site
+from coloprevent.model import PackShipment, Pack, Site, PackType
 from flask_wtf import FlaskForm
 from lbrc_flask.requests import get_value_from_all_arguments
 
@@ -16,10 +16,13 @@ class SiteDropDownForm (SearchForm):
     site = SelectField('Site ID')
     date_posted_from = DateField()
     date_posted_to = DateField()
+    pack_name = SelectField('Packtype')
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.site.choices=[("","")]+[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
+
+        self.pack_name.choices=[("","")]+[(pk.id, pk.name) for pk in db.session.execute(select(Pack)).scalars()]
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
@@ -48,10 +51,12 @@ def index():
           q = q.where(
        
         PackShipment.date_posted < search_form.date_posted_to.data)
-        
-    
-       
-     print(f"Search Form Site Data: {search_form.site.data}") 
+          
+     if search_form.pack_name.data:
+         q = q.where(Pack.id == search_form.pack_name.data) #MAY NEED TO DO A JOIN 
+
+     print (search_form.pack_name.data)
+
      
      q_list = db.session.execute(q).scalars()
      ordered_list =[]
