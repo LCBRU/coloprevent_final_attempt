@@ -16,13 +16,13 @@ class SiteDropDownForm (SearchForm):
     site = SelectField('Site ID')
     date_posted_from = DateField()
     date_posted_to = DateField()
-    pack_name = SelectField('Packtype')
+    pack_type_id = SelectField('Packtype')
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.site.choices=[("","")]+[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
 
-        self.pack_name.choices=[("","")]+[(pk.id, pk.name) for pk in db.session.execute(select(Pack)).scalars()]
+        self.pack_type_id.choices=[("","")]+[(pt.id, pt.packtype_name) for pt in db.session.execute(select(PackType)).scalars()]
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
@@ -52,10 +52,13 @@ def index():
        
         PackShipment.date_posted < search_form.date_posted_to.data)
           
-     if search_form.pack_name.data:
-         q = q.where(Pack.id == search_form.pack_name.data) #MAY NEED TO DO A JOIN 
+     
+     if search_form.pack_type_id.data:
+         q= q.where (PackShipment.packs.any(Pack.packtype_id == search_form.pack_type_id.data))
 
-     print (search_form.pack_name.data)
+    
+
+    
 
      
      q_list = db.session.execute(q).scalars()

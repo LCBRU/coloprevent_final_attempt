@@ -10,7 +10,6 @@ from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import Site
 from flask_wtf import FlaskForm
-
 @blueprint.route('/site_home', methods=['GET', 'POST'])
 def site_home():
     search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
