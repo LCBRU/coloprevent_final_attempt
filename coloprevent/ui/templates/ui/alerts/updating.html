@@ -1,9 +1,9 @@
-{% if count > 0 %}
+{% if expiry_alert == True %}
     <div hx-get="{{ url_for('ui.is_updating') }}"
         hx-trigger="every 30s"
         hx-target="this"
         hx-swap="outerHTML">
-      <div class="flash message">Testing for coloprevent {{ count }} items</div>
+      <div class="flash message">30 days have passed since packs have been sent</div>
     </div>
 {% else %}
     <div hx-get="{{ url_for('ui.is_updating') }}"
