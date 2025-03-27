@@ -22,8 +22,6 @@ def is_updating():
     q_date = db.session.execute(q).scalars()
     for dat_dif in q_date:
         calc_diff= (today - dat_dif).days
-        print(calc_diff)
-        print(type(calc_diff))
         if calc_diff >= 30:
             expiry_alert_list.append(calc_diff)
     if len(expiry_alert_list) >= 1:
