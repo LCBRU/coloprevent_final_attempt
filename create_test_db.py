@@ -33,5 +33,28 @@ site_added = Site(
 
 db.session.add(site_added)
 db.session.commit()
+
+
+packtype_added = PackType(
+    packtype_name = "Research bloods"
+     
+    )
+
+db.session.add(packtype_added)
+db.session.commit()
+
+
+pack_added = Pack(
+    packtype_id = packtype_added.id,
+    pack_identity = 1,
+    pack_expiry = date(2025,3,28),
+
+    
+    )
+db.session.add(pack_added)
+db.session.commit()
+
+
 db.session.close()
+
 
