@@ -22,6 +22,8 @@
               <th>Pack Identity</th>
               <th>Pack Expiry</th>
               <th>Pack type</th>
+              <th>Ignore pack from report</th>
+              
             </tr>
             {% for item in ordered_list %}
             <tr>
@@ -30,6 +32,8 @@
               <td>{{item.pack_identity}}</td>
               <td>{{item.pack_expiry|date_format}}</td>
               <td>{{item.packtype.packtype_name}}</td>
+              <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.pack_action', id=item.id)}}" hx-target="body" hx-swap="beforeend"></a>
+                {{item.pack_action }}</td>
               {% endfor %}  
           </table>
 

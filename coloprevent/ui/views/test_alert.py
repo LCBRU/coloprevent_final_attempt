@@ -9,7 +9,7 @@ from datetime import *
 @blueprint.route("/is_updating")
 def is_updating():
     expiry_date = date.today()-timedelta(days=30)
-    q = db.select(func.count(Pack.id)).where(Pack.pack_expiry <=expiry_date)
+    q = db.select(func.count(Pack.id)).where(Pack.pack_expiry <=expiry_date).where(Pack.pack_action != 'Yes') #check to see if works 
     expiry_alert = db.session.execute(q).scalar() >0
 
     return render_template("ui/alerts/updating.html", expiry_alert=expiry_alert)

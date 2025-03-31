@@ -51,6 +51,22 @@ def add_pack():
     
     return render_template('lbrc/form_modal.html', form=pack_form , title="Add Pack", url=url_for("ui.add_pack"))
 
+class PackActionForm(FlashingForm):
+    pack_action = RadioField(u'Tick "Yes" to ignore the expiry alert from this pack', choices=[('Yes', 'Yes'), ('No', 'No')])
+
+@blueprint.route('/pack_action/<int:id>', methods=['GET', 'POST'])
+def pack_action(id):
+    find_record = db.get_or_404(Pack,id)
+    add_pack_action_form = PackActionForm()
+    if add_pack_action_form.validate_on_submit():
+        find_record.pack_action = add_pack_action_form.pack_action.data
+        db.session.add(find_record)
+        db.session.commit()
+        return refresh_response()
+    return render_template('lbrc/form_modal.html', form = add_pack_action_form, id=id, title="Click yes to ignore from report", url=url_for("ui.pack_action",id=id))
+    pass
+
+
 @blueprint.route('/delete_pack/<int:id>', methods=['GET', 'POST'])
 def delete_pack(id):
     delete_id = id

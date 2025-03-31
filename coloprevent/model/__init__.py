@@ -32,6 +32,7 @@ class Pack(db.Model, AuditMixin):
     packtype_id:Mapped[int]=mapped_column(ForeignKey("pack_type.id"))
     pack_shipment: Mapped["PackShipment"] = relationship(back_populates="packs") 
     pack_shipment_id: Mapped[int] = mapped_column(ForeignKey("pack_shipment.id"), nullable=True)
+    pack_action: Mapped[str] = mapped_column(nullable = True)
     @property
     def name(self):
         return f'{self.packtype.packtype_name}: {self.pack_identity}'

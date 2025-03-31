@@ -54,6 +54,16 @@ pack_added = Pack(
 db.session.add(pack_added)
 db.session.commit()
 
+pack_shipment_added = PackShipment(
+    date_posted = date(2025,3,28),
+    date_received = date(2025,3,31),
+    next_due = date(2025,4,30),
+    site_id = site_added.id
+)
+
+db.session.add(pack_shipment_added)
+db.session.commit()
+
 
 db.session.close()
 
