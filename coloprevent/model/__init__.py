@@ -19,7 +19,7 @@ class Site(db.Model, AuditMixin):
 
 class PackType(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
-    packtype_name: Mapped[str] = mapped_column(nullable=False, unique=True)
+    packtype_name: Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
     packs:Mapped[list["Pack"]] = relationship(back_populates="packtype") 
 
    
@@ -32,7 +32,7 @@ class Pack(db.Model, AuditMixin):
     packtype_id:Mapped[int]=mapped_column(ForeignKey("pack_type.id"))
     pack_shipment: Mapped["PackShipment"] = relationship(back_populates="packs") 
     pack_shipment_id: Mapped[int] = mapped_column(ForeignKey("pack_shipment.id"), nullable=True)
-    pack_action: Mapped[str] = mapped_column(nullable = True)
+    pack_action: Mapped[str] = mapped_column(String(100),nullable = True)
     @property
     def name(self):
         return f'{self.packtype.packtype_name}: {self.pack_identity}'
@@ -60,8 +60,8 @@ class Consumable(db.Model,AuditMixin ):
 
 class ConsumableDetails(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
-    cat_no:Mapped[str] = mapped_column(unique=True, nullable=False) # looks alpa-numeric from spreadsheet 
-    supplier: Mapped[str]=mapped_column(nullable=False)
+    cat_no:Mapped[str] = mapped_column(String(100),unique=True, nullable=False) # looks alpa-numeric from spreadsheet 
+    supplier: Mapped[str]=mapped_column(String(100),nullable=False)
     price_increase:Mapped[int]=mapped_column(nullable=True)
     price:Mapped[float]=mapped_column(nullable=False)
     quantity_per_pack:Mapped[int]=mapped_column(nullable=False)
@@ -94,8 +94,8 @@ class ConsumablePacks(db.Model, AuditMixin):
 
 class PatientDetails(db.Model, AuditMixin):
     id: Mapped[int] =mapped_column(primary_key=True)
-    screening_id: Mapped[str]=mapped_column(nullable=False, unique=True)
-    pid:Mapped[str]=mapped_column(nullable=False, unique=True)
+    screening_id: Mapped[str]=mapped_column(String(100),nullable=False, unique=True)
+    pid:Mapped[str]=mapped_column(String(100),nullable=False, unique=True)
     date_of_consent: Mapped[date]=mapped_column(nullable=False)
     visit_1: Mapped[list["PatientVisit1"]] = relationship(back_populates="patient_details")
     visit_4: Mapped[list["PatientVisit4"]] = relationship(back_populates="patient_details")
