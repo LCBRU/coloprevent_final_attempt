@@ -2,14 +2,11 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select, and_ , or_
-from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField, DateField, IntegerField,TextAreaField, SelectField
-from wtforms.validators import Length, DataRequired
+from sqlalchemy import select, or_
+from wtforms import RadioField, DateField, SelectField
 from lbrc_flask.forms import FlashingForm, SearchForm
-from lbrc_flask.response import refresh_response
+from lbrc_flask.response import refresh_response, refresh_results
 from coloprevent.model import PackShipment, Pack, Site, PackType
-from flask_wtf import FlaskForm
 from lbrc_flask.requests import get_value_from_all_arguments
 
 class SiteDropDownForm (SearchForm):
@@ -191,39 +188,45 @@ def search_pack(id):
  
 )
 
+class SelectedPack():
+    def __init__(self, pack, selected):
+        self.name = pack.name
+        self.id = pack.id
+        self.selected = selected
+    
 
 @blueprint.route("/add_shipment/add_pack/<int:id>/search_results/<int:page>")   
 @blueprint.route("/add_shipment/add_pack/<int:id>/search_results")
 def search_pack_search_results(id, page=1):
-    p: PackShipment = db.get_or_404(PackShipment, id)
+    shipment: PackShipment = db.get_or_404(PackShipment, id)
     search = get_value_from_all_arguments('search_string') or ''
 
     q =  (
         select(Pack)
-        .where(Pack.pack_shipment_id == None)
+        .where(or_(
+            Pack.pack_shipment_id == None,
+            Pack.pack_shipment_id == shipment.id
+        ))
         .order_by(Pack.pack_identity, Pack.id)
     )
 
     if search:
         q = q.where(Pack.pack_identity == search)
 
-    
+    results = db.paginate(select=q)
 
+    new_items = []
+    for p in results.items:
+        new_items.append(SelectedPack(p, p.pack_shipment_id == shipment.id))
 
-    results = db.paginate(
-        select=q,
-        page=page,
-        per_page=5,
-        error_out=False,
-    )
-
+    results.items = new_items
 
     return render_template(
             "lbrc/search_add_results.html",
             add_title="Add pack shipment" '{q.pack_identity}',
-            add_url=url_for('ui.add_pack_to_shipment', id=p.id),
+            add_url=url_for('ui.add_pack_to_shipment', id=shipment.id),
             results_url='ui.search_pack_search_results',
-            results_url_args={'id': p.id},
+            results_url_args={'id': shipment.id},
             results=results,
         )
 
@@ -240,7 +243,7 @@ def add_pack_to_shipment(id):
     db.session.add(ps)
     db.session.commit()
 
-    return refresh_response()
+    return refresh_results()
 
 @blueprint.route("/shipment/<int:id>/pack/<int:pack_id>/delete", methods=['POST'])
 def delete_pack_to_shipment(id,pack_id):
