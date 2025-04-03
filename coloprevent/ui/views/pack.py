@@ -64,7 +64,7 @@ def pack_action(id):
         db.session.commit()
         return refresh_response()
     return render_template('lbrc/form_modal.html', form = add_pack_action_form, id=id, title="Click yes to ignore from report", url=url_for("ui.pack_action",id=id))
-    pass
+    
 
 
 @blueprint.route('/delete_pack/<int:id>', methods=['GET', 'POST'])
