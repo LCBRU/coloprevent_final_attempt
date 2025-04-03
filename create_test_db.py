@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
 from dotenv import load_dotenv
+
+# Load environment variables from '.env' file.
+load_dotenv()
+
 from lbrc_flask.database import db
 from lbrc_flask.security import init_roles, init_users
 from alembic.config import Config
@@ -9,9 +13,6 @@ from faker import Faker
 from coloprevent.model import *
 
 fake = Faker()
-
-# Load environment variables from '.env' file.
-load_dotenv()
 
 from coloprevent import create_app
 
