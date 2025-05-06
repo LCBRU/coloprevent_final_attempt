@@ -14,7 +14,7 @@ from flask_wtf import FlaskForm
 @blueprint.route('/pack', methods=['GET', 'POST'])
 def pack():
     search_form = SearchForm(search_placeholder='Search packs ID', formdata=request.args) 
-    q = db.select(Pack).order_by(Pack.id)
+    q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id)
     if search_form.search.data:
         q = q.where(Pack.pack_identity.like(f'%{search_form.search.data}%'))
     q_list = db.session.execute(q).scalars()
