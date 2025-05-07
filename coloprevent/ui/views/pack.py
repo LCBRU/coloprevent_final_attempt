@@ -40,7 +40,7 @@ class PackForm(FlashingForm):
 def add_pack():
     pack_form = PackForm()
     if pack_form.validate_on_submit():
-        pack_id_data = pack_form.pack_identity.data.split("-") #storing multiple id's added into variable before for loop 
+        pack_id_data = pack_form.pack_identity.data.split("-") 
         for packid in pack_id_data:
             
             pack_added = Pack(
