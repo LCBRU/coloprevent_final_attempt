@@ -25,7 +25,7 @@ def pack():
     return render_template('ui/pack/pack_home.html', ordered_list = ordered_list, search_form=search_form)
 
 class PackForm(FlashingForm):
-    pack_identity = IntegerField('Pack Identity', validators=[DataRequired()])
+    pack_identity = StringField('Pack Identity', validators=[DataRequired()])
     pack_expiry = DateField(format='%Y-%m-%d')
     pack_type = RadioField('Packtype' , coerce=int)
 
@@ -40,13 +40,16 @@ class PackForm(FlashingForm):
 def add_pack():
     pack_form = PackForm()
     if pack_form.validate_on_submit():
-        pack_added = Pack(
-        pack_identity= pack_form.pack_identity.data,
-        pack_expiry = pack_form.pack_expiry.data,
-        packtype_id = pack_form.pack_type.data
-        )
-        db.session.add(pack_added)
-        db.session.commit()
+        pack_id_data = pack_form.pack_identity.data.split("-") #storing multiple id's added into variable before for loop 
+        for packid in pack_id_data:
+            
+            pack_added = Pack(
+            pack_identity= int(packid),
+            pack_expiry = pack_form.pack_expiry.data,
+            packtype_id = pack_form.pack_type.data
+            )
+            db.session.add(pack_added)
+            db.session.commit()
         return refresh_response()
     
     return render_template('lbrc/form_modal.html', form=pack_form , title="Add Pack", url=url_for("ui.add_pack"))
