@@ -14,9 +14,13 @@ from flask_wtf import FlaskForm
 def site_home():
     search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
     q = db.select(Site).order_by(
-    cast(func.substring(Site.site_name, func.instr
-     (' ', Site.site_name) + 1), type_=Integer),
-    func.substring(Site.site_name, -1))
+    cast(
+        func.substr(Site.site_name, func.instr(Site.site_name, ' ') + 1), Integer
+    ),
+    func.substr(Site.site_name, func.char_length(Site.site_name) - 1, 1)
+)
+
+
 
 
     if search_form.search.data:
