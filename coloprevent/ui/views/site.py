@@ -2,7 +2,7 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select
+from sqlalchemy import select, cast, func, Integer
 from lbrc_flask.security import User
 from wtforms import HiddenField, StringField, TextAreaField, IntegerField
 from wtforms.validators import Length, DataRequired
@@ -13,7 +13,12 @@ from flask_wtf import FlaskForm
 @blueprint.route('/site_home', methods=['GET', 'POST'])
 def site_home():
     search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
-    q = db.select(Site).order_by(Site.id)
+    q = db.select(Site).order_by(
+    cast(func.substring(Site.site_name, func.instr
+     (' ', Site.site_name) + 1), type_=Integer),
+    func.substring(Site.site_name, -1))
+
+
     if search_form.search.data:
         q = q.where(Site.site_name.like(f'%{search_form.search.data}%'))
     q_list = db.session.execute(q).scalars()
