@@ -1,5 +1,6 @@
 {% extends "ui/menu_page.html" %}
 {% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
+{% from "lbrc/pagination.html" import render_pagination, pagination_summary %}
 
 {% block menu_page_content %}
 <section class="container">
@@ -16,7 +17,10 @@
       </fieldset>
       </form>
     </header>
-        <table>
+
+     {{ pagination_summary(packs, 'packs') }}
+
+        <table class="with_icons">
             <tr>
               <th> </th>
               <th>Pack Identity</th>
@@ -25,18 +29,18 @@
               <th>Ignore pack from report</th>
               
             </tr>
-            {% for item in ordered_list %}
+            {% for pk in packs.items %}
             <tr>
-              <td><a class="icon delete" href="{{url_for('ui.delete_pack', id=item.id)}}"></a>
-              <a class="icon edit" href="javascript:;" hx-get="{{url_for('ui.edit_pack', id=item.id)}}"  hx-target="body" hx-swap="beforeend"></a></td>
-              <td>{{item.pack_identity}}</td>
-              <td>{{item.pack_expiry|date_format}}</td>
-              <td>{{item.packtype.packtype_name}}</td>
-              <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.pack_action', id=item.id)}}" hx-target="body" hx-swap="beforeend"></a>
-                {{item.pack_action }}</td>
+              <td><a class="icon delete" href="{{url_for('ui.delete_pack', id=pk.id)}}"></a>
+              <a class="icon edit" href="javascript:;" hx-get="{{url_for('ui.edit_pack', id=pk.id)}}"  hx-target="body" hx-swap="beforeend"></a></td>
+              <td>{{pk.pack_identity}}</td>
+              <td>{{pk.pack_expiry|date_format}}</td>
+              <td>{{pk.packtype.packtype_name}}</td>
+              <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.pack_action', id=pk.id)}}" hx-target="body" hx-swap="beforeend"></a>
+                {{pk.pack_action }}</td>
               {% endfor %}  
           </table>
-
+   {{ render_pagination(packs, 'ui.pack', form=search_form) }}
 
 
 </section>

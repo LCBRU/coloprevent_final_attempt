@@ -24,9 +24,9 @@ class SiteDropDownForm (SearchForm):
 
 @blueprint.route('/', methods=['GET', 'POST'])
 def index():
-     search_form = SiteDropDownForm(search_placeholder='Search by site', formdata=request.args) 
-     q = db.select(PackShipment).order_by(PackShipment.id.desc())
-     if search_form.search.data:
+    search_form = SiteDropDownForm(search_placeholder='Search by site', formdata=request.args) 
+    q = db.select(PackShipment).order_by(PackShipment.id.desc())
+    if search_form.search.data:
        q = q.where(
 
             PackShipment.site.has(Site.site_name.like(f"%{search_form.search.data}%")),
@@ -34,32 +34,41 @@ def index():
     
     )
        
-     if search_form.site.data:
+    if search_form.site.data:
         q = q.where(
        
         PackShipment.site_id == search_form.site.data)
 
-     if search_form.date_posted_from.data:
+    if search_form.date_posted_from.data:
           q = q.where(
        
         PackShipment.date_posted > search_form.date_posted_from.data)
   
-     if search_form.date_posted_to.data:
+    if search_form.date_posted_to.data:
           q = q.where(
        
         PackShipment.date_posted < search_form.date_posted_to.data)
           
      
-     if search_form.pack_type_id.data:
+    if search_form.pack_type_id.data:
          q= q.where (PackShipment.packs.any(Pack.packtype_id == search_form.pack_type_id.data))
 
+
+    packshipments = db.paginate(
+    select=q,
+    page=search_form.page.data,
+    per_page=5,
+    error_out=False,
+    )
+
          
-     q_list = db.session.execute(q).scalars()
-     ordered_list =[]
-     for queried in q_list:
-        ordered_list.append(queried)
+    #  q_list = db.session.execute(q).scalars()
+    #  ordered_list =[]
+    #  for queried in q_list:
+    #     ordered_list.append(queried)
+
  
-     return render_template('ui/pack_shipment/pack_shipment_home.html', ordered_list=ordered_list, search_form=search_form)
+    return render_template('ui/pack_shipment/pack_shipment_home.html', packshipments=packshipments, search_form=search_form)
 
 
 

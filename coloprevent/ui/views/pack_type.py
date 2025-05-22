@@ -20,10 +20,16 @@ def packtype_home():
     q = db.select(PackType).order_by(PackType.id)
     if search_form.search.data:
         q = q.where(PackType.packtype_name.like(f'%{search_form.search.data}%'))
-    q_list = db.session.execute(q).scalars()
 
 
-    return render_template('ui/packtype/packtype_home.html', ordered_list=q_list, search_form=search_form)
+    packtypes = db.paginate(
+    select=q,
+    page=search_form.page.data,
+    per_page=5,
+    error_out=False,
+)
+
+    return render_template('ui/packtype/packtype_home.html', packtypes=packtypes, search_form=search_form)
 
 @blueprint.route('/add_packtype', methods=['GET', 'POST'])
 def add_packtype():

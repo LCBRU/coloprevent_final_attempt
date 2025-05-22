@@ -1,5 +1,6 @@
 {% extends "ui/menu_page.html" %}
 {% from "lbrc/form_macros.html" import render_form_fields, render_button_bar %}
+{% from "lbrc/pagination.html" import render_pagination, pagination_summary %}
 
 {% block menu_page_content %}
 <section class="container">
@@ -19,8 +20,9 @@
     </form>
 
     </header>
+    {{ pagination_summary(sites, 'site') }}
     
-        <table>
+        <table class="with_icons">
             <tr>
               <th> </th>
               <th>Site</th>
@@ -28,18 +30,19 @@
               <th>Back up contact</th>
               <th>Site Code</th>
             </tr>
-            {% for item in ordered_list %}
+            {% for s in sites.items %}
             <tr>
-              <td><a class="icon delete" href="{{url_for('ui.delete', id=item.id)}}"></a>
-              <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit', id=item.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
-              <td>{{item.site_name}}</td>
-              <td>{{item.site_primary_contact}}</td>
-              <td>{{item.site_backup_contact}}</td>
-              <td>{{item.site_code}}</td>
+              <td><a class="icon delete" href="{{url_for('ui.delete', id=s.id)}}"></a>
+              <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit', id=s.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
+              <td>{{s.site_name}}</td>
+              <td>{{s.site_primary_contact}}</td>
+              <td>{{s.site_backup_contact}}</td>
+              <td>{{s.site_code}}</td>
             </tr>
             {% endfor %}
 
           </table>
+          {{ render_pagination(sites, 'ui.site_home', form=search_form) }}
 
 
     

@@ -17,12 +17,21 @@ def pack():
     q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id)
     if search_form.search.data:
         q = q.where(Pack.pack_identity.like(f'%{search_form.search.data}%'))
-    q_list = db.session.execute(q).scalars()
-    ordered_list =[]
-    for queried in q_list:
-        ordered_list.append(queried)
 
-    return render_template('ui/pack/pack_home.html', ordered_list = ordered_list, search_form=search_form)
+    packs = db.paginate(
+    select=q,
+    page=search_form.page.data,
+    per_page=5,
+    error_out=False,
+)
+
+
+    # q_list = db.session.execute(q).scalars()
+    # ordered_list =[]
+    # for queried in q_list:
+    #     ordered_list.append(queried)
+
+    return render_template('ui/pack/pack_home.html',packs=packs, search_form=search_form)
 
 class PackForm(FlashingForm):
     pack_identity = StringField('Pack Identity', validators=[DataRequired()])

@@ -16,18 +16,26 @@ def site_home():
     q = db.select(Site).order_by(Site.site_name)
 
 
-
-
     if search_form.search.data:
         q = q.where(Site.site_name.like(f'%{search_form.search.data}%'))
-    q_list = db.session.execute(q).scalars()
-    ordered_list =[]
-    for queried in q_list:
-        ordered_list.append(queried)
+
+    
+    sites = db.paginate(
+    select=q,
+    page=search_form.page.data,
+    per_page=5,
+    error_out=False,
+)
+
+
+    # q_list = db.session.execute(q).scalars()
+    # ordered_list =[]
+    # for queried in q_list:
+    #     ordered_list.append(queried)
 
 
     
-    return render_template('ui/summary.html', ordered_list = ordered_list, search_form=search_form)
+    return render_template('ui/summary.html', search_form=search_form, sites=sites)
     
 
 class SiteForm(FlashingForm):

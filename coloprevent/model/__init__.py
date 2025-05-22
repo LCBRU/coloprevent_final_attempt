@@ -10,8 +10,8 @@ from lbrc_flask.security import AuditMixin
 class Site(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
     site_name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    site_backup_contact:Mapped[str] = mapped_column(String(100),nullable=False, unique=True)
-    site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    site_backup_contact:Mapped[str] = mapped_column(String(100),nullable=False)
+    site_primary_contact: Mapped[str] = mapped_column(String(100), nullable=False)
     site_code:Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     pack_shipment: Mapped[list["PackShipment"]] = relationship(back_populates="site") 
     
