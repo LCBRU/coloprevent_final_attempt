@@ -4,19 +4,30 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, DateField, IntegerField, RadioField
+from wtforms import HiddenField, StringField, DateField, RadioField, SelectField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackType, Pack
 from flask_wtf import FlaskForm
 
+class SiteDropDownForm (SearchForm):
+    pack_type_id = SelectField('Packtype')
+    def __init__(self,  **kwargs):
+        super().__init__(**kwargs)
+
+        self.pack_type_id.choices=[("","")]+[(pt.id, pt.packtype_name) for pt in db.session.execute(select(PackType)).scalars()]
+
+
 @blueprint.route('/pack', methods=['GET', 'POST'])
 def pack():
-    search_form = SearchForm(search_placeholder='Search packs ID', formdata=request.args) 
+    search_form = SiteDropDownForm(search_placeholder='Search packs ID', formdata=request.args) 
     q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id)
     if search_form.search.data:
         q = q.where(Pack.pack_identity.like(f'%{search_form.search.data}%'))
+
+    if search_form.pack_type_id.data:
+        q = q.where(Pack.packtype_id == search_form.pack_type_id.data)
 
     packs = db.paginate(
     select=q,
