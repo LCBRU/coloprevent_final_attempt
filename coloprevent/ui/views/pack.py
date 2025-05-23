@@ -8,15 +8,17 @@ from wtforms import HiddenField, StringField, DateField, RadioField, SelectField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import PackType, Pack
+from coloprevent.model import PackType, Pack, PackShipment
 from flask_wtf import FlaskForm
 
 class SiteDropDownForm (SearchForm):
     pack_type_id = SelectField('Packtype')
+    available_packs = SelectField('Select blank for available packs')
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.pack_type_id.choices=[("","")]+[(pt.id, pt.packtype_name) for pt in db.session.execute(select(PackType)).scalars()]
+        self.available_packs.choices=[("","")]+[(ps.id, ps.id) for ps in db.session.execute(select(PackShipment)).scalars()]
 
 
 @blueprint.route('/pack', methods=['GET', 'POST'])
@@ -28,6 +30,12 @@ def pack():
 
     if search_form.pack_type_id.data:
         q = q.where(Pack.packtype_id == search_form.pack_type_id.data)
+
+    if search_form.available_packs.data == "":
+         q = q.where(Pack.pack_shipment_id.is_(None))
+
+
+         
 
     packs = db.paginate(
     select=q,
