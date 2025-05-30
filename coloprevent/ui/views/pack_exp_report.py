@@ -1,16 +1,17 @@
 from .. import blueprint
-from flask import render_template, request, url_for, redirect
+from flask import render_template, request, url_for, redirect, send_file
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select, and_
 from lbrc_flask.security import User
 from wtforms.validators import Length, DataRequired
-from wtforms import HiddenField, StringField, TextAreaField, DateField, SelectField
+from wtforms import HiddenField, StringField, TextAreaField, DateField, SelectField, SubmitField
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import  Pack, Site, PackShipment, PackType
 from flask_wtf import FlaskForm
 from lbrc_flask.requests import get_value_from_all_arguments
+import csv
 
 
 class DropDownForm (SearchForm):
@@ -42,6 +43,9 @@ def pack_expiry_report():
    ).join(
    PackShipment.site)
 
+
+
+
    if search_form.search.data:
       q = q.where(Pack.pack_identity == search_form.search.data)
 
@@ -56,6 +60,26 @@ def pack_expiry_report():
 
    if search_form.site.data:
       q = q.where(PackShipment.site_id == search_form.site.data)
+
+
+
+   if request.method == "POST": #attempting csv code 
+      download_button = request.form.get('download_report')
+      if download_button is not None:  
+         with open ('expiry_csv', 'w', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile , delimiter=',')
+            csvwriter.writerow(["Pack Identity", "Packtype", "Pack Expiry", "Site"])
+            for q_line in q:
+               csvwriter.writerow([q_line.pack_identity, q_line.packtype.packtype_name, q_line.pack_expiry, q_line.packshipment.site_id])
+
+         return send_file('../expiry_csv',
+                        mimetype='text/csv',
+                        as_attachment=True,
+                        download_name="Expiry_report.csv"
+
+                        )
+
+      
 
 
 

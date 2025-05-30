@@ -10,10 +10,13 @@
           {{ search_form.hidden_tag() }}
           {{ render_form_fields(search_form) }}
 
-    
           </div>    
       </fieldset>
+    </form>
 
+    <form method="POST", action="{{ url_for('ui.pack_expiry_report') }}">
+      <button type="submit" name="download_report">Download Expiry report</button>  <!--Test code -->
+    </form>
     </header>
     
         <table>
