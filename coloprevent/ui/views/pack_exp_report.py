@@ -61,18 +61,20 @@ def pack_expiry_report():
    if search_form.site.data:
       q = q.where(PackShipment.site_id == search_form.site.data)
 
-   q_download = db.session.execute(q).scalars()   
+  
    
+   q_download = db.session.execute(q).all()
 
 
-   if request.method == "POST":
+
+   if request.method == "POST": #attempting csv code 
       download_button = request.form.get('download_report')
       if download_button is not None:  
          with open ('expiry_csv', 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile , delimiter=',')
             csvwriter.writerow(["Pack Identity", "Packtype", "Pack Expiry", "Site"])
             for q_line in q_download:
-               csvwriter.writerow([q_line.pack_identity, q_line.packtype.packtype_name, q_line.pack_expiry, q_line.packshipment.site_id])
+               csvwriter.writerow([q_line.pack_identity, q_line.packtype_name, q_line.pack_expiry, q_line.site_name])
 
          return send_file('../expiry_csv',
                         mimetype='text/csv',
@@ -82,6 +84,7 @@ def pack_expiry_report():
                         )
 
       
+ 
 
 
 
