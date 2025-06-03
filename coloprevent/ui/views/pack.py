@@ -4,7 +4,7 @@ from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
 from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, DateField, RadioField, SelectField
+from wtforms import HiddenField, StringField, DateField, RadioField, SelectField, BooleanField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
@@ -13,7 +13,7 @@ from flask_wtf import FlaskForm
 
 class SiteDropDownForm (SearchForm):
     pack_type_id = SelectField('Packtype')
-    available_packs = SelectField('Select blank for available packs')
+    available_packs = BooleanField('Select all packs (Inclusive of assigned packs)', default=True)
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
@@ -31,7 +31,7 @@ def pack():
     if search_form.pack_type_id.data:
         q = q.where(Pack.packtype_id == search_form.pack_type_id.data)
 
-    if search_form.available_packs.data == "":
+    if search_form.available_packs.data == False:
          q = q.where(Pack.pack_shipment_id.is_(None))
 
 
