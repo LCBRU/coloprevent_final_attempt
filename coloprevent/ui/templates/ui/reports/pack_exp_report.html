@@ -14,8 +14,8 @@
       </fieldset>
     </form>
 
-    <form method="POST", action="{{ url_for('ui.pack_expiry_report') }}">
-      <button type="submit" name="download_report">Download Expiry report</button>  <!--Test code -->
+    <form method="GET", action="{{ url_for('ui.pack_expiry_report_download') }}">
+      <button type="submit" name="download_report">Download Expiry report</button>
     </form>
     </header>
     
