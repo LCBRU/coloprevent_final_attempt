@@ -13,12 +13,12 @@ from flask_wtf import FlaskForm
 
 class SiteDropDownForm (SearchForm):
     pack_type_id = SelectField('Packtype')
-    available_packs = BooleanField('Select all packs (Inclusive of assigned packs)', default=True)
+    hide_assigned = BooleanField('Hide assigned packs', default=False)
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.pack_type_id.choices=[("","")]+[(pt.id, pt.packtype_name) for pt in db.session.execute(select(PackType)).scalars()]
-        self.available_packs.choices=[("","")]+[(ps.id, ps.id) for ps in db.session.execute(select(PackShipment)).scalars()]
+
 
 
 @blueprint.route('/pack', methods=['GET', 'POST'])
@@ -31,8 +31,8 @@ def pack():
     if search_form.pack_type_id.data:
         q = q.where(Pack.packtype_id == search_form.pack_type_id.data)
 
-    if search_form.available_packs.data == False:
-         q = q.where(Pack.pack_shipment_id.is_(None))
+    if search_form.hide_assigned.data == True:
+         q = q.where(Pack.pack_shipment_id == None)
 
 
          
