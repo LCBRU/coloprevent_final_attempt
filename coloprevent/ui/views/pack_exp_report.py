@@ -18,6 +18,7 @@ class DropDownForm (SearchForm):
     packtype = SelectField('Packtype')
     pack_expriry_from = DateField()
     pack_expriry_to = DateField()
+    pack_specific_expiry_date = DateField()
     site = SelectField ('Site')
 
     def __init__(self,  **kwargs):
@@ -79,6 +80,9 @@ def get_pack_expiry_report_query(search_form):
 
     if search_form.pack_expriry_to.data:
        q = q.where(Pack.pack_expiry < search_form.pack_expriry_to.data)
+
+    if search_form.pack_specific_expiry_date.data:
+       q = q.where(Pack.pack_expiry == search_form.pack_specific_expiry_date.data)
 
     if search_form.site.data:
        q = q.where(PackShipment.site_id == search_form.site.data)
