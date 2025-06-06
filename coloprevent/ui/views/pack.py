@@ -8,7 +8,7 @@ from wtforms import HiddenField, StringField, DateField, RadioField, SelectField
 from wtforms.validators import Length, DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import PackType, Pack, PackShipment
+from coloprevent.model import PackType, Pack, PackShipment, Site
 from flask_wtf import FlaskForm
 
 class SiteDropDownForm (SearchForm):
@@ -24,7 +24,8 @@ class SiteDropDownForm (SearchForm):
 @blueprint.route('/pack', methods=['GET', 'POST'])
 def pack():
     search_form = SiteDropDownForm(search_placeholder='Search packs ID', formdata=request.args) 
-    q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id)
+    q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id).join(Pack.pack_shipment).outerjoin(PackShipment.site, full=False) #won't show on page until added to shipment
+  
     if search_form.search.data:
         q = q.where(Pack.pack_identity.like(f'%{search_form.search.data}%'))
 
@@ -44,11 +45,6 @@ def pack():
     error_out=False,
 )
 
-
-    # q_list = db.session.execute(q).scalars()
-    # ordered_list =[]
-    # for queried in q_list:
-    #     ordered_list.append(queried)
 
     return render_template('ui/pack/pack_home.html',packs=packs, search_form=search_form)
 

@@ -26,6 +26,7 @@
               <th>Pack Identity</th>
               <th>Pack Expiry</th>
               <th>Pack type</th>
+              <th>Site</th>
               <th>Ignore pack from report</th>
               
             </tr>
@@ -36,6 +37,7 @@
               <td>{{pk.pack_identity}}</td>
               <td>{{pk.pack_expiry|date_format}}</td>
               <td>{{pk.packtype.packtype_name}}</td>
+              <td>{{pk.pack_shipment.site.site_name}}</td>
               <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.pack_action', id=pk.id)}}" hx-target="body" hx-swap="beforeend"></a>
                 {{pk.pack_action }}</td>
               {% endfor %}  
