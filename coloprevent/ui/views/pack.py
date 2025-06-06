@@ -2,7 +2,7 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select
+from sqlalchemy import select , or_
 from lbrc_flask.security import User
 from wtforms import HiddenField, StringField, DateField, RadioField, SelectField, BooleanField
 from wtforms.validators import Length, DataRequired
@@ -24,8 +24,15 @@ class SiteDropDownForm (SearchForm):
 @blueprint.route('/pack', methods=['GET', 'POST'])
 def pack():
     search_form = SiteDropDownForm(search_placeholder='Search packs ID', formdata=request.args) 
-    q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id).join(Pack.pack_shipment).outerjoin(PackShipment.site, full=False) #won't show on page until added to shipment
-  
+    #q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id).join(Pack.pack_shipment).outerjoin(PackShipment.site, full=False) #won't show on page until added to shipment
+    q = q = (
+    db.select(Pack)
+    .outerjoin(PackShipment, Pack.pack_shipment_id == PackShipment.id)
+    .outerjoin(Site, PackShipment.site_id == Site.id)
+    .order_by(Pack.pack_expiry, Pack.id)
+)
+
+
     if search_form.search.data:
         q = q.where(Pack.pack_identity.like(f'%{search_form.search.data}%'))
 

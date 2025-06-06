@@ -44,7 +44,7 @@ class PackShipment(db.Model, AuditMixin):
     date_received:Mapped[date] = mapped_column( nullable=True)
     next_due:Mapped[date] = mapped_column( nullable=True)
     site: Mapped["Site"] = relationship(back_populates="pack_shipment") 
-    site_id: Mapped[int] = mapped_column(ForeignKey("site.id")) 
+    site_id: Mapped[int] = mapped_column(ForeignKey("site.id"),nullable=True)
     packs:Mapped[list["Pack"]] = relationship(back_populates="pack_shipment")
  
 
