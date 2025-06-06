@@ -25,7 +25,7 @@ class SiteDropDownForm (SearchForm):
 @blueprint.route('/', methods=['GET', 'POST'])
 def index():
     search_form = SiteDropDownForm(search_placeholder='Search by site', formdata=request.args) 
-    q = db.select(PackShipment).order_by(PackShipment.id.desc())
+    q = db.select(PackShipment).order_by(PackShipment.date_posted.desc(), PackShipment.id.desc())
     if search_form.search.data:
        q = q.where(
 
