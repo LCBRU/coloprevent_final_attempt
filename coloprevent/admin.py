@@ -2,6 +2,8 @@ from lbrc_flask.database import db
 from lbrc_flask.security import Role, User
 from lbrc_flask.admin import AdminCustomView, init_admin as flask_init_admin
 
+from coloprevent.model import PackType
+
 
 
 class UserView(AdminCustomView):
@@ -16,11 +18,18 @@ class UserView(AdminCustomView):
     }
 
 
+class PackTypeView(AdminCustomView):
+    column_list = ["packtype_name"]
+    form_columns = ["packtype_name"]
+
+
+
 def init_admin(app, title):
     flask_init_admin(
         app,
         title,
         [
             UserView(User, db.session),
+            PackTypeView(PackType, db.session),
         ]
     )
