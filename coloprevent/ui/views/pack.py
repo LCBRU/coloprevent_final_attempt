@@ -2,36 +2,33 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select , or_
-from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, DateField, RadioField, SelectField, BooleanField
-from wtforms.validators import Length, DataRequired
+from sqlalchemy import select
+from wtforms import StringField, DateField, RadioField, SelectField, BooleanField
+from wtforms.validators import DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackType, Pack, PackShipment, Site
-from flask_wtf import FlaskForm
 
 class SiteDropDownForm (SearchForm):
     pack_type_id = SelectField('Packtype')
     hide_assigned = BooleanField('Hide assigned packs', default=False)
+
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.pack_type_id.choices=[("","")]+[(pt.id, pt.packtype_name) for pt in db.session.execute(select(PackType)).scalars()]
 
 
-
 @blueprint.route('/pack', methods=['GET', 'POST'])
 def pack():
     search_form = SiteDropDownForm(search_placeholder='Search packs ID', formdata=request.args) 
-    #q = db.select(Pack).order_by(Pack.pack_expiry, Pack.id).join(Pack.pack_shipment).outerjoin(PackShipment.site, full=False) #won't show on page until added to shipment
-    q = q = (
-    db.select(Pack)
-    .outerjoin(PackShipment, Pack.pack_shipment_id == PackShipment.id)
-    .outerjoin(Site, PackShipment.site_id == Site.id)
-    .order_by(Pack.pack_expiry, Pack.id)
-)
 
+    q = q = (
+        db.select(Pack)
+        .outerjoin(PackShipment, Pack.pack_shipment_id == PackShipment.id)
+        .outerjoin(Site, PackShipment.site_id == Site.id)
+        .order_by(Pack.pack_expiry, Pack.id)
+    )
 
     if search_form.search.data:
         q = q.where(Pack.pack_identity.like(f'%{search_form.search.data}%'))
@@ -42,18 +39,10 @@ def pack():
     if search_form.hide_assigned.data == True:
          q = q.where(Pack.pack_shipment_id == None)
 
-
-         
-
-    packs = db.paginate(
-    select=q,
-    page=search_form.page.data,
-    per_page=5,
-    error_out=False,
-)
-
+    packs = db.paginate(select=q)
 
     return render_template('ui/pack/pack_home.html',packs=packs, search_form=search_form)
+
 
 class PackForm(FlashingForm):
     pack_identity = StringField('Pack Identity', validators=[DataRequired()])
@@ -64,7 +53,6 @@ class PackForm(FlashingForm):
         super().__init__( **kwargs)
 
         self.pack_type.choices=[(p.id, p.packtype_name) for p in db.session.execute(select(PackType)).scalars()]
-
 
 
 @blueprint.route('/add_pack', methods=['GET', 'POST'])
@@ -85,8 +73,10 @@ def add_pack():
     
     return render_template('lbrc/form_modal.html', form=pack_form , title="Add Pack", url=url_for("ui.add_pack"))
 
+
 class PackActionForm(FlashingForm):
     pack_action = RadioField(u'Tick "Yes" to ignore the expiry alert from this pack', choices=[('Yes', 'Yes'), ('No', 'No')])
+
 
 @blueprint.route('/pack_action/<int:id>', methods=['GET', 'POST'])
 def pack_action(id):

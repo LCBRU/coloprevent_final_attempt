@@ -9,10 +9,10 @@ class SiteFakeCreator(FakeCreator):
 
     def get(self, **kwargs):
         result = self.cls(
-            site_name = kwargs.get('site_name') or self.faker.word(),
-            site_backup_contact = kwargs.get('site_backup_contact') or self.faker.name(),
-            site_primary_contact = kwargs.get('site_primary_contact') or self.faker.name(),
-            site_code = kwargs.get('site_code') or self.faker.pystr(),
+            site_name = kwargs.get('site_name') or self.faker.unique.word(),
+            site_backup_contact = kwargs.get('site_backup_contact') or self.faker.unique.name(),
+            site_primary_contact = kwargs.get('site_primary_contact') or self.faker.unique.name(),
+            site_code = kwargs.get('site_code') or self.faker.unique.pystr(),
         )
 
         return result
@@ -29,7 +29,7 @@ class PackTypeFakeCreator(FakeCreator):
 
     def get(self, **kwargs):
         result = self.cls(
-            packtype_name = kwargs.get('packtype_name') or self.faker.word(),
+            packtype_name = kwargs.get('packtype_name') or self.faker.unique.word(),
         )
 
         return result
@@ -82,5 +82,5 @@ class PackFakeCreator(FakeCreator):
 
 
 class PackProvider(BaseProvider):
-    def site(self):
+    def pack(self):
         return PackFakeCreator()

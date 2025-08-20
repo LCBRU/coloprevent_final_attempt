@@ -2,39 +2,22 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select, cast, func, Integer
-from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, TextAreaField, IntegerField
-from wtforms.validators import Length, DataRequired
+from wtforms import StringField, TextAreaField
+from wtforms.validators import DataRequired
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import Site
-from flask_wtf import FlaskForm
+
 @blueprint.route('/site_home', methods=['GET', 'POST'])
 def site_home():
     search_form = SearchForm(search_placeholder='Search site name', formdata=request.args) 
     q = db.select(Site).order_by(Site.site_name)
 
-
     if search_form.search.data:
         q = q.where(Site.site_name.like(f'%{search_form.search.data}%'))
 
-    
-    sites = db.paginate(
-    select=q,
-    page=search_form.page.data,
-    per_page=5,
-    error_out=False,
-)
+    sites = db.paginate(select=q)
 
-
-    # q_list = db.session.execute(q).scalars()
-    # ordered_list =[]
-    # for queried in q_list:
-    #     ordered_list.append(queried)
-
-
-    
     return render_template('ui/summary.html', search_form=search_form, sites=sites)
     
 

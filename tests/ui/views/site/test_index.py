@@ -1,28 +1,27 @@
-from flask import url_for
-from lbrc_flask.pytest.asserts import assert__search_html, assert__requires_login
-from tests.requests import coloprevents_catalogue_get
-from lbrc_flask.pytest.html_content import get_records_found, get_panel_list_row_count
+import pytest
+from lbrc_flask.pytest.testers import IndexTester, RequiresLoginTester
 
 
-def _url(external=True, **kwargs):
-    return url_for('ui.site_home', _external=external, **kwargs)
+class SiteIndexTester:
+    @property
+    def endpoint(self):
+        return 'ui.site_home'
 
 
-def _get(client, url, user, expected_count):
-    resp = coloprevents_catalogue_get(client, url, user)
-
-    assert__search_html(resp.soup, clear_url=_url(external=False))
-
-    assert expected_count == get_records_found(resp.soup)
-    assert expected_count == get_panel_list_row_count(resp.soup)
-
-    return resp
+def pytest_generate_tests(metafunc):
+    funcarglist = metafunc.cls.params[metafunc.function.__name__]
+    argnames = sorted(funcarglist[0])
+    metafunc.parametrize(
+        argnames, [[funcargs[name] for name in argnames] for funcargs in funcarglist]
+    )
 
 
-def test__get__requires_login(client):
-    assert__requires_login(client, _url(external=False))
+class TestSiteIndex(SiteIndexTester, IndexTester):
+    @pytest.mark.parametrize("item_count", ['a'], indirect=True)
+    def test__get__no_filters(self, item_count):
+        self.faker.site().get_list_in_db(item_count=item_count)
+        self.get_index_and_assert_standards(expected_count=item_count)
 
 
-def test__get__one(client, faker, loggedin_user):
-    specimen = faker.site().get_in_db()
-    resp = _get(client, _url(), loggedin_user, expected_count=1)
+class TestSiteIndexRequiresLogin(SiteIndexTester, RequiresLoginTester):
+    pass

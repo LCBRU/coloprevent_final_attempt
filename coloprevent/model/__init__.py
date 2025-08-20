@@ -5,8 +5,6 @@ from datetime import date, time
 from lbrc_flask.security import AuditMixin 
 
 
-
-
 class Site(db.Model, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True) 
     site_name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)

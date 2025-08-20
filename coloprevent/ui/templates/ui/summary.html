@@ -5,47 +5,48 @@
 {% block menu_page_content %}
 <section class="container">
     <header>
-        <h2>Sites</h2>
+      <h2>Sites</h2>
         
       <form method="GET" action="{{ url_for('ui.site_home') }}">
         <fieldset class="columns">
           {{ search_form.hidden_tag() }}
           {{ render_form_fields(search_form) }}
-      
 
           <div class="button_bar" hx-target="body">
               <a class="icon add" href="javascript:;" title="Add site" hx-get="{{ url_for('ui.add')}}"  hx-target="body" hx-swap="beforeend" role="button">Add Site</a>
           </div>    
-      </fieldset>
-    </form>
-
+        </fieldset>
+      </form>
     </header>
+
     {{ pagination_summary(sites, 'site') }}
     
-        <table class="with_icons">
-            <tr>
-              <th> </th>
-              <th>Site</th>
-              <th>Primary contact</th>
-              <th>Back up contact</th>
-              <th>Site Code</th>
-            </tr>
-            {% for s in sites.items %}
-            <tr>
-              <td><a class="icon delete" href="{{url_for('ui.delete', id=s.id)}}"></a>
-              <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.edit', id=s.id)}}" hx-target="body" hx-swap="beforeend" ></a></td>
-              <td>{{s.site_name}}</td>
-              <td>{{s.site_primary_contact}}</td>
-              <td>{{s.site_backup_contact}}</td>
-              <td>{{s.site_code}}</td>
-            </tr>
-            {% endfor %}
+    <table class="with_icons">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Site</th>
+          <th>Primary contact</th>
+          <th>Back up contact</th>
+          <th>Site Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sites.items %}
+          <tr>
+            <td>
+              <a class="icon delete" href="{{url_for('ui.delete', id=s.id)}}"></a>
+              <a class="icon edit" href="javascript:;" hx-get="{{url_for('ui.edit', id=s.id)}}" hx-target="body" hx-swap="beforeend" ></a>
+            </td>
+            <td>{{s.site_name}}</td>
+            <td>{{s.site_primary_contact}}</td>
+            <td>{{s.site_backup_contact}}</td>
+            <td>{{s.site_code}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-          </table>
-          {{ render_pagination(sites, 'ui.site_home', form=search_form) }}
-
-
-    
-
+    {{ render_pagination(sites, 'ui.site_home', form=search_form) }}
 </section>
 {% endblock %}
