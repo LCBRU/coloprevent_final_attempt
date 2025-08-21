@@ -25,5 +25,3 @@ class TestSiteAdd(FlaskGetViewTester):
         resp = self.get_modal_and_assert_standards()
         assert_csrf_token(resp.soup)
         self.assert_form(resp)
-
-
