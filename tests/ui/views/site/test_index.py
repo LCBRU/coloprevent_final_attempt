@@ -16,4 +16,4 @@ class TestSiteIndex(SiteIndexTester, IndexTester):
 
 
 class TestSiteIndexRequiresLogin(SiteIndexTester, RequiresLoginTester):
-    pass
+    ...
