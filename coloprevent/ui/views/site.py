@@ -3,7 +3,7 @@ from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from wtforms import StringField, TextAreaField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import Site
@@ -22,10 +22,10 @@ def site_home():
     
 
 class SiteForm(FlashingForm):
-    site_name = StringField('Site name', validators=[DataRequired()])
+    site_name = StringField('Site name', validators=[DataRequired(), Length(max=100)])
     site_primary_contact = TextAreaField('Primary contact',validators=[DataRequired()])
     site_backup_contact = TextAreaField('Back up contact',validators=[DataRequired()])
-    site_code = StringField('Site code',validators=[DataRequired()])
+    site_code = StringField('Site code',validators=[DataRequired(), Length(max=100)])
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
