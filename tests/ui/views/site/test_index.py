@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import IndexTester, RequiresLoginTester
+from lbrc_flask.pytest.testers import IndexTester, RequiresLoginGetTester
 
 
 class SiteIndexTester:
@@ -15,5 +15,5 @@ class TestSiteIndex(SiteIndexTester, IndexTester):
         self.get_and_assert_standards(expected_count=item_count)
 
 
-class TestSiteIndexRequiresLogin(SiteIndexTester, RequiresLoginTester):
+class TestSiteIndexRequiresLogin(SiteIndexTester, RequiresLoginGetTester):
     ...
