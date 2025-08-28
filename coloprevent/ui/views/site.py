@@ -1,5 +1,5 @@
 from .. import blueprint
-from flask import render_template, request, url_for, redirect
+from flask import render_template, request, url_for
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from wtforms import StringField, TextAreaField

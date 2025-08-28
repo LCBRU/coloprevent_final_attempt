@@ -2,23 +2,20 @@ import pytest
 from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskPostViewTester, FlaskFormGetViewTester, ModelTesterField
 from lbrc_flask.pytest.asserts import assert__refresh_response, assert__error__string_too_long__modal
 from sqlalchemy import select
-from coloprevent.model import Site
+from coloprevent.model import PackType
 from lbrc_flask.database import db
-from tests.ui.views.site import SiteViewTester
+from tests.ui.views.pack_type import PackTypeViewTester
 
 
-class SiteEditViewTester(SiteViewTester):
+class SiteEditViewTester(PackTypeViewTester):
     @property
     def endpoint(self):
-        return 'ui.edit'
+        return 'ui.edit_packtype'
 
     @pytest.fixture(autouse=True)
     def set_original_site(self, client, faker):
-        self.existing_site = faker.site().get_in_db(
-            site_name='Original Site',
-            site_primary_contact='Original Primary Contact',
-            site_backup_contact='Original Backup Contact',
-            site_code='Original Site Code',
+        self.existing_site = faker.packtype().get_in_db(
+            packtype_name='Original Site',
         )
         self.parameters = dict(id=self.existing_site.id)
 
@@ -39,7 +36,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
         assert__refresh_response(resp)
         self.assert_db_count(1)
 
-        actual = db.session.execute(select(Site)).scalar()
+        actual = db.session.execute(select(PackType)).scalar()
 
         self.assert_actual_equals_expected(expected, actual)
 
