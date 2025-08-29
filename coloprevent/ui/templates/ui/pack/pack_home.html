@@ -21,6 +21,7 @@
      {{ pagination_summary(packs, 'packs') }}
 
         <table class="with_icons">
+          <thead>
             <tr>
               <th> </th>
               <th>Pack Identity</th>
@@ -30,25 +31,31 @@
               <th>Ignore pack from report</th>
               
             </tr>
+          </thead>
+          <tbody>
             {% for pk in packs.items %}
             <tr>
-              <td><a class="icon delete" href="{{url_for('ui.delete_pack', id=pk.id)}}"></a>
-              <a class="icon edit" href="javascript:;" hx-get="{{url_for('ui.edit_pack', id=pk.id)}}"  hx-target="body" hx-swap="beforeend"></a></td>
+              <td>
+                <a class="icon delete" href="{{url_for('ui.delete_pack', id=pk.id)}}"></a>
+                <a class="icon edit" href="javascript:;" hx-get="{{url_for('ui.edit_pack', id=pk.id)}}"  hx-target="body" hx-swap="beforeend"></a>
+              </td>
               <td>{{pk.pack_identity}}</td>
               <td>{{pk.pack_expiry|date_format}}</td>
               <td>{{pk.packtype.packtype_name}}</td>
-
             <td>
-           {% if pk.pack_shipment and pk.pack_shipment.site %}
-            {{ pk.pack_shipment.site.site_name }}
-           {% else %}
-           No site assigned
-          {% endif %}
-           </td> 
-            
-              <td><a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.pack_action', id=pk.id)}}" hx-target="body" hx-swap="beforeend"></a>
-                {{pk.pack_action }}</td>
-              {% endfor %}  
+              {% if pk.pack_shipment and pk.pack_shipment.site %}
+                {{ pk.pack_shipment.site.site_name }}
+              {% else %}
+                No site assigned
+              {% endif %}
+           </td>
+           <td>
+            <a class="icon edit" href="javascript:;"   hx-get="{{url_for('ui.pack_action', id=pk.id)}}" hx-target="body" hx-swap="beforeend"></a>
+                {{pk.pack_action }}
+            </td>
+            </tr>
+            {% endfor %}
+          </tbody>
           </table>
    {{ render_pagination(packs, 'ui.pack', form=search_form) }}
 

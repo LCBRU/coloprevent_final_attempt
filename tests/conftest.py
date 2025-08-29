@@ -10,8 +10,13 @@ from tests.faker import PackProvider, PackShipmentProvider, PackTypeProvider, Si
 
 
 @pytest.fixture(scope="function")
-def standard_lookups(client, faker):
-    return faker.create_standard_lookups()
+def standard_sites(client, faker):
+    return faker.site().get_list_in_db(item_count=5)
+
+
+@pytest.fixture(scope="function")
+def standard_packtypes(client, faker):
+    return faker.packtype().get_list_in_db(item_count=5)
 
 
 @pytest.fixture(scope="function")

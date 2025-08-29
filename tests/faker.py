@@ -1,6 +1,7 @@
 from faker.providers import BaseProvider
 from lbrc_flask.pytest.faker import FakeCreator
 from coloprevent.model import Pack, PackShipment, PackType, Site
+from functools import cache
 
 
 class SiteFakeCreator(FakeCreator):
@@ -19,6 +20,7 @@ class SiteFakeCreator(FakeCreator):
 
 
 class SiteProvider(BaseProvider):
+    @cache
     def site(self):
         return SiteFakeCreator()
 
@@ -36,6 +38,7 @@ class PackTypeFakeCreator(FakeCreator):
 
 
 class PackTypeProvider(BaseProvider):
+    @cache
     def packtype(self):
         return PackTypeFakeCreator()
 
@@ -43,10 +46,9 @@ class PackTypeProvider(BaseProvider):
 class PackShipmentFakeCreator(FakeCreator):
     def __init__(self):
         super().__init__(PackShipment)
-
-    def get(self, **kwargs):
         self.faker.add_provider(SiteProvider)
 
+    def get(self, **kwargs):
         result = self.cls(
             date_posted = kwargs.get('date_posted') or self.faker.date_object(),
             date_received = kwargs.get('date_received'),
@@ -58,6 +60,7 @@ class PackShipmentFakeCreator(FakeCreator):
 
 
 class PackShipmentProvider(BaseProvider):
+    @cache
     def pack_shipment(self):
         return PackShipmentFakeCreator()
 
@@ -65,22 +68,23 @@ class PackShipmentProvider(BaseProvider):
 class PackFakeCreator(FakeCreator):
     def __init__(self):
         super().__init__(Pack)
-
-    def get(self, **kwargs):
+        self.faker.add_provider(SiteProvider)
         self.faker.add_provider(PackTypeProvider)
         self.faker.add_provider(PackShipmentProvider)
 
+    def get(self, **kwargs):
         result = self.cls(
-            pack_identity = kwargs.get('pack_identity') or self.faker.random_int(),
+            pack_identity = kwargs.get('pack_identity') or self.faker.unique.random_int(),
             pack_expiry = kwargs.get('pack_expiry') or self.faker.date_object(),
             packtype = self.faker.packtype().get_value_or_get(kwargs, 'packtype'),
             pack_shipment = self.faker.pack_shipment().get_value_or_get(kwargs, 'pack_shipment'),
-            pack_action = kwargs.get('pack_action') or self.faker.sentence(nb_words=6),
+            pack_action = kwargs.get('pack_action', self.faker.sentence(nb_words=6)),
         )
 
         return result
 
 
 class PackProvider(BaseProvider):
+    @cache
     def pack(self):
         return PackFakeCreator()

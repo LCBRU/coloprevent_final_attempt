@@ -46,8 +46,8 @@ def pack():
 
 class PackForm(FlashingForm):
     pack_identity = StringField('Pack Identity', validators=[DataRequired()])
-    pack_expiry = DateField(format='%Y-%m-%d')
-    pack_type = RadioField('Packtype' , coerce=int)
+    pack_expiry = DateField(format='%Y-%m-%d', validators=[DataRequired()])
+    pack_type = RadioField('Packtype', coerce=int, validators=[DataRequired()])
 
     def __init__(self, **kwargs):
         super().__init__( **kwargs)
@@ -58,7 +58,9 @@ class PackForm(FlashingForm):
 @blueprint.route('/add_pack', methods=['GET', 'POST'])
 def add_pack():
     pack_form = PackForm()
+
     if pack_form.validate_on_submit():
+        print('AAAA', pack_form.data)
         pack_id_data = pack_form.pack_identity.data.split("-") 
         for packid in pack_id_data:
             
