@@ -2,7 +2,7 @@ from sqlalchemy import func, select
 from coloprevent.model import Pack
 from lbrc_flask.database import db
 from lbrc_flask.pytest.asserts import assert__input_text, assert__input_date, assert__input_radio
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields
+from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields, ResultHtmlType
 
 
 class PackViewTester:
@@ -50,8 +50,8 @@ class PackViewTester:
         ])
 
     @property
-    def is_modal(self):
-        return True
+    def result_html_type(self):
+        return ResultHtmlType.MODAL
 
     def assert_form(self, resp):
         options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}

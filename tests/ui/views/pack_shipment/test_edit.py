@@ -9,7 +9,7 @@ from lbrc_flask.pytest.asserts import assert__input_date, assert__input_radio
 from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields
 
 
-class PackShipmentAddViewTester(PackShipmentViewTester):
+class PackShipmentEditViewTester(PackShipmentViewTester):
     @property
     def endpoint(self):
         return 'ui.edit_shipment'
@@ -59,14 +59,14 @@ class PackShipmentAddViewTester(PackShipmentViewTester):
         assert__input_radio(resp.soup, 'site', options)
 
 
-class TestPackShipmentAddRequiresLogin(PackShipmentAddViewTester, RequiresLoginGetTester):
+class TestPackShipmentEditRequiresLogin(PackShipmentEditViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestPackShipmentAddGet(PackShipmentAddViewTester, FlaskFormGetViewTester):
+class TestPackShipmentEditGet(PackShipmentEditViewTester, FlaskFormGetViewTester):
     ...
 
-class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
+class TestPackShipmentEditPost(PackShipmentEditViewTester, FlaskPostViewTester):
     def test__post__valid(self):
         expected = self.item_creator.get(site=None)
         expected.site_id = self.standard_sites[0].id
@@ -84,7 +84,7 @@ class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", PackShipmentAddViewTester.fields().mandatory_fields_add,
+        "missing_field", PackShipmentEditViewTester.fields().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
         expected = self.item_creator.get()

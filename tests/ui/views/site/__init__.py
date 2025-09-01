@@ -2,7 +2,7 @@ from sqlalchemy import func, select
 from coloprevent.model import Site
 from lbrc_flask.database import db
 from lbrc_flask.pytest.asserts import assert__input_text, assert__input_textarea
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields
+from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields, ResultHtmlType
 
 
 class SiteViewTester:
@@ -50,8 +50,8 @@ class SiteViewTester:
         ])
 
     @property
-    def is_modal(self):
-        return True
+    def result_html_type(self):
+        return ResultHtmlType.MODAL
 
     def assert_form(self, resp):
         assert__input_text(resp.soup, 'site_name')

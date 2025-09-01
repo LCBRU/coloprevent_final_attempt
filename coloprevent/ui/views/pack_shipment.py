@@ -59,11 +59,11 @@ class ShipmentForm(FlashingForm):
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
 
 
-class ShipmentDate1Form(FlashingForm):
+class ShipmentDateReceivedForm(FlashingForm):
     date_received = DateField(format='%Y-%m-%d')
 
 
-class ShipmentDate2Form(FlashingForm):
+class ShipmentNextDueForm(FlashingForm):
     next_due = DateField(format='%Y-%m-%d')
 
 
@@ -100,7 +100,7 @@ def add_shipment():
 def add_shipment_received(id):
     find_record = db.get_or_404(PackShipment,id)
     prev_date_received = find_record.date_received
-    add_date_form = ShipmentDate1Form(date_received = prev_date_received)
+    add_date_form = ShipmentDateReceivedForm(date_received = prev_date_received)
     if add_date_form.validate_on_submit():
         find_record.date_received = add_date_form.date_received.data
         db.session.add(find_record)
@@ -113,7 +113,7 @@ def add_shipment_received(id):
 def add_shipment_next_due(id):
     find_record = db.get_or_404(PackShipment, id)
     prev_next_due = find_record.next_due
-    add_date_form = ShipmentDate2Form(next_due = prev_next_due)
+    add_date_form = ShipmentNextDueForm(next_due = prev_next_due)
     if add_date_form.validate_on_submit():
         find_record.next_due = add_date_form.next_due.data
         db.session.add(find_record)
@@ -162,11 +162,10 @@ def edit_shipment(id):
 def search_pack(id):
     p: PackShipment = db.get_or_404(PackShipment, id)
     return render_template(
-    "lbrc/search.html",
-    title=f"Add packs to shipment for site '{p.site.site_name}'",
-    results_url=url_for('ui.search_pack_search_results', id=p.id),
- 
-)
+        "lbrc/search.html",
+        title=f"Add packs to shipment for site '{p.site.site_name}'",
+        results_url=url_for('ui.search_pack_search_results', shipment_id=p.id), 
+    )
 
 class SelectedPack():
     def __init__(self, pack, selected):
@@ -175,10 +174,10 @@ class SelectedPack():
         self.selected = selected
     
 
-@blueprint.route("/add_shipment/add_pack/<int:id>/search_results/<int:page>")   
-@blueprint.route("/add_shipment/add_pack/<int:id>/search_results")
-def search_pack_search_results(id, page=1):
-    shipment: PackShipment = db.get_or_404(PackShipment, id)
+@blueprint.route("/add_shipment/add_pack/<int:shipment_id>/search_results/<int:page>")   
+@blueprint.route("/add_shipment/add_pack/<int:shipment_id>/search_results")
+def search_pack_search_results(shipment_id, page=1):
+    shipment: PackShipment = db.get_or_404(PackShipment, shipment_id)
     search = get_value_from_all_arguments('search_string') or ''
 
     q =  (
@@ -204,16 +203,16 @@ def search_pack_search_results(id, page=1):
     return render_template(
             "lbrc/search_add_results.html",
             add_title="Add pack shipment" '{q.pack_identity}',
-            add_url=url_for('ui.add_pack_to_shipment', id=shipment.id),
+            add_url=url_for('ui.add_pack_to_shipment', shipment_id=shipment.id),
             results_url='ui.search_pack_search_results',
-            results_url_args={'id': shipment.id},
+            results_url_args={'shipment_id': shipment.id},
             results=results,
         )
 
 
-@blueprint.route("/add_pack/<int:id>/add_pack_to_shipment", methods=['POST'])
-def add_pack_to_shipment(id):
-    ps = db.get_or_404(PackShipment, id)
+@blueprint.route("/add_pack/<int:shipment_id>/add_pack_to_shipment", methods=['POST'])
+def add_pack_to_shipment(shipment_id):
+    ps = db.get_or_404(PackShipment, shipment_id)
 
     id: int = get_value_from_all_arguments('id')
     pk: Pack = db.get_or_404(Pack, id)
