@@ -8,6 +8,7 @@ from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response, refresh_results
 from coloprevent.model import PackShipment, Pack, Site, PackType
 from lbrc_flask.requests import get_value_from_all_arguments
+from wtforms.validators import DataRequired
 
 class SiteDropDownForm (SearchForm):
     site = SelectField('Site ID')
@@ -28,82 +29,60 @@ def index():
     q = db.select(PackShipment).order_by(PackShipment.date_posted.desc(), PackShipment.id.desc())
     if search_form.search.data:
        q = q.where(
+            PackShipment.site.has(Site.site_name.like(f"%{search_form.search.data}%")),    
+        )
 
-            PackShipment.site.has(Site.site_name.like(f"%{search_form.search.data}%")),
-    
-    
-    )
-       
     if search_form.site.data:
-        q = q.where(
-       
-        PackShipment.site_id == search_form.site.data)
+        q = q.where(PackShipment.site_id == search_form.site.data)
 
     if search_form.date_posted_from.data:
-          q = q.where(
-       
-        PackShipment.date_posted > search_form.date_posted_from.data)
+          q = q.where(PackShipment.date_posted > search_form.date_posted_from.data)
   
     if search_form.date_posted_to.data:
-          q = q.where(
-       
-        PackShipment.date_posted < search_form.date_posted_to.data)
-          
+        q = q.where(PackShipment.date_posted < search_form.date_posted_to.data)
      
     if search_form.pack_type_id.data:
          q= q.where (PackShipment.packs.any(Pack.packtype_id == search_form.pack_type_id.data))
 
+    packshipments = db.paginate(select=q)
 
-    packshipments = db.paginate(
-    select=q,
-    page=search_form.page.data,
-    per_page=5,
-    error_out=False,
-    )
-
-         
-    #  q_list = db.session.execute(q).scalars()
-    #  ordered_list =[]
-    #  for queried in q_list:
-    #     ordered_list.append(queried)
-
- 
     return render_template('ui/pack_shipment/pack_shipment_home.html', packshipments=packshipments, search_form=search_form)
 
 
-
 class ShipmentForm(FlashingForm):
-    date_posted = DateField(format='%Y-%m-%d')
-    site = RadioField('Site') 
+    date_posted = DateField(format='%Y-%m-%d', validators=[DataRequired()])
+    site = RadioField('Site', validators=[DataRequired()]) 
 
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
+
 
 class ShipmentDate1Form(FlashingForm):
     date_received = DateField(format='%Y-%m-%d')
 
+
 class ShipmentDate2Form(FlashingForm):
     next_due = DateField(format='%Y-%m-%d')
 
+
 class EditShipmentForm(FlashingForm):
-    date_posted = DateField(format='%Y-%m-%d')
+    date_posted = DateField(format='%Y-%m-%d', validators=[DataRequired()])
     date_received = DateField(format='%Y-%m-%d')
     next_due = DateField(format='%Y-%m-%d')
-    site = RadioField('Site') 
+    site = RadioField('Site', validators=[DataRequired()])
 
     def __init__(self,  **kwargs):
         super().__init__(**kwargs)
 
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
-
-    
    
 
 @blueprint.route('/add_shipment', methods=['GET', 'POST'])
 def add_shipment():
      shipment_form = ShipmentForm()
+
      if shipment_form.validate_on_submit():
         pack_added = PackShipment(
             date_posted = shipment_form.date_posted.data,
@@ -116,6 +95,7 @@ def add_shipment():
 
      return render_template('lbrc/form_modal.html', form=shipment_form, title="Add Shipment", url=url_for("ui.add_shipment") )
 
+
 @blueprint.route('/add_shipment_received/<int:id>', methods=['GET', 'POST'])
 def add_shipment_received(id):
     find_record = db.get_or_404(PackShipment,id)
@@ -127,6 +107,7 @@ def add_shipment_received(id):
         db.session.commit()
         return refresh_response()
     return render_template('lbrc/form_modal.html', form = add_date_form, id=id, title="Add received date", url=url_for("ui.add_shipment_received",id=id))
+
 
 @blueprint.route('/add_shipment_next_due/<int:id>', methods=['GET', 'POST'])
 def add_shipment_next_due(id):
@@ -141,22 +122,19 @@ def add_shipment_next_due(id):
     return render_template('lbrc/form_modal.html', form = add_date_form, id=id, title="Add next due date", url=url_for("ui.add_shipment_next_due",id=id))
    
 
-
-
 @blueprint.route('/delete_shipment/<int:id>', methods=['GET', 'POST'])
 def delete_shipment(id):
-    delete_id = id
-    if id== delete_id:
-        query_del = db.session.execute(db.select(PackShipment).where(PackShipment.id == delete_id)).scalar()
-        db.session.delete(query_del)
+    item = db.session.execute(db.select(PackShipment).where(PackShipment.id == id)).scalar()
+    if item:
+        db.session.delete(item)
         db.session.commit()
-        return redirect(url_for('ui.index'))
-    return render_template('ui/pack_shipment/pack_shipment_home.html', id=id)
+    return refresh_response()
 
 
 @blueprint.route('/edit_shipment/<int:id>', methods=['GET', 'POST'])
 def edit_shipment(id):
     edit_id = id
+
     if id== edit_id:
         query_edit = db.session.execute(db.select(PackShipment).where(PackShipment.id == edit_id)).scalar()
         prev_date_posted =query_edit.date_posted 
@@ -166,7 +144,6 @@ def edit_shipment(id):
 
         ed_form=EditShipmentForm(date_posted=prev_date_posted
                              ,date_received=prev_date_received, next_due=prev_next_due, site=prev_site)
-
     
     if ed_form.validate_on_submit():
             query_edit.date_posted = ed_form.date_posted.data
@@ -179,8 +156,6 @@ def edit_shipment(id):
         
 
     return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Shipment", url=url_for("ui.edit_shipment",id=id))
-
-
 
 
 @blueprint.route("/add_shipment/add_pack/<int:id>/")
@@ -249,6 +224,7 @@ def add_pack_to_shipment(id):
     db.session.commit()
 
     return refresh_results()
+
 
 @blueprint.route("/shipment/<int:id>/pack/<int:pack_id>/delete", methods=['POST'])
 def delete_pack_to_shipment(id,pack_id):

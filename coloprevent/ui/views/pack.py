@@ -1,5 +1,5 @@
 from .. import blueprint
-from flask import render_template, request, url_for, redirect
+from flask import render_template, request, url_for
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
@@ -60,7 +60,6 @@ def add_pack():
     pack_form = PackForm()
 
     if pack_form.validate_on_submit():
-        print('AAAA', pack_form.data)
         pack_id_data = pack_form.pack_identity.data.split("-") 
         for packid in pack_id_data:
             
@@ -95,13 +94,11 @@ def pack_action(id):
 
 @blueprint.route('/delete_pack/<int:id>', methods=['GET', 'POST'])
 def delete_pack(id):
-    delete_id = id
-    if id== delete_id:
-        query_del = db.session.execute(db.select(Pack).where(Pack.id == delete_id)).scalar()
-        db.session.delete(query_del)
+    del_item = db.session.execute(db.select(Pack).where(Pack.id == id)).scalar()
+    if del_item:
+        db.session.delete(del_item)
         db.session.commit()
-        return redirect(url_for('ui.pack'))
-    return render_template('ui/pack/delete_pack.html', id=id)
+    return refresh_response()
 
 @blueprint.route('/edit_pack/<int:id>', methods=['GET', 'POST'])
 def edit_pack(id):
@@ -113,7 +110,6 @@ def edit_pack(id):
         prev_packtype_form = query_edit.packtype_id
         
         ed_form=PackForm(pack_identity=prev_pack_identity, pack_expiry=prev_pack_expiry, pack_type=prev_packtype_form) 
-
     
     if ed_form.validate_on_submit():
             query_edit.pack_identity= ed_form.pack_identity.data

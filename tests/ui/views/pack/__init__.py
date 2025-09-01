@@ -1,5 +1,5 @@
 from sqlalchemy import func, select
-from coloprevent.model import Pack, PackType
+from coloprevent.model import Pack
 from lbrc_flask.database import db
 from lbrc_flask.pytest.asserts import assert__input_text, assert__input_date, assert__input_radio
 from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields
@@ -20,7 +20,6 @@ class PackViewTester:
         assert actual.pack_identity == expected.pack_identity
         assert actual.pack_expiry == expected.pack_expiry
 
-        print(actual.packtype_id, expected.packtype_id)
         assert actual.packtype_id == expected.packtype_id
         assert (actual.pack_shipment is None) == (expected.pack_shipment is None)
         if actual.pack_shipment is not None:
@@ -55,8 +54,6 @@ class PackViewTester:
         return True
 
     def assert_form(self, resp):
-        print(resp.soup)
-
         options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}
 
         assert__input_text(resp.soup, 'pack_identity')

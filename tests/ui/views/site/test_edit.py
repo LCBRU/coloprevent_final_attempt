@@ -44,7 +44,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", SiteEditViewTester.fields().mandatory_fields,
+        "missing_field", SiteEditViewTester.fields().mandatory_fields_edit,
     )
     def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
         expected = self.item_creator.get()
