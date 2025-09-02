@@ -63,11 +63,7 @@ click-plugins==1.1.1.2
     # via celery
 click-repl==0.3.0
     # via celery
-<<<<<<< HEAD
 coverage[toml]==7.10.5
-=======
-coverage==7.10.4
->>>>>>> 0c355d465bd5c868a41ee5c208debb2c109f9c8c
     # via pytest-cov
 cssselect2==0.8.0
     # via
@@ -121,11 +117,8 @@ flask-wtf==1.2.2
     # via
     #   flask-security-too
     #   lbrc-flask
-<<<<<<< HEAD
 fonttools[woff]==4.59.1
     # via weasyprint
-=======
->>>>>>> 0c355d465bd5c868a41ee5c208debb2c109f9c8c
 greenlet==3.2.4
     # via sqlalchemy
 hatchling==1.27.0
@@ -145,13 +138,9 @@ itsdangerous==2.2.0
     #   flask
     #   flask-wtf
 jinja2==3.1.6
-<<<<<<< HEAD
     # via
     #   flask
     #   flask-admin
-=======
-    # via flask
->>>>>>> 0c355d465bd5c868a41ee5c208debb2c109f9c8c
 jsonschema==4.25.1
     # via lbrc-flask
 jsonschema-specifications==2025.4.1
@@ -244,13 +233,6 @@ rpds-py==0.27.0
     # via
     #   jsonschema
     #   referencing
-<<<<<<< HEAD
-=======
-setuptools==80.9.0
-    # via
-    #   lbrc-flask
-    #   weasyprint
->>>>>>> 0c355d465bd5c868a41ee5c208debb2c109f9c8c
 six==1.17.0
     # via
     #   html5lib
@@ -314,11 +296,8 @@ xlrd==2.0.2
     # via lbrc-flask
 zipp==3.23.0
     # via importlib-metadata
-<<<<<<< HEAD
 zopfli==0.2.3.post1
     # via fonttools
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
-=======
->>>>>>> 0c355d465bd5c868a41ee5c208debb2c109f9c8c
