@@ -1,9 +1,9 @@
 from .. import blueprint
-from flask import render_template, request, url_for, redirect
+from flask import render_template, request, url_for
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from wtforms import StringField, TextAreaField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import Site
@@ -22,10 +22,10 @@ def site_home():
     
 
 class SiteForm(FlashingForm):
-    site_name = StringField('Site name', validators=[DataRequired()])
+    site_name = StringField('Site name', validators=[DataRequired(), Length(max=100)])
     site_primary_contact = TextAreaField('Primary contact',validators=[DataRequired()])
     site_backup_contact = TextAreaField('Back up contact',validators=[DataRequired()])
-    site_code = StringField('Site code',validators=[DataRequired()])
+    site_code = StringField('Site code',validators=[DataRequired(), Length(max=100)])
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
@@ -44,39 +44,31 @@ def add():
     
     return render_template('lbrc/form_modal.html', form=site_form, title="Add Site", url=url_for("ui.add"))
 
-@blueprint.route('/delete/<int:id>', methods=['GET', 'POST'])
+@blueprint.route('/delete/<int:id>', methods=['POST'])
 def delete(id):
-    delete_id = id
-    if id== delete_id:
-        query_del = db.session.execute(db.select(Site).where(Site.id == delete_id)).scalar()
-        db.session.delete(query_del)
+    item = db.session.get(Site, id)
+
+    if item is not None:
+        db.session.delete(item)
         db.session.commit()
-        return redirect(url_for('ui.site_home'))
-    return render_template('ui/delete.html', id=id)
+
+    return refresh_response()
 
 
 @blueprint.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
     edit_id = id
     if id== edit_id:
-        query_edit = db.session.execute(db.select(Site).where(Site.id == edit_id)).scalar()
-        prev_site_name = query_edit.site_name
-        prev_site_backup_contact = query_edit.site_backup_contact
-        prev_site_primary_contact = query_edit.site_primary_contact
-        prev_site_code = query_edit.site_code
-
-        ed_form=SiteForm(site_name=prev_site_name, site_backup_contact=prev_site_backup_contact, site_primary_contact=prev_site_primary_contact
-                         ,site_code=prev_site_code) 
-
+        site = db.session.execute(db.select(Site).where(Site.id == edit_id)).scalar()
+        ed_form = SiteForm(obj=site)
     
     if ed_form.validate_on_submit():
-            query_edit.site_name= ed_form.site_name.data
-            query_edit.site_backup_contact = ed_form.site_backup_contact.data
-            query_edit.site_primary_contact = ed_form.site_primary_contact.data
-            query_edit.site_code = ed_form.site_code.data
-            db.session.add(query_edit)
-            db.session.commit()
-            return refresh_response()
+        site.site_name= ed_form.site_name.data
+        site.site_backup_contact = ed_form.site_backup_contact.data
+        site.site_primary_contact = ed_form.site_primary_contact.data
+        site.site_code = ed_form.site_code.data
+        db.session.add(site)
+        db.session.commit()
+        return refresh_response()
         
-
     return render_template('lbrc/form_modal.html', form = ed_form, id=id, title="Edit Site", url=url_for("ui.edit",id=id))

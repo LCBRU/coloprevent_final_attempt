@@ -2,25 +2,25 @@ import pytest
 from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester, ModelTesterField
 from lbrc_flask.pytest.asserts import assert__refresh_response, assert__error__string_too_long__modal
 from sqlalchemy import select
-from coloprevent.model import Site
+from coloprevent.model import PackType
 from lbrc_flask.database import db
-from tests.ui.views.site import SiteViewTester
+from tests.ui.views.pack_type import PackTypeViewTester
 
 
-class SiteAddViewTester(SiteViewTester):
+class PackTypeAddViewTester(PackTypeViewTester):
     @property
     def endpoint(self):
-        return 'ui.add'
+        return 'ui.add_packtype'
 
 
-class TestSiteAddRequiresLogin(SiteAddViewTester, RequiresLoginGetTester):
+class TestSiteAddRequiresLogin(PackTypeAddViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestSiteAddGet(SiteAddViewTester, FlaskFormGetViewTester):
+class TestSiteAddGet(PackTypeAddViewTester, FlaskFormGetViewTester):
     ...
 
-class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
+class TestSiteAddPost(PackTypeAddViewTester, FlaskPostViewTester):
     def test__post__valid(self):
         expected = self.item_creator.get()
         resp = self.post_object(expected)
@@ -28,12 +28,12 @@ class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
         assert__refresh_response(resp)
         self.assert_db_count(1)
 
-        actual = db.session.execute(select(Site)).scalar()
+        actual = db.session.execute(select(PackType)).scalar()
 
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", SiteAddViewTester.fields().mandatory_fields_add,
+        "missing_field", PackTypeAddViewTester.fields().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
         expected = self.item_creator.get()
@@ -48,7 +48,7 @@ class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
         self.assert_db_count(0)
 
     @pytest.mark.parametrize(
-        "invalid_column", SiteAddViewTester.fields().string_fields,
+        "invalid_column", PackTypeAddViewTester.fields().string_fields,
     )
     def test__post__invalid_column__string_length(self, invalid_column: ModelTesterField):
         expected = self.item_creator.get()

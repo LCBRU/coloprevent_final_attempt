@@ -22,6 +22,7 @@
     {{ pagination_summary(packshipments, 'shipments') }}
     
       <table class="with_icons">
+        <thead>
           <tr>
             <th></th>
             <th>Addressee</th>
@@ -31,6 +32,8 @@
             <th>Packs</th>
             <th>Site</th>
           </tr>
+        </thead>
+        <tbody>
           {% for ps in packshipments.items %}
           <tr>
             <td><a class="icon delete" href="{{url_for('ui.delete_shipment', id=ps.id)}}"></a>
@@ -64,6 +67,8 @@
             <td>{{ps.site.site_name}}</td>
           </tr>
           {% endfor %}
+
+        </tbody>
 
         </table>
 

@@ -2,17 +2,15 @@ from .. import blueprint
 from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
-from sqlalchemy import select
-from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, RadioField, widgets, SubmitField
-from wtforms.validators import Length, DataRequired
+from wtforms import StringField
 from lbrc_flask.forms import FlashingForm, SearchForm
 from lbrc_flask.response import refresh_response
 from coloprevent.model import PackType
-from flask_wtf import FlaskForm
+from wtforms.validators import DataRequired, Length
+
 
 class PacktypeForm(FlashingForm):
-    packtype_name = StringField("Name")
+    packtype_name = StringField("Name", validators=[DataRequired(), Length(max=100)])
 
 @blueprint.route('/packtype_home', methods=['GET', 'POST'])
 def packtype_home():
@@ -47,13 +45,13 @@ def add_packtype():
 
 @blueprint.route('/delete_packtype/<int:id>', methods=['GET', 'POST'])
 def delete_packtype(id):
-    delete_id = id
-    if id== delete_id:
-        query_del = db.session.execute(db.select(PackType).where(PackType.id == delete_id)).scalar()
-        db.session.delete(query_del)
+    item = db.session.get(PackType, id)
+
+    if item is not None:
+        db.session.delete(item)
         db.session.commit()
-        return redirect(url_for('ui.packtype_home'))
-    return render_template('ui/packtype/delete_packtype.html', id=id)
+
+    return refresh_response()
 
 
 @blueprint.route('/edit_packtype/<int:id>', methods=['GET', 'POST'])

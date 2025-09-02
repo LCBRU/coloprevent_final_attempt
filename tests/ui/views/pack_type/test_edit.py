@@ -1,26 +1,34 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester, ModelTesterField
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskPostViewTester, FlaskFormGetViewTester, ModelTesterField
 from lbrc_flask.pytest.asserts import assert__refresh_response, assert__error__string_too_long__modal
 from sqlalchemy import select
-from coloprevent.model import Site
+from coloprevent.model import PackType
 from lbrc_flask.database import db
-from tests.ui.views.site import SiteViewTester
+from tests.ui.views.pack_type import PackTypeViewTester
 
 
-class SiteAddViewTester(SiteViewTester):
+class SiteEditViewTester(PackTypeViewTester):
     @property
     def endpoint(self):
-        return 'ui.add'
+        return 'ui.edit_packtype'
+
+    @pytest.fixture(autouse=True)
+    def set_original_site(self, client, faker):
+        self.existing_site = faker.packtype().get_in_db(
+            packtype_name='Original Site',
+        )
+        self.parameters = dict(id=self.existing_site.id)
 
 
-class TestSiteAddRequiresLogin(SiteAddViewTester, RequiresLoginGetTester):
+class TestSiteEditRequiresLogin(SiteEditViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestSiteAddGet(SiteAddViewTester, FlaskFormGetViewTester):
+class TestSiteEditGet(SiteEditViewTester, FlaskFormGetViewTester):
     ...
 
-class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
+
+class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
     def test__post__valid(self):
         expected = self.item_creator.get()
         resp = self.post_object(expected)
@@ -28,12 +36,12 @@ class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
         assert__refresh_response(resp)
         self.assert_db_count(1)
 
-        actual = db.session.execute(select(Site)).scalar()
+        actual = db.session.execute(select(PackType)).scalar()
 
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", SiteAddViewTester.fields().mandatory_fields_add,
+        "missing_field", SiteEditViewTester.fields().mandatory_fields_edit,
     )
     def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
         expected = self.item_creator.get()
@@ -45,10 +53,10 @@ class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
         self.assert_standards(resp)
         self.assert_form(resp)
         self.assert__error__required_field(resp, missing_field.field_title)
-        self.assert_db_count(0)
+        self.assert_db_count(1)
 
     @pytest.mark.parametrize(
-        "invalid_column", SiteAddViewTester.fields().string_fields,
+        "invalid_column", SiteEditViewTester.fields().string_fields,
     )
     def test__post__invalid_column__string_length(self, invalid_column: ModelTesterField):
         expected = self.item_creator.get()
@@ -59,5 +67,5 @@ class TestSiteAddPost(SiteAddViewTester, FlaskPostViewTester):
 
         self.assert_standards(resp)
         self.assert_form(resp)
-        self.assert_db_count(0)
+        self.assert_db_count(1)
         assert__error__string_too_long__modal(resp.soup, invalid_column.field_title)
