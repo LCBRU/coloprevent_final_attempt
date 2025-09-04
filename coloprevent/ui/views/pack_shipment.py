@@ -217,16 +217,16 @@ def add_pack_to_shipment(shipment_id):
     id: int = get_value_from_all_arguments('id')
     pk: Pack = db.get_or_404(Pack, id)
 
-    ps.packs.append(pk) 
+    ps.packs.append(pk)
 
     db.session.add(ps)
     db.session.commit()
-
+    print(refresh_results())
     return refresh_results()
 
 
 @blueprint.route("/shipment/<int:id>/pack/<int:pack_id>/delete", methods=['POST'])
-def delete_pack_to_shipment(id,pack_id):
+def delete_pack_to_shipment(id, pack_id):
     ps = db.get_or_404(PackShipment, id)
     pk: Pack = db.get_or_404(Pack, pack_id)
 

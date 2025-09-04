@@ -18,12 +18,15 @@
     </header>
     
     <table>
+      <thead>
         <tr>
           <th>Pack Identity</th>
           <th>Packtype</th>
           <th>Pack Expiry</th>
           <th>Site</th>
         </tr>
+      </thead>
+      <tbody>
         {% for item in results %}
           <tr>
             <td>{{item.pack_identity}}</td>
@@ -32,6 +35,7 @@
             <td>{{item.site_name}}</td>
           </tr>
         {% endfor %}
+      </tbody>
       </table>
 </section>
 {% endblock %}
