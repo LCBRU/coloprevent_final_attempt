@@ -1,12 +1,12 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester, ModelTesterField
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester
+from lbrc_flask.pytest.form_tester import FormTester, FormTesterField, FormTesterDateField, FormTesterRadioField
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
 from coloprevent.model import PackShipment
 from lbrc_flask.database import db
 from tests.ui.views.pack_shipment import PackShipmentViewTester
 from lbrc_flask.pytest.asserts import assert__input_date, assert__input_radio
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields
 
 
 class PackShipmentAddViewTester(PackShipmentViewTester):
@@ -19,18 +19,16 @@ class PackShipmentAddViewTester(PackShipmentViewTester):
         self.standard_sites = standard_sites
 
     @staticmethod
-    def fields() -> ModelTesterFields:
-        return ModelTesterFields([
-            ModelTesterField(
+    def fields() -> FormTester:
+        return FormTester([
+            FormTesterDateField(
                 field_name='date_posted',
                 field_title='Date Posted',
-                data_type=ModelTesterField_DataType.DATE,
                 is_mandatory=True,
             ),
-            ModelTesterField(
+            FormTesterRadioField(
                 field_name='site',
                 field_title='Site',
-                data_type=ModelTesterField_DataType.RADIO,
                 is_mandatory=True,
             ),
         ])
@@ -69,7 +67,7 @@ class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
     @pytest.mark.parametrize(
         "missing_field", PackShipmentAddViewTester.fields().mandatory_fields_add,
     )
-    def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
+    def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get()
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''

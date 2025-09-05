@@ -2,7 +2,8 @@ from sqlalchemy import func, select
 from coloprevent.model import Pack
 from lbrc_flask.database import db
 from lbrc_flask.pytest.asserts import assert__input_text, assert__input_date, assert__input_radio
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields, ResultHtmlType
+from lbrc_flask.pytest.testers import ResultHtmlType
+from lbrc_flask.pytest.form_tester import FormTester, FormTesterTextField, FormTesterDateField, FormTesterRadioField
 
 
 class PackViewTester:
@@ -27,24 +28,21 @@ class PackViewTester:
         assert actual.pack_action == expected.pack_action
 
     @staticmethod
-    def fields() -> ModelTesterFields:
-        return ModelTesterFields([
-            ModelTesterField(
+    def fields() -> FormTester:
+        return FormTester([
+            FormTesterTextField(
                 field_name='pack_identity',
                 field_title='Pack Identity',
-                data_type=ModelTesterField_DataType.INTEGER,
                 is_mandatory=True,
             ),
-            ModelTesterField(
+            FormTesterDateField(
                 field_name='pack_expiry',
                 field_title='Pack Expiry',
-                data_type=ModelTesterField_DataType.DATE,
                 is_mandatory=True,
             ),
-            ModelTesterField(
+            FormTesterRadioField(
                 field_name='packtype',
                 field_title='Packtype',
-                data_type=ModelTesterField_DataType.RADIO,
                 is_mandatory=True,
             ),
         ])
@@ -54,6 +52,7 @@ class PackViewTester:
         return ResultHtmlType.MODAL
 
     def assert_form(self, resp):
+
         options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}
 
         assert__input_text(resp.soup, 'pack_identity')

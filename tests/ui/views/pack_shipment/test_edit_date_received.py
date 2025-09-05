@@ -1,12 +1,11 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester, ModelTesterField
-from lbrc_flask.pytest.asserts import assert__refresh_response
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester
+from lbrc_flask.pytest.asserts import assert__refresh_response, assert__input_date
+from lbrc_flask.pytest.form_tester import FormTester, FormTesterDateField
 from sqlalchemy import select
 from coloprevent.model import PackShipment
 from lbrc_flask.database import db
 from tests.ui.views.pack_shipment import PackShipmentViewTester
-from lbrc_flask.pytest.asserts import assert__input_date
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields
 
 
 class PackShipmentEditDateReceivedViewTester(PackShipmentViewTester):
@@ -24,12 +23,11 @@ class PackShipmentEditDateReceivedViewTester(PackShipmentViewTester):
         self.parameters = dict(id=self.existing_pack_shipment.id)
 
     @staticmethod
-    def fields() -> ModelTesterFields:
-        return ModelTesterFields([
-            ModelTesterField(
+    def fields() -> FormTester:
+        return FormTester([
+            FormTesterDateField(
                 field_name='date_received',
                 field_title='Date Received',
-                data_type=ModelTesterField_DataType.DATE,
             ),
         ])
 

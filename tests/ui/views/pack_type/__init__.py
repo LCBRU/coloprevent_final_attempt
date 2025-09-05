@@ -2,7 +2,8 @@ from sqlalchemy import func, select
 from coloprevent.model import PackType
 from lbrc_flask.database import db
 from lbrc_flask.pytest.asserts import assert__input_text
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields, ResultHtmlType
+from lbrc_flask.pytest.testers import ResultHtmlType
+from lbrc_flask.pytest.form_tester import FormTester, FormTesterTextField
 
 
 class PackTypeViewTester:
@@ -20,12 +21,11 @@ class PackTypeViewTester:
         assert actual.packtype_name == expected.packtype_name
 
     @staticmethod
-    def fields() -> ModelTesterFields:
-        return ModelTesterFields([
-            ModelTesterField(
+    def fields() -> FormTester:
+        return FormTester([
+            FormTesterTextField(
                 field_name='packtype_name',
                 field_title='Name',
-                data_type=ModelTesterField_DataType.STRING,
                 is_mandatory=True,
             ),
         ])

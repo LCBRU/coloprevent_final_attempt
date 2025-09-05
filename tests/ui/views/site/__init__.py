@@ -2,7 +2,8 @@ from sqlalchemy import func, select
 from coloprevent.model import Site
 from lbrc_flask.database import db
 from lbrc_flask.pytest.asserts import assert__input_text, assert__input_textarea
-from lbrc_flask.pytest.testers import ModelTesterField, ModelTesterField_DataType, ModelTesterFields, ResultHtmlType
+from lbrc_flask.pytest.testers import ResultHtmlType
+from lbrc_flask.pytest.form_tester import FormTester, FormTesterTextField, FormTesterTextAreaField
 
 
 class SiteViewTester:
@@ -23,28 +24,24 @@ class SiteViewTester:
         assert actual.site_code == actual.site_code
 
     @staticmethod
-    def fields() -> ModelTesterFields:
-        return ModelTesterFields([
-            ModelTesterField(
+    def fields() -> FormTester:
+        return FormTester([
+            FormTesterTextField(
                 field_name='site_name',
                 field_title='Site name',
-                data_type=ModelTesterField_DataType.STRING,
                 is_mandatory=True,
             ),
-            ModelTesterField(
+            FormTesterTextAreaField(
                 field_name='site_primary_contact',
                 field_title='Primary Contact',
-                data_type=ModelTesterField_DataType.TEXT,
             ),
-            ModelTesterField(
+            FormTesterTextAreaField(
                 field_name='site_backup_contact',
                 field_title='Back up Contact',
-                data_type=ModelTesterField_DataType.TEXT,
             ),
-            ModelTesterField(
+            FormTesterTextField(
                 field_name='site_code',
                 field_title='Site Code',
-                data_type=ModelTesterField_DataType.STRING,
                 is_mandatory=True,
             ),
         ])

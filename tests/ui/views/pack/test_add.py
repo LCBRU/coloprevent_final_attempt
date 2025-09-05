@@ -1,6 +1,7 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester, ModelTesterField
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
+from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
 from coloprevent.model import Pack
 from lbrc_flask.database import db
@@ -43,7 +44,7 @@ class TestPackAddPost(PackAddViewTester, FlaskPostViewTester):
     @pytest.mark.parametrize(
         "missing_field", PackAddViewTester.fields().mandatory_fields_add,
     )
-    def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
+    def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''

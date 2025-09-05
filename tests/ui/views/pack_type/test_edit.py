@@ -1,6 +1,7 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskPostViewTester, FlaskFormGetViewTester, ModelTesterField
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskPostViewTester, FlaskFormGetViewTester
 from lbrc_flask.pytest.asserts import assert__refresh_response, assert__error__string_too_long__modal
+from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
 from coloprevent.model import PackType
 from lbrc_flask.database import db
@@ -43,7 +44,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
     @pytest.mark.parametrize(
         "missing_field", SiteEditViewTester.fields().mandatory_fields_edit,
     )
-    def test__post__missing_mandatory_field(self, missing_field: ModelTesterField):
+    def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get()
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''
@@ -58,7 +59,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
     @pytest.mark.parametrize(
         "invalid_column", SiteEditViewTester.fields().string_fields,
     )
-    def test__post__invalid_column__string_length(self, invalid_column: ModelTesterField):
+    def test__post__invalid_column__string_length(self, invalid_column: FormTesterField):
         expected = self.item_creator.get()
         data = self.get_data_from_object(expected)
         data[invalid_column.field_name] = 'A'*1000
