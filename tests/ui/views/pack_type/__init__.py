@@ -6,6 +6,17 @@ from lbrc_flask.pytest.testers import ResultHtmlType
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterTextField
 
 
+class PackTypeFormTester(FormTester):
+    def __init__(self):
+        super().__init__(fields=[
+            FormTesterTextField(
+                field_name='packtype_name',
+                field_title='Name',
+                is_mandatory=True,
+            ),
+        ])
+
+
 class PackTypeViewTester:
     @property
     def item_creator(self):
@@ -20,19 +31,9 @@ class PackTypeViewTester:
 
         assert actual.packtype_name == expected.packtype_name
 
-    @staticmethod
-    def fields() -> FormTester:
-        return FormTester([
-            FormTesterTextField(
-                field_name='packtype_name',
-                field_title='Name',
-                is_mandatory=True,
-            ),
-        ])
-
     @property
     def result_html_type(self):
         return ResultHtmlType.MODAL
 
-    def assert_form(self, resp):
-        assert__input_text(resp.soup, 'packtype_name')
+    def assert_form(self, soup):
+        PackTypeFormTester().assert_inputs(soup)

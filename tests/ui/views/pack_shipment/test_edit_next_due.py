@@ -8,6 +8,16 @@ from lbrc_flask.database import db
 from tests.ui.views.pack_shipment import PackShipmentViewTester
 
 
+class PackShipmentFormTester(FormTester):
+    def __init__(self):
+        super().__init__(fields=[
+            FormTesterDateField(
+                field_name='next_due',
+                field_title='Next Due',
+            ),
+        ])
+
+
 class PackShipmentEditNextDueViewTester(PackShipmentViewTester):
     @property
     def endpoint(self):
@@ -22,19 +32,8 @@ class PackShipmentEditNextDueViewTester(PackShipmentViewTester):
         self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
         self.parameters = dict(id=self.existing_pack_shipment.id)
 
-    @staticmethod
-    def fields() -> FormTester:
-        return FormTester([
-            FormTesterDateField(
-                field_name='next_due',
-                field_title='Next Due',
-            ),
-        ])
-
-    def assert_form(self, resp):
-        options = {s.site_name: str(s.id) for s in self.standard_sites}
-
-        assert__input_date(resp.soup, 'next_due')
+    def assert_form(self, soup):
+        PackShipmentFormTester().assert_inputs(soup)
 
 
 class TestPackShipmentEditNextDueRequiresLogin(PackShipmentEditNextDueViewTester, RequiresLoginGetTester):

@@ -5,7 +5,7 @@ from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
 from coloprevent.model import Site
 from lbrc_flask.database import db
-from tests.ui.views.site import SiteViewTester
+from tests.ui.views.site import SiteFormTester, SiteViewTester
 
 
 class SiteEditViewTester(SiteViewTester):
@@ -45,7 +45,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", SiteEditViewTester.fields().mandatory_fields_edit,
+        "missing_field", SiteFormTester().mandatory_fields_edit,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get()
@@ -55,12 +55,12 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
         resp = self.post(data)
 
         self.assert_standards(resp)
-        self.assert_form(resp)
+        self.assert_form(resp.soup)
         self.assert__error__required_field(resp, missing_field.field_title)
         self.assert_db_count(1)
 
     @pytest.mark.parametrize(
-        "invalid_column", SiteEditViewTester.fields().string_fields,
+        "invalid_column", SiteFormTester().string_fields,
     )
     def test__post__invalid_column__string_length(self, invalid_column: FormTesterField):
         expected = self.item_creator.get()
@@ -70,6 +70,6 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
         resp = self.post(data)
 
         self.assert_standards(resp)
-        self.assert_form(resp)
+        self.assert_form(resp.soup)
         self.assert_db_count(1)
         assert__error__string_too_long__modal(resp.soup, invalid_column.field_title)

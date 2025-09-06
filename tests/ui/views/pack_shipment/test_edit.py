@@ -9,23 +9,11 @@ from tests.ui.views.pack_shipment import PackShipmentViewTester
 from lbrc_flask.pytest.asserts import assert__input_date, assert__input_radio
 
 
-class PackShipmentEditViewTester(PackShipmentViewTester):
-    @property
-    def endpoint(self):
-        return 'ui.edit_shipment'
+class PackShipmentFormTester(FormTester):
+    def __init__(self, site_options=None):
+        site_options = site_options or {}
 
-    @pytest.fixture(autouse=True)
-    def set_standard_sites(self, standard_sites):
-        self.standard_sites = standard_sites
-
-    @pytest.fixture(autouse=True)
-    def set_existing(self, client, faker, set_standard_sites):
-        self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
-        self.parameters = dict(id=self.existing_pack_shipment.id)
-
-    @staticmethod
-    def fields() -> FormTester:
-        return FormTester([
+        super().__init__(fields=[
             FormTesterDateField(
                 field_name='date_posted',
                 field_title='Date Posted',
@@ -43,16 +31,28 @@ class PackShipmentEditViewTester(PackShipmentViewTester):
                 field_name='site',
                 field_title='Site',
                 is_mandatory=True,
+                options=site_options,
             ),
         ])
 
-    def assert_form(self, resp):
-        options = {s.site_name: str(s.id) for s in self.standard_sites}
 
-        assert__input_date(resp.soup, 'date_posted')
-        assert__input_date(resp.soup, 'date_received')
-        assert__input_date(resp.soup, 'next_due')
-        assert__input_radio(resp.soup, 'site', options)
+class PackShipmentEditViewTester(PackShipmentViewTester):
+    @property
+    def endpoint(self):
+        return 'ui.edit_shipment'
+
+    @pytest.fixture(autouse=True)
+    def set_standard_sites(self, standard_sites):
+        self.standard_sites = standard_sites
+
+    @pytest.fixture(autouse=True)
+    def set_existing(self, client, faker, set_standard_sites):
+        self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
+        self.parameters = dict(id=self.existing_pack_shipment.id)
+
+    def assert_form(self, soup):
+        options = {s.site_name: str(s.id) for s in self.standard_sites}
+        PackShipmentFormTester(site_options=options).assert_inputs(soup)
 
 
 class TestPackShipmentEditRequiresLogin(PackShipmentEditViewTester, RequiresLoginGetTester):
@@ -80,7 +80,7 @@ class TestPackShipmentEditPost(PackShipmentEditViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", PackShipmentEditViewTester.fields().mandatory_fields_add,
+        "missing_field", PackShipmentFormTester().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get()
@@ -90,6 +90,6 @@ class TestPackShipmentEditPost(PackShipmentEditViewTester, FlaskPostViewTester):
         resp = self.post(data)
 
         self.assert_standards(resp)
-        self.assert_form(resp)
+        self.assert_form(resp.soup)
         self.assert__error__required_field(resp, missing_field.field_title)
         self.assert_db_count(1)

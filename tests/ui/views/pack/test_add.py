@@ -5,17 +5,13 @@ from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
 from coloprevent.model import Pack
 from lbrc_flask.database import db
-from tests.ui.views.pack import PackViewTester
+from tests.ui.views.pack import PackFormTester, PackViewTester
 
 
 class PackAddViewTester(PackViewTester):
     @property
     def endpoint(self):
         return 'ui.add_pack'
-
-    @pytest.fixture(autouse=True)
-    def set_(self, standard_packtypes):
-        self.standard_packtypes = standard_packtypes
 
 
 class TestPackAddRequiresLogin(PackAddViewTester, RequiresLoginGetTester):
@@ -42,7 +38,7 @@ class TestPackAddPost(PackAddViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", PackAddViewTester.fields().mandatory_fields_add,
+        "missing_field", PackFormTester().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
@@ -52,6 +48,6 @@ class TestPackAddPost(PackAddViewTester, FlaskPostViewTester):
         resp = self.post(data)
 
         self.assert_standards(resp)
-        self.assert_form(resp)
+        self.assert_form(resp.soup)
         self.assert__error__required_field(resp, missing_field.field_title)
         self.assert_db_count(0)

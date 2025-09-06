@@ -9,18 +9,11 @@ from tests.ui.views.pack_shipment import PackShipmentViewTester
 from lbrc_flask.pytest.asserts import assert__input_date, assert__input_radio
 
 
-class PackShipmentAddViewTester(PackShipmentViewTester):
-    @property
-    def endpoint(self):
-        return 'ui.add_shipment'
+class PackShipmentFormTester(FormTester):
+    def __init__(self, site_options=None):
+        site_options = site_options or {}
 
-    @pytest.fixture(autouse=True)
-    def set_standard_sites(self, standard_sites):
-        self.standard_sites = standard_sites
-
-    @staticmethod
-    def fields() -> FormTester:
-        return FormTester([
+        super().__init__(fields=[
             FormTesterDateField(
                 field_name='date_posted',
                 field_title='Date Posted',
@@ -30,14 +23,23 @@ class PackShipmentAddViewTester(PackShipmentViewTester):
                 field_name='site',
                 field_title='Site',
                 is_mandatory=True,
+                options=site_options,
             ),
         ])
 
-    def assert_form(self, resp):
-        options = {s.site_name: str(s.id) for s in self.standard_sites}
 
-        assert__input_date(resp.soup, 'date_posted')
-        assert__input_radio(resp.soup, 'site', options)
+class PackShipmentAddViewTester(PackShipmentViewTester):
+    @property
+    def endpoint(self):
+        return 'ui.add_shipment'
+
+    @pytest.fixture(autouse=True)
+    def set_standard_sites(self, standard_sites):
+        self.standard_sites = standard_sites
+
+    def assert_form(self, soup):
+        options = {s.site_name: str(s.id) for s in self.standard_sites}
+        PackShipmentFormTester(site_options=options).assert_inputs(soup)
 
 
 class TestPackShipmentAddRequiresLogin(PackShipmentAddViewTester, RequiresLoginGetTester):
@@ -65,7 +67,7 @@ class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", PackShipmentAddViewTester.fields().mandatory_fields_add,
+        "missing_field", PackShipmentFormTester().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get()
@@ -75,6 +77,6 @@ class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
         resp = self.post(data)
 
         self.assert_standards(resp)
-        self.assert_form(resp)
+        self.assert_form(resp.soup)
         self.assert__error__required_field(resp, missing_field.field_title)
         self.assert_db_count(0)

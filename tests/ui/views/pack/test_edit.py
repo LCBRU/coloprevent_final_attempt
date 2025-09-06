@@ -5,17 +5,13 @@ from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
 from coloprevent.model import Pack
 from lbrc_flask.database import db
-from tests.ui.views.pack import PackViewTester
+from tests.ui.views.pack import PackFormTester, PackViewTester
 
 
 class PackEditViewTester(PackViewTester):
     @property
     def endpoint(self):
         return 'ui.edit_pack'
-
-    @pytest.fixture(autouse=True)
-    def set_standard_packages(self, standard_packtypes):
-        self.standard_packtypes = standard_packtypes
 
     @pytest.fixture(autouse=True)
     def set_original_pack(self, client, faker, set_standard_packages):
@@ -48,7 +44,7 @@ class TestSiteEditPost(PackEditViewTester, FlaskPostViewTester):
         self.assert_actual_equals_expected(expected, actual)
 
     @pytest.mark.parametrize(
-        "missing_field", PackEditViewTester.fields().mandatory_fields_edit,
+        "missing_field", PackFormTester().mandatory_fields_edit,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
         expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
@@ -58,6 +54,6 @@ class TestSiteEditPost(PackEditViewTester, FlaskPostViewTester):
         resp = self.post(data)
 
         self.assert_standards(resp)
-        self.assert_form(resp)
+        self.assert_form(resp.soup)
         self.assert__error__required_field(resp, missing_field.field_title)
         self.assert_db_count(1)
