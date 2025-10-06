@@ -1,31 +1,33 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterField, FormTesterDateField, FormTesterRadioField
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
 from coloprevent.model import PackShipment
 from lbrc_flask.database import db
 from tests.ui.views.pack_shipment import PackShipmentViewTester
-from lbrc_flask.pytest.asserts import assert__input_date, assert__input_radio
 
 
 class PackShipmentFormTester(FormTester):
-    def __init__(self, site_options=None):
+    def __init__(self, site_options=None, has_csrf=False):
         site_options = site_options or {}
 
-        super().__init__(fields=[
-            FormTesterDateField(
-                field_name='date_posted',
-                field_title='Date Posted',
-                is_mandatory=True,
-            ),
-            FormTesterRadioField(
-                field_name='site',
-                field_title='Site',
-                is_mandatory=True,
-                options=site_options,
-            ),
-        ])
+        super().__init__(
+            fields=[
+                FormTesterDateField(
+                    field_name='date_posted',
+                    field_title='Date Posted',
+                    is_mandatory=True,
+                ),
+                FormTesterRadioField(
+                    field_name='site',
+                    field_title='Site',
+                    is_mandatory=True,
+                    options=site_options,
+                ),
+            ],
+            has_csrf=has_csrf,    
+        )
 
 
 class PackShipmentAddViewTester(PackShipmentViewTester):
@@ -37,19 +39,21 @@ class PackShipmentAddViewTester(PackShipmentViewTester):
     def set_standard_sites(self, standard_sites):
         self.standard_sites = standard_sites
 
-    def assert_form(self, soup):
-        options = {s.site_name: str(s.id) for s in self.standard_sites}
-        PackShipmentFormTester(site_options=options).assert_inputs(soup)
-
 
 class TestPackShipmentAddRequiresLogin(PackShipmentAddViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestPackShipmentAddGet(PackShipmentAddViewTester, FlaskFormGetViewTester):
-    ...
+class TestPackShipmentAddGet(PackShipmentAddViewTester, FlaskViewLoggedInTester):
+    @pytest.mark.app_crsf(True)
+    def test__get__has_form(self):
+        resp = self.get()
 
-class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
+        options = {s.site_name: str(s.id) for s in self.standard_sites}
+        PackShipmentFormTester(options, has_csrf=True).assert_all(resp)
+
+
+class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         expected = self.item_creator.get(site=None)
         expected.site_id = self.standard_sites[0].id
@@ -76,7 +80,9 @@ class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskPostViewTester):
 
         resp = self.post(data)
 
-        self.assert_standards(resp)
-        self.assert_form(resp.soup)
-        self.assert__error__required_field(resp, missing_field.field_title)
+        options = {s.site_name: str(s.id) for s in self.standard_sites}
+        PackShipmentFormTester(options).assert_all(resp)
+        ModalContentAsserter().assert_all(resp)
+        ModalFormErrorContentAsserter().assert_missing_required_field(resp, missing_field.field_title)
+
         self.assert_db_count(0)

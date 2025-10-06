@@ -1,15 +1,11 @@
 import pytest
-from lbrc_flask.pytest.testers import SearchModalTester, RequiresLoginGetTester, ResultHtmlType
+from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, SearchModalContentAsserter
 
 
 class PackShipmentAddPackSearchTester:
     @property
     def endpoint(self):
         return 'ui.search_pack'
-
-    @property
-    def result_html_type(self):
-        return ResultHtmlType.MODAL
 
     @pytest.fixture(autouse=True)
     def set_standard_sites(self, standard_sites):
@@ -21,9 +17,11 @@ class PackShipmentAddPackSearchTester:
         self.parameters['id'] = self.existing_pack_shipment.id
 
 
-class TestPackShipmentAddPackSearch(PackShipmentAddPackSearchTester, SearchModalTester):
-    def test__get__no_filters(self):
-        self.get_and_assert_standards()
+class TestPackShipmentAddPackSearch(PackShipmentAddPackSearchTester, FlaskViewLoggedInTester):
+    def test__get__assert_standards(self):
+        resp = self.get()
+
+        SearchModalContentAsserter().assert_all(resp)
 
 
 class TestPackShipmentAddPackSearchRequiresLogin(PackShipmentAddPackSearchTester, RequiresLoginGetTester):

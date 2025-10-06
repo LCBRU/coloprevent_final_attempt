@@ -1,6 +1,6 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskPostViewTester, FlaskFormGetViewTester
-from lbrc_flask.pytest.asserts import assert__refresh_response, assert__error__string_too_long__modal
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
+from lbrc_flask.pytest.asserts import assert__refresh_response
 from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
 from coloprevent.model import Site
@@ -28,11 +28,15 @@ class TestSiteEditRequiresLogin(SiteEditViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestSiteEditGet(SiteEditViewTester, FlaskFormGetViewTester):
-    ...
+class TestSiteEditGet(SiteEditViewTester, FlaskViewLoggedInTester):
+    @pytest.mark.app_crsf(True)
+    def test__get__has_form(self):
+        resp = self.get()
+
+        SiteFormTester(has_csrf=True).assert_all(resp)
 
 
-class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
+class TestSiteEditPost(SiteEditViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         expected = self.item_creator.get()
         resp = self.post_object(expected)
@@ -54,9 +58,10 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
 
         resp = self.post(data)
 
-        self.assert_standards(resp)
-        self.assert_form(resp.soup)
-        self.assert__error__required_field(resp, missing_field.field_title)
+        SiteFormTester().assert_all(resp)
+        ModalContentAsserter().assert_all(resp)
+        ModalFormErrorContentAsserter().assert_missing_required_field(resp, missing_field.field_title)
+
         self.assert_db_count(1)
 
     @pytest.mark.parametrize(
@@ -69,7 +74,8 @@ class TestSiteEditPost(SiteEditViewTester, FlaskPostViewTester):
 
         resp = self.post(data)
 
-        self.assert_standards(resp)
-        self.assert_form(resp.soup)
+        SiteFormTester().assert_all(resp)
+        ModalContentAsserter().assert_all(resp)
+        ModalFormErrorContentAsserter().assert__error__string_too_long(resp, invalid_column.field_title)
+
         self.assert_db_count(1)
-        assert__error__string_too_long__modal(resp.soup, invalid_column.field_title)

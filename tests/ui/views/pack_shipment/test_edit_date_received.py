@@ -1,6 +1,6 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester
-from lbrc_flask.pytest.asserts import assert__refresh_response, assert__input_date
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.asserts import assert__refresh_response
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterDateField
 from sqlalchemy import select
 from coloprevent.model import PackShipment
@@ -9,13 +9,16 @@ from tests.ui.views.pack_shipment import PackShipmentViewTester
 
 
 class PackShipmentFormTester(FormTester):
-    def __init__(self):
-        super().__init__(fields=[
-            FormTesterDateField(
-                field_name='date_received',
-                field_title='Date Received',
-            ),
-        ])
+    def __init__(self, has_csrf=False):
+        super().__init__(
+            fields=[
+                FormTesterDateField(
+                    field_name='date_received',
+                    field_title='Date Received',
+                ),
+            ],
+            has_csrf=has_csrf,
+        )
 
 
 class PackShipmentEditDateReceivedViewTester(PackShipmentViewTester):
@@ -32,19 +35,20 @@ class PackShipmentEditDateReceivedViewTester(PackShipmentViewTester):
         self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
         self.parameters['id'] = self.existing_pack_shipment.id
 
-    def assert_form(self, soup):
-        PackShipmentFormTester().assert_inputs(soup)
-
 
 class TestPackShipmentEditDateReceivedRequiresLogin(PackShipmentEditDateReceivedViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestPackShipmentEditDateReceivedGet(PackShipmentEditDateReceivedViewTester, FlaskFormGetViewTester):
-    ...
+class TestPackShipmentEditDateReceivedGet(PackShipmentEditDateReceivedViewTester, FlaskViewLoggedInTester):
+    @pytest.mark.app_crsf(True)
+    def test__get__has_form(self):
+        resp = self.get()
+
+        PackShipmentFormTester(has_csrf=True).assert_all(resp)
 
 
-class TestPackShipmentEditDateReceivedPost(PackShipmentEditDateReceivedViewTester, FlaskPostViewTester):
+class TestPackShipmentEditDateReceivedPost(PackShipmentEditDateReceivedViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         expected = self.item_creator.get(site=None)
         data = self.get_data_from_object(expected)

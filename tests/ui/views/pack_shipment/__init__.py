@@ -1,7 +1,6 @@
 from sqlalchemy import func, select
 from coloprevent.model import PackShipment
 from lbrc_flask.database import db
-from lbrc_flask.pytest.testers import ResultHtmlType
 
 
 class PackShipmentViewTester:
@@ -25,7 +24,3 @@ class PackShipmentViewTester:
         expected_pack_ids = sorted([p.id for p in expected.packs])
 
         assert actual_pack_ids == expected_pack_ids
-
-    @property
-    def result_html_type(self):
-        return ResultHtmlType.MODAL

@@ -1,15 +1,11 @@
 import pytest
-from lbrc_flask.pytest.testers import ResultsTester, RequiresLoginGetTester, ResultHtmlType, PageCountHelper, PageContentAsserter, TableContentAsserter, SearchModalContentAsserter, HtmlPageContentAsserter
+from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, TableContentAsserter, SearchModalContentAsserter, HtmlPageContentAsserter
 
 
 class PackShipmentAddPackResultsTester:
     @property
     def endpoint(self):
         return 'ui.search_pack_search_results'
-
-    @property
-    def result_html_type(self):
-        return ResultHtmlType.FRAGMENT
 
     @pytest.fixture(autouse=True)
     def set_standard_sites(self, standard_sites):
@@ -21,7 +17,7 @@ class PackShipmentAddPackResultsTester:
         self.parameters['shipment_id'] = self.existing_pack_shipment.id
 
 
-class TestPackShipmentAddPackResults(PackShipmentAddPackResultsTester, ResultsTester):
+class TestPackShipmentAddPackResults(PackShipmentAddPackResultsTester, FlaskViewLoggedInTester):
     @pytest.mark.parametrize("item_count", PageCountHelper.test_page_edges())
     @pytest.mark.parametrize("current_page", PageCountHelper.test_current_pages())
     def test__get__no_filters(self, item_count, current_page):

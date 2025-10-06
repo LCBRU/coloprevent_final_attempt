@@ -1,33 +1,34 @@
 from sqlalchemy import func, select
 from coloprevent.model import Site
 from lbrc_flask.database import db
-from lbrc_flask.pytest.asserts import assert__input_text, assert__input_textarea
-from lbrc_flask.pytest.testers import ResultHtmlType
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterTextField, FormTesterTextAreaField
 
 
 class SiteFormTester(FormTester):
-    def __init__(self):
-        super().__init__(fields=[
-            FormTesterTextField(
-                field_name='site_name',
-                field_title='Site name',
-                is_mandatory=True,
-            ),
-            FormTesterTextAreaField(
-                field_name='site_primary_contact',
-                field_title='Primary Contact',
-            ),
-            FormTesterTextAreaField(
-                field_name='site_backup_contact',
-                field_title='Back up Contact',
-            ),
-            FormTesterTextField(
-                field_name='site_code',
-                field_title='Site Code',
-                is_mandatory=True,
-            ),
-        ])
+    def __init__(self, has_csrf=False):
+        super().__init__(
+            fields=[
+                FormTesterTextField(
+                    field_name='site_name',
+                    field_title='Site name',
+                    is_mandatory=True,
+                ),
+                FormTesterTextAreaField(
+                    field_name='site_primary_contact',
+                    field_title='Primary Contact',
+                ),
+                FormTesterTextAreaField(
+                    field_name='site_backup_contact',
+                    field_title='Back up Contact',
+                ),
+                FormTesterTextField(
+                    field_name='site_code',
+                    field_title='Site Code',
+                    is_mandatory=True,
+                ),
+            ],
+            has_csrf=has_csrf,
+        )
 
 
 class SiteViewTester:
@@ -46,10 +47,3 @@ class SiteViewTester:
         assert actual.site_primary_contact == actual.site_primary_contact
         assert actual.site_backup_contact == actual.site_backup_contact
         assert actual.site_code == actual.site_code
-
-    @property
-    def result_html_type(self):
-        return ResultHtmlType.MODAL
-
-    def assert_form(self, soup):
-        SiteFormTester().assert_inputs(soup)

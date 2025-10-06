@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskPostViewTester
+from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from tests.ui.views.pack_type import PackTypeViewTester
 
@@ -21,7 +21,7 @@ class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginPostTester)
     ...
 
 
-class TestSiteDeletePost(SiteDeleteViewTester, FlaskPostViewTester):
+class TestSiteDeletePost(SiteDeleteViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         resp = self.post()
 

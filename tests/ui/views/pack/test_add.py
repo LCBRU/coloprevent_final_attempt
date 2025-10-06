@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskFormGetViewTester, FlaskPostViewTester
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
@@ -18,10 +18,16 @@ class TestPackAddRequiresLogin(PackAddViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestPackAddGet(PackAddViewTester, FlaskFormGetViewTester):
-    ...
+class TestPackAddGet(PackAddViewTester, FlaskViewLoggedInTester):
+    @pytest.mark.app_crsf(True)
+    def test__get__has_form(self):
+        resp = self.get()
 
-class TestPackAddPost(PackAddViewTester, FlaskPostViewTester):
+        packtype_options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}
+        PackFormTester(packtype_options, has_csrf=True).assert_all(resp)
+
+
+class TestPackAddPost(PackAddViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
         expected.packtype_id = self.standard_packtypes[0].id
@@ -47,7 +53,9 @@ class TestPackAddPost(PackAddViewTester, FlaskPostViewTester):
 
         resp = self.post(data)
 
-        self.assert_standards(resp)
-        self.assert_form(resp.soup)
-        self.assert__error__required_field(resp, missing_field.field_title)
+        packtype_options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}
+        PackFormTester(packtype_options).assert_all(resp)
+        ModalContentAsserter().assert_all(resp)
+        ModalFormErrorContentAsserter().assert_missing_required_field(resp, missing_field.field_title)
+
         self.assert_db_count(0)

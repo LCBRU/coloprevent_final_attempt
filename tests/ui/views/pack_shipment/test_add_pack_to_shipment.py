@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskPostViewTester
+from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_results
 from sqlalchemy import select
 from coloprevent.model import PackShipment
@@ -31,7 +31,7 @@ class TestPackShipmentAddPackRequiresLogin(PackShipmentAddPackViewTester, Requir
     ...
 
 
-class TestPackShipmentAddPackPost(PackShipmentAddPackViewTester, FlaskPostViewTester):
+class TestPackShipmentAddPackPost(PackShipmentAddPackViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         data = {
             'id': self.existing_pack.id,

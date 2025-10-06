@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import ResultsTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
+from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
 
 
 class SitePackTypeTester:
@@ -8,7 +8,7 @@ class SitePackTypeTester:
         return 'ui.packtype_home'
 
 
-class TestPackTypeIndex(SitePackTypeTester, ResultsTester):
+class TestPackTypeIndex(SitePackTypeTester, FlaskViewLoggedInTester):
     @pytest.mark.parametrize("item_count", PageCountHelper.test_page_edges())
     @pytest.mark.parametrize("current_page", PageCountHelper.test_current_pages())
     def test__get__no_filters(self, item_count, current_page):

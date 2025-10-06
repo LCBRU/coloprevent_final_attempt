@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import ResultsTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
+from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
 from lbrc_flask.python_helpers import sort_descending
 
 
@@ -9,7 +9,7 @@ class PackShipmentIndexTester:
         return 'ui.index'
 
 
-class TestPackShipmentIndex(PackShipmentIndexTester, ResultsTester):
+class TestPackShipmentIndex(PackShipmentIndexTester, FlaskViewLoggedInTester):
     @pytest.mark.parametrize("item_count", PageCountHelper.test_page_edges())
     @pytest.mark.parametrize("current_page", PageCountHelper.test_current_pages())
     def test__get__no_filters(self, item_count, current_page):

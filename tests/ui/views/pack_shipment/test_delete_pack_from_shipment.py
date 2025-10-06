@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskPostViewTester
+from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
 from coloprevent.model import Pack, PackShipment
@@ -38,7 +38,7 @@ class TestPackShipmentDeletePackRequiresLogin(PackShipmentDeletePackViewTester, 
     ...
 
 
-class TestPackShipmentDeletePackPost(PackShipmentDeletePackViewTester, FlaskPostViewTester):
+class TestPackShipmentDeletePackPost(PackShipmentDeletePackViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         resp = self.post()
 

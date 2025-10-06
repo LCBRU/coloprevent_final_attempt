@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskPostViewTester, FlaskFormGetViewTester
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
 from lbrc_flask.pytest.form_tester import FormTesterField
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
@@ -19,15 +19,20 @@ class PackEditViewTester(PackViewTester):
         self.parameters['id'] = self.existing_pack.id
 
 
-class TestSiteEditRequiresLogin(PackEditViewTester, RequiresLoginGetTester):
+class TestPackEditRequiresLogin(PackEditViewTester, RequiresLoginGetTester):
     ...
 
 
-class TestSiteEditGet(PackEditViewTester, FlaskFormGetViewTester):
-    ...
+class TestPackEditGet(PackEditViewTester, FlaskViewLoggedInTester):
+    @pytest.mark.app_crsf(True)
+    def test__get__has_form(self):
+        resp = self.get()
+
+        packtype_options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}
+        PackFormTester(packtype_options, has_csrf=True).assert_all(resp)
 
 
-class TestSiteEditPost(PackEditViewTester, FlaskPostViewTester):
+class TestPackEditPost(PackEditViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
         expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
         expected.packtype_id = self.standard_packtypes[0].id
@@ -53,7 +58,9 @@ class TestSiteEditPost(PackEditViewTester, FlaskPostViewTester):
 
         resp = self.post(data)
 
-        self.assert_standards(resp)
-        self.assert_form(resp.soup)
-        self.assert__error__required_field(resp, missing_field.field_title)
+        packtype_options = {pt.packtype_name: str(pt.id) for pt in self.standard_packtypes}
+        PackFormTester(packtype_options).assert_all(resp)
+        ModalContentAsserter().assert_all(resp)
+        ModalFormErrorContentAsserter().assert_missing_required_field(resp, missing_field.field_title)
+
         self.assert_db_count(1)
