@@ -14,7 +14,7 @@ class SiteDeleteViewTester(PackTypeViewTester):
         self.existing_packtype = faker.packtype().get_in_db(
             packtype_name='Original Pack Type',
         )
-        self.parameters = dict(id=self.existing_packtype.id)
+        self.parameters['id'] = self.existing_packtype.id
 
 
 class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginPostTester):
@@ -29,7 +29,8 @@ class TestSiteDeletePost(SiteDeleteViewTester, FlaskPostViewTester):
         self.assert_db_count(0)
 
     def test__post__id_valid(self):
-        resp = self.post(parameters=dict(id=self.existing_packtype.id + 1))
+        self.parameters['id'] = self.existing_packtype.id + 1
+        resp = self.post()
 
         assert__refresh_response(resp)
         self.assert_db_count(1)

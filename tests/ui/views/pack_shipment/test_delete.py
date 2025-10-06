@@ -16,7 +16,7 @@ class PackShipmentDeleteViewTester(PackShipmentViewTester):
     @pytest.fixture(autouse=True)
     def set_existing(self, client, faker, set_standard_sites):
         self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
-        self.parameters = dict(id=self.existing_pack_shipment.id)
+        self.parameters['id'] = self.existing_pack_shipment.id
 
 
 class TestSiteDeleteRequiresLogin(PackShipmentDeleteViewTester, RequiresLoginPostTester):
@@ -31,7 +31,8 @@ class TestSiteDeletePost(PackShipmentDeleteViewTester, FlaskPostViewTester):
         self.assert_db_count(0)
 
     def test__post__id_invalid(self):
-        resp = self.post(parameters=dict(id=self.existing_pack_shipment.id + 1))
+        self.parameters['id'] = self.existing_pack_shipment.id + 1
+        resp = self.post()
 
         assert__refresh_response(resp)
         self.assert_db_count(1)

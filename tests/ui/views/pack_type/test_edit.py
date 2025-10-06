@@ -18,7 +18,7 @@ class SiteEditViewTester(PackTypeViewTester):
         self.existing_site = faker.packtype().get_in_db(
             packtype_name='Original Site',
         )
-        self.parameters = dict(id=self.existing_site.id)
+        self.parameters['id'] = self.existing_site.id
 
 
 class TestSiteEditRequiresLogin(SiteEditViewTester, RequiresLoginGetTester):

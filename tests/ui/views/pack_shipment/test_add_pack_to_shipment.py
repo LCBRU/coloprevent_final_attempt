@@ -24,7 +24,7 @@ class PackShipmentAddPackViewTester(PackShipmentViewTester):
     def set_existing(self, client, faker, set_standard_sites, set_standard_packages):
         self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
         self.existing_pack = faker.pack().get_in_db(packtype=self.standard_packtypes[1], pack_shipment=None, pack_action=None)
-        self.parameters = dict(shipment_id=self.existing_pack_shipment.id)
+        self.parameters['shipment_id'] = self.existing_pack_shipment.id
 
 
 class TestPackShipmentAddPackRequiresLogin(PackShipmentAddPackViewTester, RequiresLoginPostTester):

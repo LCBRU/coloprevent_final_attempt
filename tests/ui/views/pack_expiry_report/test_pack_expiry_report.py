@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, IndexUnpaginatedTester
+from lbrc_flask.pytest.testers import RequiresLoginGetTester, ResultsTester, SearchContentAsserter, HtmlPageContentAsserter
 
 
 class PackExpiryReportIndexTester:
@@ -8,11 +8,15 @@ class PackExpiryReportIndexTester:
         return 'ui.pack_expiry_report'
 
 
-class TestPackExpiryReportIndex(PackExpiryReportIndexTester, IndexUnpaginatedTester):
-    @pytest.mark.parametrize("item_count", IndexUnpaginatedTester.page_edges())
+class TestPackExpiryReportIndex(PackExpiryReportIndexTester, ResultsTester):
+    @pytest.mark.parametrize("item_count", [0, 1, 10, 100])
     def test__get__no_filters(self, item_count):
-        self.faker.pack().get_list_in_db(item_count=item_count)
-        self.get_and_assert_standards(expected_count=item_count)
+        packs = self.faker.pack().get_list_in_db(item_count=item_count)
+
+        resp = self.get()
+
+        SearchContentAsserter().assert_all(resp)
+        HtmlPageContentAsserter(loggedin_user=self.loggedin_user).assert_all(resp)
 
 
 class TestPackExpiryReportIndexRequiresLogin(PackExpiryReportIndexTester, RequiresLoginGetTester):

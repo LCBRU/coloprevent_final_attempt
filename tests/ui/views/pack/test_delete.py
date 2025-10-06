@@ -16,7 +16,7 @@ class PackDeleteViewTester(PackViewTester):
     @pytest.fixture(autouse=True)
     def set_original_pack(self, client, faker, set_standard_packages):
         self.existing_pack = faker.pack().get_in_db(packtype=self.standard_packtypes[1], pack_shipment=None, pack_action=None)
-        self.parameters = dict(id=self.existing_pack.id)
+        self.parameters['id'] = self.existing_pack.id
 
 
 class TestSiteDeleteRequiresLogin(PackDeleteViewTester, RequiresLoginPostTester):
@@ -31,7 +31,8 @@ class TestSiteDeletePost(PackDeleteViewTester, FlaskPostViewTester):
         self.assert_db_count(0)
 
     def test__post__id_invalid(self):
-        resp = self.post(parameters=dict(id=self.existing_pack.id + 1))
+        self.parameters['id'] = self.existing_pack.id + 1
+        resp = self.post()
 
         assert__refresh_response(resp)
         self.assert_db_count(1)

@@ -17,7 +17,7 @@ class SiteDeleteViewTester(SiteViewTester):
             site_backup_contact='Original Backup Contact',
             site_code='Original Site Code',
         )
-        self.parameters = dict(id=self.existing_site.id)
+        self.parameters['id'] = self.existing_site.id
 
 
 class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginPostTester):
@@ -32,7 +32,8 @@ class TestSiteDeletePost(SiteDeleteViewTester, FlaskPostViewTester):
         self.assert_db_count(0)
 
     def test__post__id_valid(self):
-        resp = self.post(parameters=dict(id=self.existing_site.id + 1))
+        self.parameters['id'] = self.existing_site.id + 1
+        resp = self.post()
 
         assert__refresh_response(resp)
         self.assert_db_count(1)

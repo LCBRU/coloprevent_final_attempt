@@ -16,7 +16,7 @@ class PackEditViewTester(PackViewTester):
     @pytest.fixture(autouse=True)
     def set_original_pack(self, client, faker, set_standard_packages):
         self.existing_pack = faker.pack().get_in_db(packtype=self.standard_packtypes[1], pack_shipment=None, pack_action=None)
-        self.parameters = dict(id=self.existing_pack.id)
+        self.parameters['id'] = self.existing_pack.id
 
 
 class TestSiteEditRequiresLogin(PackEditViewTester, RequiresLoginGetTester):

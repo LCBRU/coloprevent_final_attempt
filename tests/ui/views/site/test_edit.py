@@ -21,7 +21,7 @@ class SiteEditViewTester(SiteViewTester):
             site_backup_contact='Original Backup Contact',
             site_code='Original Site Code',
         )
-        self.parameters = dict(id=self.existing_site.id)
+        self.parameters['id'] = self.existing_site.id
 
 
 class TestSiteEditRequiresLogin(SiteEditViewTester, RequiresLoginGetTester):

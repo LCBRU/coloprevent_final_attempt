@@ -30,7 +30,8 @@ class PackShipmentDeletePackViewTester(PackShipmentViewTester):
         db.session.add(self.existing_pack_shipment)
         db.session.commit()
 
-        self.parameters = dict(id=self.existing_pack_shipment.id, pack_id=self.existing_pack.id)
+        self.parameters['id'] = self.existing_pack_shipment.id
+        self.parameters['pack_id'] = self.existing_pack.id
 
 
 class TestPackShipmentDeletePackRequiresLogin(PackShipmentDeletePackViewTester, RequiresLoginPostTester):

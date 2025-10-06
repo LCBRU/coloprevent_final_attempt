@@ -174,9 +174,8 @@ class SelectedPack():
         self.selected = selected
     
 
-@blueprint.route("/add_shipment/add_pack/<int:shipment_id>/search_results/<int:page>")   
 @blueprint.route("/add_shipment/add_pack/<int:shipment_id>/search_results")
-def search_pack_search_results(shipment_id, page=1):
+def search_pack_search_results(shipment_id):
     shipment: PackShipment = db.get_or_404(PackShipment, shipment_id)
     search = get_value_from_all_arguments('search_string') or ''
 

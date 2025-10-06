@@ -18,7 +18,7 @@ class PackShipmentAddPackSearchTester:
     @pytest.fixture(autouse=True)
     def set_existing(self, client, faker, set_standard_sites):
         self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
-        self.parameters = dict(id=self.existing_pack_shipment.id)
+        self.parameters['id'] = self.existing_pack_shipment.id
 
 
 class TestPackShipmentAddPackSearch(PackShipmentAddPackSearchTester, SearchModalTester):

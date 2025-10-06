@@ -2,7 +2,6 @@ import pytest
 from sqlalchemy import func, select
 from coloprevent.model import Pack
 from lbrc_flask.database import db
-from lbrc_flask.pytest.asserts import assert__input_text, assert__input_date, assert__input_radio
 from lbrc_flask.pytest.testers import ResultHtmlType
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterTextField, FormTesterDateField, FormTesterRadioField
 
