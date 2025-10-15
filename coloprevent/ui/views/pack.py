@@ -92,7 +92,7 @@ def pack_action(id):
     
 
 
-@blueprint.route('/delete_pack/<int:id>', methods=['GET', 'POST'])
+@blueprint.route('/delete_pack/<int:id>', methods=['POST'])
 def delete_pack(id):
     del_item = db.session.execute(db.select(Pack).where(Pack.id == id)).scalar()
     if del_item:
