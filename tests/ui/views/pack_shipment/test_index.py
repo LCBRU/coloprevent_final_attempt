@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
+from lbrc_flask.pytest.testers import IndexTester, RequiresLoginGetTester, PageCountHelper, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
 from lbrc_flask.python_helpers import sort_descending
 
 
@@ -9,7 +9,7 @@ class PackShipmentIndexTester:
         return 'ui.index'
 
 
-class TestPackShipmentIndex(PackShipmentIndexTester, FlaskViewLoggedInTester):
+class TestPackShipmentIndex(PackShipmentIndexTester, IndexTester):
     @pytest.mark.parametrize("item_count", PageCountHelper.test_page_edges())
     @pytest.mark.parametrize("current_page", PageCountHelper.test_current_pages())
     def test__get__no_filters(self, item_count, current_page):
@@ -20,20 +20,11 @@ class TestPackShipmentIndex(PackShipmentIndexTester, FlaskViewLoggedInTester):
 
         resp = self.get()
 
-        page_count_helper = PageCountHelper(page=current_page, results_count=len(pack_shipments))
-
-        PageContentAsserter(
-            url=self.url(external=False),
-            page_count_helper=page_count_helper,
-        ).assert_all(resp)
-
-        TableContentAsserter(
-            expected_results=page_count_helper.get_current_page_from_results(pack_shipments),
-            page_count_helper=page_count_helper,
-        ).assert_all(resp)
-
-        SearchContentAsserter().assert_all(resp)
-        HtmlPageContentAsserter(loggedin_user=self.loggedin_user).assert_all(resp)
+        self.assert_all(
+            page_count_helper=PageCountHelper(page=current_page, results_count=len(pack_shiptments)),
+            expected_results=pack_shiptments,
+            resp=resp,
+        )
 
 
 class TestPackShipmentIndexRequiresLogin(PackShipmentIndexTester, RequiresLoginGetTester):
