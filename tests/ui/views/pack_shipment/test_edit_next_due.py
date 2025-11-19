@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterDateField
 from sqlalchemy import select
@@ -36,7 +36,7 @@ class PackShipmentEditNextDueViewTester(PackShipmentViewTester):
         self.parameters['id'] = self.existing_pack_shipment.id
 
 
-class TestPackShipmentEditNextDueRequiresLogin(PackShipmentEditNextDueViewTester, RequiresLoginGetTester):
+class TestPackShipmentEditNextDueRequiresLogin(PackShipmentEditNextDueViewTester, RequiresLoginTester):
     ...
 
 

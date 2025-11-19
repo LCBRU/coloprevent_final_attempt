@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import IndexTester, RequiresLoginGetTester, PagedResultSet
+from lbrc_flask.pytest.testers import IndexTester, RequiresLoginTester, PagedResultSet
 from lbrc_flask.python_helpers import sort_descending
 
 
@@ -26,5 +26,5 @@ class TestPackShipmentIndex(PackShipmentIndexTester, IndexTester):
         )
 
 
-class TestPackShipmentIndexRequiresLogin(PackShipmentIndexTester, RequiresLoginGetTester):
+class TestPackShipmentIndexRequiresLogin(PackShipmentIndexTester, RequiresLoginTester):
     ...

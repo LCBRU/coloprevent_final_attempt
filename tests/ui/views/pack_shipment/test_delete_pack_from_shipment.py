@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
 from coloprevent.model import Pack, PackShipment
@@ -8,6 +8,10 @@ from tests.ui.views.pack_shipment import PackShipmentViewTester
 
 
 class PackShipmentDeletePackViewTester(PackShipmentViewTester):
+    @property
+    def request_method(self):
+        return self.post
+
     @property
     def endpoint(self):
         return 'ui.delete_pack_to_shipment'
@@ -34,7 +38,7 @@ class PackShipmentDeletePackViewTester(PackShipmentViewTester):
         self.parameters['pack_id'] = self.existing_pack.id
 
 
-class TestPackShipmentDeletePackRequiresLogin(PackShipmentDeletePackViewTester, RequiresLoginPostTester):
+class TestPackShipmentDeletePackRequiresLogin(PackShipmentDeletePackViewTester, RequiresLoginTester):
     ...
 
 

@@ -1,10 +1,14 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from tests.ui.views.pack_type import PackTypeViewTester
 
 
 class SiteDeleteViewTester(PackTypeViewTester):
+    @property
+    def request_method(self):
+        return self.post
+
     @property
     def endpoint(self):
         return 'ui.delete_packtype'
@@ -17,7 +21,7 @@ class SiteDeleteViewTester(PackTypeViewTester):
         self.parameters['id'] = self.existing_packtype.id
 
 
-class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginPostTester):
+class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginTester):
     ...
 
 

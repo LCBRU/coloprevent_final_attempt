@@ -1,16 +1,15 @@
+from functools import cache
 from faker.providers import BaseProvider
 from lbrc_flask.pytest.faker import FakeCreator
 from coloprevent.model import Pack, PackShipment, PackType, Site
-from functools import cache
 
 
 class SiteFakeCreator(FakeCreator):
-    def __init__(self):
-        super().__init__(Site)
+    cls = Site
 
     def get(self, **kwargs):
         result = self.cls(
-            site_name = kwargs.get('site_name') or self.faker.unique.word(),
+            site_name = kwargs.get('site_name') or self.faker.unique.company(),
             site_backup_contact = kwargs.get('site_backup_contact') or self.faker.unique.name(),
             site_primary_contact = kwargs.get('site_primary_contact') or self.faker.unique.name(),
             site_code = kwargs.get('site_code') or self.faker.unique.pystr(),
@@ -19,34 +18,20 @@ class SiteFakeCreator(FakeCreator):
         return result
 
 
-class SiteProvider(BaseProvider):
-    @cache
-    def site(self):
-        return SiteFakeCreator()
-
-
 class PackTypeFakeCreator(FakeCreator):
-    def __init__(self):
-        super().__init__(PackType)
+    cls = PackType
 
     def get(self, **kwargs):
+        packname = kwargs.get('packtype_name') or self.faker.unique.word()
         result = self.cls(
-            packtype_name = kwargs.get('packtype_name') or self.faker.unique.word(),
+            packtype_name = packname,
         )
 
         return result
 
 
-class PackTypeProvider(BaseProvider):
-    @cache
-    def packtype(self):
-        return PackTypeFakeCreator()
-
-
 class PackShipmentFakeCreator(FakeCreator):
-    def __init__(self):
-        super().__init__(PackShipment)
-        self.faker.add_provider(SiteProvider)
+    cls = PackShipment
 
     def get(self, **kwargs):
         result = self.cls(
@@ -59,18 +44,8 @@ class PackShipmentFakeCreator(FakeCreator):
         return result
 
 
-class PackShipmentProvider(BaseProvider):
-    @cache
-    def pack_shipment(self):
-        return PackShipmentFakeCreator()
-
-
 class PackFakeCreator(FakeCreator):
-    def __init__(self):
-        super().__init__(Pack)
-        self.faker.add_provider(SiteProvider)
-        self.faker.add_provider(PackTypeProvider)
-        self.faker.add_provider(PackShipmentProvider)
+    cls = Pack
 
     def get(self, **kwargs):
         result = self.cls(
@@ -84,7 +59,19 @@ class PackFakeCreator(FakeCreator):
         return result
 
 
-class PackProvider(BaseProvider):
+class ColoPreventProvider(BaseProvider):
     @cache
     def pack(self):
-        return PackFakeCreator()
+        return PackFakeCreator(self)
+
+    @cache
+    def site(self):
+        return SiteFakeCreator(self)
+
+    @cache
+    def pack_shipment(self):
+        return PackShipmentFakeCreator(self)
+
+    @cache
+    def packtype(self):
+        return PackTypeFakeCreator(self)

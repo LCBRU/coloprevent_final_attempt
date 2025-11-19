@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
 from lbrc_flask.pytest.form_tester import FormTester, FormTesterField, FormTesterDateField, FormTesterRadioField
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from sqlalchemy import select
@@ -40,7 +40,7 @@ class PackShipmentAddViewTester(PackShipmentViewTester):
         self.standard_sites = standard_sites
 
 
-class TestPackShipmentAddRequiresLogin(PackShipmentAddViewTester, RequiresLoginGetTester):
+class TestPackShipmentAddRequiresLogin(PackShipmentAddViewTester, RequiresLoginTester):
     ...
 
 

@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, SearchContentAsserter, HtmlPageContentAsserter
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester, SearchContentAsserter, HtmlPageContentAsserter
 
 
 class PackExpiryReportIndexTester:
@@ -19,5 +19,5 @@ class TestPackExpiryReportIndex(PackExpiryReportIndexTester, FlaskViewLoggedInTe
         HtmlPageContentAsserter(loggedin_user=self.loggedin_user).assert_all(resp)
 
 
-class TestPackExpiryReportIndexRequiresLogin(PackExpiryReportIndexTester, RequiresLoginGetTester):
+class TestPackExpiryReportIndexRequiresLogin(PackExpiryReportIndexTester, RequiresLoginTester):
     ...

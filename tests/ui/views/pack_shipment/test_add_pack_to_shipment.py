@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_results
 from sqlalchemy import select
 from coloprevent.model import PackShipment
@@ -8,6 +8,10 @@ from tests.ui.views.pack_shipment import PackShipmentViewTester
 
 
 class PackShipmentAddPackViewTester(PackShipmentViewTester):
+    @property
+    def request_method(self):
+        return self.post
+
     @property
     def endpoint(self):
         return 'ui.add_pack_to_shipment'
@@ -27,7 +31,7 @@ class PackShipmentAddPackViewTester(PackShipmentViewTester):
         self.parameters['shipment_id'] = self.existing_pack_shipment.id
 
 
-class TestPackShipmentAddPackRequiresLogin(PackShipmentAddPackViewTester, RequiresLoginPostTester):
+class TestPackShipmentAddPackRequiresLogin(PackShipmentAddPackViewTester, RequiresLoginTester):
     ...
 
 

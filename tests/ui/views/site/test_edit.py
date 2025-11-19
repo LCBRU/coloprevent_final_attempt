@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginGetTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester, ModalContentAsserter, ModalFormErrorContentAsserter
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from lbrc_flask.pytest.form_tester import FormTesterField
 from sqlalchemy import select
@@ -24,7 +24,7 @@ class SiteEditViewTester(SiteViewTester):
         self.parameters['id'] = self.existing_site.id
 
 
-class TestSiteEditRequiresLogin(SiteEditViewTester, RequiresLoginGetTester):
+class TestSiteEditRequiresLogin(SiteEditViewTester, RequiresLoginTester):
     ...
 
 

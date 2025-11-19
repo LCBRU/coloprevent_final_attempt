@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import IndexTester, RequiresLoginGetTester, PagedResultSet, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
+from lbrc_flask.pytest.testers import IndexTester, RequiresLoginTester, PagedResultSet, PageContentAsserter, SearchContentAsserter, HtmlPageContentAsserter, TableContentAsserter
 
 
 class PackIndexTester:
@@ -25,5 +25,5 @@ class TestPackIndex(PackIndexTester, IndexTester):
         )
 
 
-class TestSiteIndexRequiresLogin(PackIndexTester, RequiresLoginGetTester):
+class TestSiteIndexRequiresLogin(PackIndexTester, RequiresLoginTester):
     ...

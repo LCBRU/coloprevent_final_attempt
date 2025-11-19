@@ -1,10 +1,14 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from tests.ui.views.pack_shipment import PackShipmentViewTester
 
 
 class PackShipmentDeleteViewTester(PackShipmentViewTester):
+    @property
+    def request_method(self):
+        return self.post
+
     @property
     def endpoint(self):
         return 'ui.delete_shipment'
@@ -19,7 +23,7 @@ class PackShipmentDeleteViewTester(PackShipmentViewTester):
         self.parameters['id'] = self.existing_pack_shipment.id
 
 
-class TestSiteDeleteRequiresLogin(PackShipmentDeleteViewTester, RequiresLoginPostTester):
+class TestSiteDeleteRequiresLogin(PackShipmentDeleteViewTester, RequiresLoginTester):
     ...
 
 

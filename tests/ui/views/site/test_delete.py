@@ -1,10 +1,14 @@
 import pytest
-from lbrc_flask.pytest.testers import RequiresLoginPostTester, FlaskViewLoggedInTester
+from lbrc_flask.pytest.testers import RequiresLoginTester, FlaskViewLoggedInTester
 from lbrc_flask.pytest.asserts import assert__refresh_response
 from tests.ui.views.site import SiteViewTester
 
 
 class SiteDeleteViewTester(SiteViewTester):
+    @property
+    def request_method(self):
+        return self.post
+
     @property
     def endpoint(self):
         return 'ui.delete'
@@ -20,7 +24,7 @@ class SiteDeleteViewTester(SiteViewTester):
         self.parameters['id'] = self.existing_site.id
 
 
-class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginPostTester):
+class TestSiteDeleteRequiresLogin(SiteDeleteViewTester, RequiresLoginTester):
     ...
 
 

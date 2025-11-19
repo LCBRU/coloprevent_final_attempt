@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, SearchModalContentAsserter
+from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginTester, SearchModalContentAsserter
 
 
 class PackShipmentAddPackSearchTester:
@@ -24,5 +24,5 @@ class TestPackShipmentAddPackSearch(PackShipmentAddPackSearchTester, FlaskViewLo
         SearchModalContentAsserter().assert_all(resp)
 
 
-class TestPackShipmentAddPackSearchRequiresLogin(PackShipmentAddPackSearchTester, RequiresLoginGetTester):
+class TestPackShipmentAddPackSearchRequiresLogin(PackShipmentAddPackSearchTester, RequiresLoginTester):
     ...

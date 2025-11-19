@@ -6,7 +6,7 @@ from lbrc_flask.pytest.faker import LbrcFlaskFakerProvider, UserProvider
 from lbrc_flask.pytest.helpers import login
 from coloprevent.config import TestConfig
 from coloprevent.security import init_authorization
-from tests.faker import PackProvider, PackShipmentProvider, PackTypeProvider, SiteProvider
+from tests.faker import ColoPreventProvider
 
 
 @pytest.fixture(scope="function")
@@ -38,9 +38,6 @@ def faker():
     result: Faker = Faker("en_GB")
     result.add_provider(UserProvider)
     result.add_provider(LbrcFlaskFakerProvider)
-    result.add_provider(SiteProvider)
-    result.add_provider(PackTypeProvider)
-    result.add_provider(PackShipmentProvider)
-    result.add_provider(PackProvider)
+    result.add_provider(ColoPreventProvider)
 
     yield result

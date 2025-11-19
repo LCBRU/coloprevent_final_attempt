@@ -1,4 +1,4 @@
-from lbrc_flask.pytest.testers import RequiresLoginGetTester
+from lbrc_flask.pytest.testers import RequiresLoginTester
 
 
 class PackExpiryReportDownloadTester:
@@ -7,5 +7,5 @@ class PackExpiryReportDownloadTester:
         return 'ui.pack_expiry_report_download'
 
 
-class TestPackExpiryReportDoenloadRequiresLogin(PackExpiryReportDownloadTester, RequiresLoginGetTester):
+class TestPackExpiryReportDoenloadRequiresLogin(PackExpiryReportDownloadTester, RequiresLoginTester):
     ...

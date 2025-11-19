@@ -1,5 +1,5 @@
 import pytest
-from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginGetTester, PagedResultSet, PageContentAsserter, TableContentAsserter, SearchModalContentAsserter, HtmlPageContentAsserter
+from lbrc_flask.pytest.testers import FlaskViewLoggedInTester, RequiresLoginTester, PagedResultSet, PageContentAsserter, TableContentAsserter, SearchModalContentAsserter, HtmlPageContentAsserter
 
 
 class PackShipmentAddPackResultsTester:
@@ -40,5 +40,5 @@ class TestPackShipmentAddPackResults(PackShipmentAddPackResultsTester, FlaskView
         ).assert_all(resp)
 
 
-class TestPackShipmentAddPackResultsRequiresLogin(PackShipmentAddPackResultsTester, RequiresLoginGetTester):
+class TestPackShipmentAddPackResultsRequiresLogin(PackShipmentAddPackResultsTester, RequiresLoginTester):
     ...
