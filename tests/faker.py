@@ -1,18 +1,18 @@
 from functools import cache
 from faker.providers import BaseProvider
-from lbrc_flask.pytest.faker import FakeCreator
+from lbrc_flask.pytest.faker import FakeCreator, FakeCreatorArgs
 from coloprevent.model import Pack, PackShipment, PackType, Site
 
 
 class SiteFakeCreator(FakeCreator):
     cls = Site
 
-    def get(self, **kwargs):
+    def _create_item(self, save: bool, args: FakeCreatorArgs):
         result = self.cls(
-            site_name = kwargs.get('site_name') or self.faker.unique.company(),
-            site_backup_contact = kwargs.get('site_backup_contact') or self.faker.unique.name(),
-            site_primary_contact = kwargs.get('site_primary_contact') or self.faker.unique.name(),
-            site_code = kwargs.get('site_code') or self.faker.unique.pystr(),
+            site_name = args.get('site_name', self.faker.unique.company()),
+            site_backup_contact = args.get('site_backup_contact', self.faker.unique.name()),
+            site_primary_contact = args.get('site_primary_contact', self.faker.unique.name()),
+            site_code = args.get('site_code', self.faker.unique.pystr()),
         )
 
         return result
@@ -21,8 +21,8 @@ class SiteFakeCreator(FakeCreator):
 class PackTypeFakeCreator(FakeCreator):
     cls = PackType
 
-    def get(self, **kwargs):
-        packname = kwargs.get('packtype_name') or self.faker.unique.word()
+    def _create_item(self, save: bool, args: FakeCreatorArgs):
+        packname = args.get('packtype_name', self.faker.unique.word())
         result = self.cls(
             packtype_name = packname,
         )
@@ -33,12 +33,12 @@ class PackTypeFakeCreator(FakeCreator):
 class PackShipmentFakeCreator(FakeCreator):
     cls = PackShipment
 
-    def get(self, **kwargs):
+    def _create_item(self, save: bool, args: FakeCreatorArgs):
         result = self.cls(
-            date_posted = kwargs.get('date_posted') or self.faker.date_object(),
-            date_received = kwargs.get('date_received'),
-            next_due = kwargs.get('next_due'),
-            site = self.faker.site().get_value_or_get(kwargs, 'site'),
+            date_posted = args.get('date_posted', self.faker.date_object()),
+            date_received = args.get('date_received'),
+            next_due = args.get('next_due'),
+            site = args.get('site', self.faker.site().get()),
         )
 
         return result
@@ -47,13 +47,13 @@ class PackShipmentFakeCreator(FakeCreator):
 class PackFakeCreator(FakeCreator):
     cls = Pack
 
-    def get(self, **kwargs):
+    def _create_item(self, save: bool, args: FakeCreatorArgs):
         result = self.cls(
-            pack_identity = kwargs.get('pack_identity') or self.faker.unique.random_int(),
-            pack_expiry = kwargs.get('pack_expiry') or self.faker.date_object(),
-            packtype = self.faker.packtype().get_value_or_get(kwargs, 'packtype'),
-            pack_shipment = self.faker.pack_shipment().get_value_or_get(kwargs, 'pack_shipment'),
-            pack_action = kwargs.get('pack_action', self.faker.sentence(nb_words=6)),
+            pack_identity = args.get('pack_identity', self.faker.unique.random_int()),
+            pack_expiry = args.get('pack_expiry', self.faker.date_object()),
+            packtype = args.get('packtype', self.faker.packtype().get()),
+            pack_shipment = args.get('pack_shipment', self.faker.pack_shipment().get()),
+            pack_action = args.get('pack_action', self.faker.sentence(nb_words=6)),
         )
 
         return result
