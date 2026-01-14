@@ -3,9 +3,7 @@ from faker import Faker
 from lbrc_flask.pytest.fixtures import *
 from coloprevent import create_app
 from lbrc_flask.pytest.faker import LbrcFlaskFakerProvider, UserProvider
-from lbrc_flask.pytest.helpers import login
 from coloprevent.config import TestConfig
-from coloprevent.security import init_authorization
 from tests.faker import ColoPreventProvider
 
 
