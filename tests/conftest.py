@@ -20,12 +20,6 @@ def standard_packtypes(client, faker):
 
 
 @pytest.fixture(scope="function")
-def loggedin_user(client, faker):
-    init_authorization()
-    return login(client, faker)
-
-
-@pytest.fixture(scope="function")
 def app(tmp_path):
     class LocalTestConfig(TestConfig):
         FILE_UPLOAD_DIRECTORY = tmp_path
