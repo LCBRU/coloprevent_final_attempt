@@ -38,7 +38,7 @@ class PackShipmentFakeCreator(FakeCreator):
             date_posted = args.get('date_posted', self.faker.date_object()),
             date_received = args.get('date_received'),
             next_due = args.get('next_due'),
-            site = args.get('site', self.faker.site().get()),
+            site = args.get_or_create('site', self.faker.site()),
         )
 
         return result
@@ -51,8 +51,8 @@ class PackFakeCreator(FakeCreator):
         result = self.cls(
             pack_identity = args.get('pack_identity', self.faker.unique.random_int()),
             pack_expiry = args.get('pack_expiry', self.faker.date_object()),
-            packtype = args.get('packtype', self.faker.packtype().get()),
-            pack_shipment = args.get('pack_shipment', self.faker.pack_shipment().get()),
+            packtype = args.get_or_create('packtype', self.faker.packtype()),
+            pack_shipment = args.get_or_create('pack_shipment', self.faker.pack_shipment()),
             pack_action = args.get('pack_action', self.faker.sentence(nb_words=6)),
         )
 

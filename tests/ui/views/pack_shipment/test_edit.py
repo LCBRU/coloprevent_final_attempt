@@ -87,7 +87,8 @@ class TestPackShipmentEditPost(PackShipmentEditViewTester, FlaskViewLoggedInTest
         "missing_field", PackShipmentFormTester().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
-        expected = self.item_creator.get()
+        expected = self.item_creator.get(site=None)
+        expected.site_id = self.standard_sites[1].id
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''
 
