@@ -55,7 +55,7 @@ class TestPackShipmentAddGet(PackShipmentAddViewTester, FlaskViewLoggedInTester)
 
 class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
-        expected = self.item_creator.get(site=None)
+        expected = self.item_creator.get(save=False, site=None)
         expected.site_id = self.standard_sites[0].id
         data = self.get_data_from_object(expected)
         data['site'] = str(expected.site_id)
@@ -74,7 +74,7 @@ class TestPackShipmentAddPost(PackShipmentAddViewTester, FlaskViewLoggedInTester
         "missing_field", PackShipmentFormTester().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
-        expected = self.item_creator.get()
+        expected = self.item_creator.get(save=False)
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''
 

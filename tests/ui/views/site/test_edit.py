@@ -38,7 +38,7 @@ class TestSiteEditGet(SiteEditViewTester, FlaskViewLoggedInTester):
 
 class TestSiteEditPost(SiteEditViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
-        expected = self.item_creator.get()
+        expected = self.item_creator.get(save=False)
         resp = self.post_object(expected)
 
         assert__refresh_response(resp)
@@ -52,7 +52,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskViewLoggedInTester):
         "missing_field", SiteFormTester().mandatory_fields_edit,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
-        expected = self.item_creator.get()
+        expected = self.item_creator.get(save=False)
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''
 
@@ -68,7 +68,7 @@ class TestSiteEditPost(SiteEditViewTester, FlaskViewLoggedInTester):
         "invalid_column", SiteFormTester().string_fields,
     )
     def test__post__invalid_column__string_length(self, invalid_column: FormTesterField):
-        expected = self.item_creator.get()
+        expected = self.item_creator.get(save=False)
         data = self.get_data_from_object(expected)
         data[invalid_column.field_name] = 'A'*1000
 

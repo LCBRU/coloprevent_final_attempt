@@ -50,7 +50,7 @@ class TestPackShipmentEditNextDueGet(PackShipmentEditNextDueViewTester, FlaskVie
 
 class TestPackShipmentEditNextDuePost(PackShipmentEditNextDueViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
-        expected = self.item_creator.get(site=None)
+        expected = self.item_creator.get(save=False, site=None)
         data = self.get_data_from_object(expected)
 
         resp = self.post(data)

@@ -29,7 +29,7 @@ class TestPackAddGet(PackAddViewTester, FlaskViewLoggedInTester):
 
 class TestPackAddPost(PackAddViewTester, FlaskViewLoggedInTester):
     def test__post__valid(self):
-        expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
+        expected = self.item_creator.get(save=False, packtype=None, pack_shipment=None, pack_action=None)
         expected.packtype_id = self.standard_packtypes[0].id
         data = self.get_data_from_object(expected)
         data['pack_type'] = str(expected.packtype_id)
@@ -47,7 +47,7 @@ class TestPackAddPost(PackAddViewTester, FlaskViewLoggedInTester):
         "missing_field", PackFormTester().mandatory_fields_add,
     )
     def test__post__missing_mandatory_field(self, missing_field: FormTesterField):
-        expected = self.item_creator.get(packtype=None, pack_shipment=None, pack_action=None)
+        expected = self.item_creator.get(save=False, packtype=None, pack_shipment=None, pack_action=None)
         data = self.get_data_from_object(expected)
         data[missing_field.field_name] = ''
 
