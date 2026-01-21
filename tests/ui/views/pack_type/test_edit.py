@@ -15,7 +15,7 @@ class SiteEditViewTester(PackTypeViewTester):
 
     @pytest.fixture(autouse=True)
     def set_original_site(self, client, faker):
-        self.existing_site = faker.packtype().get_in_db(
+        self.existing_site = faker.packtype().get(save=True, 
             packtype_name='Original Site',
         )
         self.parameters['id'] = self.existing_site.id

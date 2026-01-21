@@ -15,7 +15,7 @@ class SiteDeleteViewTester(SiteViewTester):
 
     @pytest.fixture(autouse=True)
     def set_existing_site(self, client, faker):
-        self.existing_site = faker.site().get_in_db(
+        self.existing_site = faker.site().get(save=True, 
             site_name='Original Site',
             site_primary_contact='Original Primary Contact',
             site_backup_contact='Original Backup Contact',

@@ -15,7 +15,7 @@ class SiteDeleteViewTester(PackTypeViewTester):
 
     @pytest.fixture(autouse=True)
     def set_existing_item(self, client, faker):
-        self.existing_packtype = faker.packtype().get_in_db(
+        self.existing_packtype = faker.packtype().get(save=True, 
             packtype_name='Original Pack Type',
         )
         self.parameters['id'] = self.existing_packtype.id

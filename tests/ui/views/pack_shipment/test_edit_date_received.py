@@ -32,7 +32,7 @@ class PackShipmentEditDateReceivedViewTester(PackShipmentViewTester):
 
     @pytest.fixture(autouse=True)
     def set_existing(self, client, faker, set_standard_sites):
-        self.existing_pack_shipment = faker.pack_shipment().get_in_db(site=self.standard_sites[1])
+        self.existing_pack_shipment = faker.pack_shipment().get(save=True, site=self.standard_sites[1])
         self.parameters['id'] = self.existing_pack_shipment.id
 
 
