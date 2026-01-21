@@ -12,7 +12,7 @@ class TestSiteIndex(SiteIndexTester, IndexTester):
     @pytest.mark.parametrize("item_count", PagedResultSet.test_page_edges())
     @pytest.mark.parametrize("current_page", PagedResultSet.test_current_pages())
     def test__get__no_filters(self, item_count, current_page):
-        sites = self.faker.site().get_list_in_db(item_count=item_count)
+        sites = self.faker.site().get_list(save=True, item_count=item_count)
         sites = sorted(sites, key=lambda x: (x.site_name))
 
         self.parameters['page'] = current_page

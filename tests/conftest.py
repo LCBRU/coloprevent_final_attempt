@@ -9,12 +9,12 @@ from tests.faker import ColoPreventProvider
 
 @pytest.fixture(scope="function")
 def standard_sites(client, faker):
-    return faker.site().get_list_in_db(item_count=5)
+    return faker.site().get_list(save=True, item_count=5)
 
 
 @pytest.fixture(scope="function")
 def standard_packtypes(client, faker):
-    return faker.packtype().get_list_in_db(item_count=5)
+    return faker.packtype().get_list(save=True, item_count=5)
 
 
 @pytest.fixture(scope="function")
