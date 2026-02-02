@@ -220,7 +220,6 @@ def add_pack_to_shipment(shipment_id):
 
     db.session.add(ps)
     db.session.commit()
-    print(refresh_results())
     return refresh_results()
 
 
