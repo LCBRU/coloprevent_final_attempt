@@ -100,6 +100,7 @@ def delete_pack(id):
         db.session.commit()
     return refresh_response()
 
+
 @blueprint.route('/edit_pack/<int:id>', methods=['GET', 'POST'])
 def edit_pack(id):
     edit_id = id

@@ -3,19 +3,20 @@ from flask import render_template, request, url_for, redirect
 from lbrc_flask.forms import SearchForm
 from lbrc_flask.database import db
 from sqlalchemy import select
-from lbrc_flask.security import User
-from wtforms import HiddenField, StringField, TextAreaField, IntegerField, FloatField, DateField
-from wtforms.validators import Length, DataRequired
-from lbrc_flask.forms import FlashingForm, SearchForm
+from wtforms import IntegerField, FloatField, DateField
+from wtforms.validators import DataRequired
+from lbrc_flask.forms import SearchForm
 from lbrc_flask.response import refresh_response
-from coloprevent.model import ConsumableDetails, Consumable,ConsumablePacks
+from coloprevent.model import Consumable,ConsumablePacks
 from flask_wtf import FlaskForm
+
 
 @blueprint.route('/consumable_packs_home', methods=['GET', 'POST'])
 def consumable_packs_home():
     search_form = SearchForm(search_placeholder='Search consumable packs', formdata=request.args) 
 
     q_list = db.session.execute(db.select(ConsumablePacks).order_by(ConsumablePacks.id)).scalars()
+
     ordered_list =[]
     for queried in q_list:
         ordered_list.append(queried)
@@ -23,6 +24,7 @@ def consumable_packs_home():
 
     if search_form.search.data:
         q = q.where(ConsumablePacks.date_received.like(f'%{search_form.search.data}%'))
+
     return render_template('ui/consumable_packs/consumable_packs_home.html', ordered_list = ordered_list, search_form=search_form)
 
 
