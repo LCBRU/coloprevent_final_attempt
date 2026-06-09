@@ -7,6 +7,8 @@ from wtforms import DateField, SelectField
 from lbrc_flask.forms import SearchForm
 from coloprevent.model import  Pack, Site, PackShipment, PackType
 import csv
+from tempfile import NamedTemporaryFile
+import datetime
 
 
 class DropDownForm (SearchForm):
@@ -37,19 +39,43 @@ def pack_expiry_report_download():
    search_form = DropDownForm(formdata=request.args)
    q = get_pack_expiry_report_query(search_form)
    
-   packs = db.session.execute(q).all()
+   packs = db.session.execute(q).mappings().all()
 
-   with open ('expiry_csv', 'w', newline='') as csvfile:
-      csvwriter = csv.writer(csvfile , delimiter=',')
-      csvwriter.writerow(["Pack Identity", "Packtype", "Pack Expiry", "Site"])
-      for q_line in packs:
-         csvwriter.writerow([q_line.pack_identity, q_line.packtype_name, q_line.pack_expiry, q_line.site_name])
+   headers = {
+   'Pack Identity': None,
+   'Packtype': None,
+   'Pack Expiry': None,
+   'Site': None,
+}
 
-   return send_file('../expiry_csv',
-      mimetype='text/csv',
-      as_attachment=True,
-      download_name="Expiry_report.csv"
-   )
+   expiry_details = ({
+   'Pack Identity':pack.pack_identity,
+   'Packtype': pack.packtype_name,
+   'Pack Expiry': pack.pack_expiry,
+   'Site': pack.site_name,
+   } for pack in packs)
+
+   return csv_download('Expiries', headers.keys(), expiry_details)
+
+def csv_download(title: str, headers: list[str], details: list[dict]):
+    with NamedTemporaryFile(mode='w+', delete=True, encoding='utf-8') as tmp:
+        writer = csv.DictWriter(tmp, fieldnames=list(headers))
+
+        writer.writeheader()
+
+        for d in details:
+            writer.writerow(d)
+
+        tmp.flush()
+        tmp.seek(0)
+
+        return send_file(
+            tmp.name,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name=f'{title}_{datetime.datetime.now(datetime.UTC):%Y%m%d_%H%M%S}.csv',
+        )
+
 
 
 def get_pack_expiry_report_query(search_form):
