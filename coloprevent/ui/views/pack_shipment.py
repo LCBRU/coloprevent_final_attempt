@@ -63,8 +63,6 @@ class ShipmentForm(FlashingForm):
 
 class EditShipmentForm(FlashingForm):
     date_posted = DateField(format='%Y-%m-%d', validators=[DataRequired()])
-    date_received = DateField(format='%Y-%m-%d')
-    next_due = DateField(format='%Y-%m-%d')
     site = RadioField('Site', validators=[DataRequired()])
 
     def __init__(self,  **kwargs):
@@ -107,18 +105,13 @@ def edit_shipment(id):
 
     if id== edit_id:
         query_edit = db.session.execute(db.select(PackShipment).where(PackShipment.id == edit_id)).scalar()
-        prev_date_posted =query_edit.date_posted 
-        prev_date_received =query_edit.date_received 
-        prev_next_due= query_edit.next_due
+        prev_date_posted =query_edit.date_posted
         prev_site = query_edit.site_id
 
-        ed_form=EditShipmentForm(date_posted=prev_date_posted
-                             ,date_received=prev_date_received, next_due=prev_next_due, site=prev_site)
+        ed_form=EditShipmentForm(date_posted=prev_date_posted, site=prev_site)
     
     if ed_form.validate_on_submit():
             query_edit.date_posted = ed_form.date_posted.data
-            query_edit.date_received = ed_form.date_received.data
-            query_edit.next_due = ed_form.next_due.data
             query_edit.site_id = ed_form.site.data
             db.session.add(query_edit)
             db.session.commit()

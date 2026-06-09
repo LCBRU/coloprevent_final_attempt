@@ -36,8 +36,6 @@ class PackShipmentFakeCreator(FakeCreator):
     def _create_item(self, save: bool, args: FakeCreatorArgs):
         result = self.cls(
             date_posted = args.get('date_posted', self.faker.date_object()),
-            date_received = args.get('date_received'),
-            next_due = args.get('next_due'),
             site = args.get('site', lambda: self.faker.site().get(save=save)),
         )
 

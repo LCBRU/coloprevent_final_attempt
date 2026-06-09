@@ -19,14 +19,6 @@ class PackShipmentFormTester(FormTester):
                     field_title='Date Posted',
                     is_mandatory=True,
                 ),
-                FormTesterDateField(
-                    field_name='date_received',
-                    field_title='Date Received',
-                ),
-                FormTesterDateField(
-                    field_name='next_due',
-                    field_title='Next Due',
-                ),
                 FormTesterRadioField(
                     field_name='site',
                     field_title='Site',

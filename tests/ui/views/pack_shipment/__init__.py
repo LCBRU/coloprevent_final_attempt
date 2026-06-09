@@ -16,8 +16,6 @@ class PackShipmentViewTester:
         assert expected is not None
 
         actual.date_posted == expected.date_posted
-        actual.date_received == expected.date_received
-        actual.next_due == expected.next_due
         actual.site_id == expected.site_id
 
         actual_pack_ids = sorted([p.id for p in actual.packs])
