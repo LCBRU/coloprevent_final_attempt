@@ -59,12 +59,6 @@ class ShipmentForm(FlashingForm):
         self.site.choices=[(s.id, s.site_name) for s in db.session.execute(select(Site)).scalars()]
 
 
-class ShipmentDateReceivedForm(FlashingForm):
-    date_received = DateField(format='%Y-%m-%d')
-
-
-class ShipmentNextDueForm(FlashingForm):
-    next_due = DateField(format='%Y-%m-%d')
 
 
 class EditShipmentForm(FlashingForm):
@@ -96,30 +90,6 @@ def add_shipment():
      return render_template('lbrc/form_modal.html', form=shipment_form, title="Add Shipment", url=url_for("ui.add_shipment") )
 
 
-@blueprint.route('/add_shipment_received/<int:id>', methods=['GET', 'POST'])
-def add_shipment_received(id):
-    find_record = db.get_or_404(PackShipment,id)
-    prev_date_received = find_record.date_received
-    add_date_form = ShipmentDateReceivedForm(date_received = prev_date_received)
-    if add_date_form.validate_on_submit():
-        find_record.date_received = add_date_form.date_received.data
-        db.session.add(find_record)
-        db.session.commit()
-        return refresh_response()
-    return render_template('lbrc/form_modal.html', form = add_date_form, id=id, title="Add received date", url=url_for("ui.add_shipment_received",id=id))
-
-
-@blueprint.route('/add_shipment_next_due/<int:id>', methods=['GET', 'POST'])
-def add_shipment_next_due(id):
-    find_record = db.get_or_404(PackShipment, id)
-    prev_next_due = find_record.next_due
-    add_date_form = ShipmentNextDueForm(next_due = prev_next_due)
-    if add_date_form.validate_on_submit():
-        find_record.next_due = add_date_form.next_due.data
-        db.session.add(find_record)
-        db.session.commit()
-        return refresh_response()
-    return render_template('lbrc/form_modal.html', form = add_date_form, id=id, title="Add next due date", url=url_for("ui.add_shipment_next_due",id=id))
    
 
 @blueprint.route('/delete_shipment/<int:id>', methods=['GET', 'POST'])
